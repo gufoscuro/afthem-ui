@@ -127,7 +127,7 @@ class CodeEditor extends Component {
     }
 
     open = (file) => {
-        console.log ('open', file);
+        // console.log ('open', file);
         let editor_mode     = 'yaml',
             visual_editor   = this.hasVisualEditor (file.path),
             splt            = file.path.split ('/');
@@ -150,8 +150,8 @@ class CodeEditor extends Component {
         // }
         let visual_e_state = {
             visualViewDisabled: !visual_editor,
-            codeViewActive: !visual_editor,
-            visualViewActive: visual_editor
+            // codeViewActive: !visual_editor,
+            // visualViewActive: visual_editor
         }
 
         // if (visual_editor === false && this.state.visualViewActive) {
