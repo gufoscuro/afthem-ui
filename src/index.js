@@ -1,7 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import './libs/css/font-awesome.min.css';
+import './libs/css/animate.css';
+import './libs/css/bootstrap.min.css';
 import './index.css';
+import './items.css';
+
 import App from './App';
+
+
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));

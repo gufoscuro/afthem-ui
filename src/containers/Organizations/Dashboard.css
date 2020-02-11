@@ -1,0 +1,254 @@
+.Dashboard {
+    padding: 20px
+}
+
+.Dashboard .heading {
+    margin-bottom: 20px;
+    font-size: 20px;
+    /* color: #52707a; */
+}
+.Dashboard .heading .spacer-path {
+    color: #8eb7c3;
+    padding: 0 5px;
+    cursor: default;
+}
+
+.Dashboard .items-matrix {
+    -moz-column-count: 5;
+    -webkit-column-count: 5;
+    column-count: 5;
+    column-fill: initial;
+    column-gap: 10px;
+}
+
+.Dashboard .items-blocks {
+    
+}
+
+
+
+.Dashboard .project-item {
+    position: relative;
+    display: inline-block;
+    padding: 9px 13px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    background-color: #fff;
+    transition: all .5s ease-in-out;
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+}
+
+.Dashboard .add-item {
+    position: relative;
+    display: inline-block;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+.Dashboard .items-matrix .project-item {
+    width: 100%;
+}
+
+.Dashboard .items-blocks .project-item {
+    width: 20%;
+    margin-right: 10px;
+    vertical-align: top;
+}
+
+.Dashboard .items-blocks .add-item {
+    width: 20%;
+    margin-right: 10px;
+    vertical-align: top;
+    height: 124px;
+}
+
+/* .Dashboard .project-item {
+    position: relative;
+    display: block;
+    padding: 6px 13px;
+    margin-top: 5px;
+    border-radius: 3px;
+    background-color: #fff;
+} */
+
+.Dashboard .project-item .hover-ctrls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(121, 172, 199, 0.5);
+    display: none;
+    border-radius: 3px;
+}
+.Dashboard .project-item:hover .hover-ctrls {
+    display: block;
+}
+
+.Dashboard .project-item .hover-ctrls .ctrls {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    padding: 0 20px;
+}
+.Dashboard .project-item .ctrls-fx {
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+}
+.Dashboard .project-item .hover-ctrls .circle-button {
+    margin-right: 5px;
+}
+
+.Dashboard .project-item .hero {
+    margin-bottom: 10px;
+    position: relative;
+}
+.Dashboard .items-matrix .project-item .hero .project-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 65%;
+    height: 50px;
+}
+
+.Dashboard .items-blocks .project-item .project-status {
+    /* width: 65%;
+    float: right; */
+    margin-top: 10px;
+    min-height: 46px;
+}
+.Dashboard .project-item.sector-block.add-item .project-status {
+    margin-top: 3px;
+}
+
+.Dashboard .project-item .hero .progresstext {
+    font-size: 12px;
+    text-align: left;
+    margin-top: 3px;
+    font-weight: 600;
+}
+
+.Dashboard .project-item .hero .project-status .inner {
+    margin-top: 22px;
+}
+
+.Dashboard .project-item .hero .project-status .progressbar {
+    background-color: #cfdee9;
+    height: 4px;
+}
+.Dashboard .project-item .hero .project-status .progressbar-inner {
+    height: 4px;
+    background-color: #88a5b9;
+    transition: width 1s ease-in-out;
+    transition-delay: .3s;
+}
+.Dashboard .project-item .hero .icon {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color: #95d1ff;
+    /* color: #fff; */
+    /* border-radius: 50%; */
+    font-size: 16px;
+    border-radius: 7px;
+    transition: background-color .35s ease-in-out;
+    transition-delay: .4s;
+}
+
+.Dashboard .project-item.critical .hero .icon {
+    background-color: #ff9190;
+}
+
+.Dashboard .project-item.sector-block .project-status .inner {
+    margin-top: 10px;
+}
+
+
+.Dashboard .project-item.sector-block .hero .icon {
+    /* color: #fff; */
+}
+.Dashboard .project-item.sector-block .hero {
+    margin-bottom: 0;
+}
+
+.Dashboard .project-item .head {
+    /* font-size: 16px; */
+    line-height: 16px;
+    font-weight: 600;
+    /* margin-bottom: 5px; */
+}
+.Dashboard .project-item .desc {
+    font-size: 12px;
+    color: #88999e;
+    line-height: 15px;
+}
+
+.Dashboard .project-item .btn-light {
+    background-color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: .25rem 1rem;
+    cursor: default;
+}
+.Dashboard .project-item .btn-light:hover {
+    background-color: #0984e3;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+@media (max-width: 1440px) {
+    .Dashboard .items-matrix {
+        -moz-column-count: 4;
+        -webkit-column-count: 4;
+        column-count: 4;
+    }
+
+    
+}
+
+@media (max-width: 1200px) {
+    .Dashboard .items-matrix {
+        -moz-column-count: 3;
+        -webkit-column-count: 3;
+        column-count: 3;
+    }
+    .Dashboard .items-blocks .project-item {
+        width: 25%;
+    }
+}
+
+@media (max-width: 900px) {
+    .Dashboard .items-matrix {
+        -moz-column-count: 2;
+        -webkit-column-count: 2;
+        column-count: 2;
+    }
+    .Dashboard .items-blocks .project-item {
+        width: 30%;
+    }
+}
+
+@media (max-width: 700px) {
+    .Dashboard .items-blocks .project-item {
+        width: 45%;
+    }
+}
+
+@media (max-width: 600px) {
+    .Dashboard .items-matrix {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+        /* column-fill: initial; */
+        /* column-gap: 10px; */
+    }
+    .Dashboard .items-blocks .project-item {
+        width: 100%;
+    }
+}

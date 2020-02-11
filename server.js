@@ -33,10 +33,10 @@ const is_authorized = (action_name, unauth_map) => {
 }
 const action_evaulator = (req, res) => {
     var opts = {
-        controller: req.params._ctrl,
-        action: req.params._act,
-        rid: req.params._rid !== undefined ? req.params._rid : null
-    }
+            controller: req.params._ctrl,
+            action: req.params._act,
+            rid: req.params._rid !== undefined ? req.params._rid : null
+        };
 
     if (opts.controller && opts.action) {
         let ctrls = require ('./controller/' + opts.controller);
@@ -46,17 +46,17 @@ const action_evaulator = (req, res) => {
                     ctrls[opts.action](req, res, opts).then ((result) => {
                         res.json (result)
                     }).catch ((e, t) => {
-                        res.send (e)
+                        res.status(e.code ? e.code : 500).send (e)
                         throw e;
                     })
                 } else 
-                    res.json (generic_error ('Unauthorized.')); 
+                    res.status (401).json (generic_error ('Unauthorized.')); 
             })
             
         } else 
-            res.json (action_notfound (opts.action));   
+            res.status(404).json (action_notfound (opts.action));   
     } else
-        res.json (generic_error ());
+        res.status(500).json (generic_error ());
 }
 
 

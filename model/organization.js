@@ -25,13 +25,13 @@ const Organization = sequelize.define ('Organization', {
 
 
 Organization.hasMany (Cluster);
-// Cluster.belongsTo (Organization);
+Cluster.belongsTo (Organization);
 
 
 
 module.exports.handle = Organization;
 module.exports.list = (req, res, opts) => {
-    // sequelize.sync ({ force: true });
+    sequelize.sync ({ alter: true });
     return new Promise ((resolve, reject) => {
         resolve ([ ])
     })

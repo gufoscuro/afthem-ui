@@ -1,0 +1,39 @@
+.instruments-tab {
+    display: inline-block;
+    border-radius: 9px;
+    padding: 0px 8px 1px;
+    font-size: 12px;
+    line-height: 14px;
+    cursor: default;
+    font-weight: normal;
+    background-color: #859db3;
+    color: #fff;
+    /* background-color: #ecf2f6; */
+    margin-right: 5px;
+    vertical-align: top;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.instruments-tab .icn {
+    margin-right: 4px
+}
+.instruments-tab:last-child {
+    margin-right: 0;
+}
+.instruments-tab.active {
+    background-color: #58a6e0;
+    color: #fff;
+}
+.instruments-tab.disabled {
+    background-color: #ecf2f6;
+    /* color: #fff; */
+}
+/* .instruments-tab:hover {
+    background-color: #6f899c;
+    color: #fff;
+} */

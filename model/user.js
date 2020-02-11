@@ -1,6 +1,5 @@
 const { DataTypes } = require ('sequelize');
 const sequelize     = require ('./db').instance;
-
 const Organization  = require ('./organization').handle;
 
 

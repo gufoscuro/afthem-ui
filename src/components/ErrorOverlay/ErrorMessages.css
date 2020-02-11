@@ -1,0 +1,28 @@
+.ErrorMessage {
+    text-align: center;
+}
+
+.ErrorMessage .head {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.ErrorMessage .text {
+    
+}
+
+.ErrorMessage .icon {
+    height: 70px;
+}
+.ErrorMessage .icon .disc {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    font-size: 22px;
+    line-height: 71px;
+    background-color: #fff;
+    border-radius: 7px;
+    background-color: #FF807A;
+    color: #fff;
+}

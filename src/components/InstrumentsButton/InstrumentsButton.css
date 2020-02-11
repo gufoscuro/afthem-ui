@@ -1,0 +1,34 @@
+.instruments-button {
+    display: inline-block;
+    padding: 0 13px;
+    height: 40px;
+    line-height: 40px;
+    cursor: default;
+    /* border-radius: 2px; */
+    /* background-color: #ecf1f3; */
+    /* background-color: #dfe8ef; */
+    /* margin-right: 3px; */
+}
+.instruments-button:hover {
+    /* background-color: #0984e3; */
+    /* background-color: #dfe8ef; */
+    background-color: #58a6e0;
+    color: #fff;
+    /* color: #fff; */
+}
+
+.instruments-button.disabled {
+    background-color: unset;
+    color: unset;
+    opacity: .7;
+}
+.instruments-button.hidden {
+    display: none;
+}
+
+.instruments-button .label {
+    font-weight: 600;
+}
+.instruments-button .icn {
+    margin-right: 5px;
+}

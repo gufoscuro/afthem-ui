@@ -5,15 +5,12 @@ var exports = module.exports = { };
 
 
 exports.list = (req, res, opts) => {
-    // sequelize.sync ();
     return new Promise ((resolve, reject) => {
         orgSqlz.findAll().then (resolve).catch (reject);
-        // user.list().then (resolve).catch (reject)
     })
 }
 
 exports.get = (req, res, opts) => {
-    // sequelize.sync ();
     return new Promise ((resolve, reject) => {
         orgSqlz.findByPk(opts.rid).then (resolve).catch (reject);
     })

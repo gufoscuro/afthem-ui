@@ -1,0 +1,15 @@
+.Dialog .panel-content {
+    width: 500px;
+    background-color: #fff;
+    border-radius: 2px;
+    padding: 20px;
+}
+
+.Dialog .panel-content .heading {
+    margin-bottom: 10px;
+}
+
+.Dialog .panel-content .text {
+    color: #799cb1
+}
+

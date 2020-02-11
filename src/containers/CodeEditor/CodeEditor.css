@@ -1,0 +1,66 @@
+.CodeEditor {
+    /* position: relative; */
+    padding-top: 40px;
+}
+.CodeEditor .Instruments {
+    position: fixed;
+    width: 100%;
+    height: 40px;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    z-index: 5;
+    border-bottom: 1px solid #d5e2ea;
+    padding-left: 310px;
+    /* line-height: 40px; */
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+    -webkit-animation-delay: .2s;
+    animation-delay: .2s;
+}
+.CodeEditor .Instruments .instruments-holder {
+    /* padding: 0 7px */
+}
+.CodeEditor .Instruments .btn-holder {
+    float: left;
+}
+.CodeEditor .view-tabs {
+    padding: 12px 16px;
+}
+
+
+.CodeEditor .Instruments .file-name {
+    margin-right: 20px;
+    font-weight: 600;
+
+}
+
+.CodeEditor .EditorArea, 
+.CodeEditor .CodeArea, 
+.CodeEditor .VisualArea { display: none }
+.CodeEditor .EditorArea.active,
+.CodeEditor .CodeArea.active, 
+.CodeEditor .VisualArea.active { display: block }
+
+.CodeMirror {
+    height: auto;
+}
+
+.CodeMirror-activeline-background {
+    background: #ecf1f3;
+    left: -31px !important;
+}
+
+.CodeMirror-selected { background: #eaecec; }
+.CodeMirror-focused .CodeMirror-selected { background: #d9e6ea; }
+.CodeMirror-crosshair { cursor: crosshair; }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {background: #d7d4f0;}
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: #d7d4f0; }

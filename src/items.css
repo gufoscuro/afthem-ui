@@ -1,0 +1,229 @@
+.circle-button {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    /* font-size: 16px; */
+    border-radius: 50%;
+    background-color: #fff;
+    text-decoration: none;
+    color: #526e77;
+    border: none;
+    cursor: default;
+    vertical-align: top;
+    margin-right: 2px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.circle-button:hover, 
+.circle-button.active {
+    text-decoration: none;
+    background-color: #0984e3;
+    color: #fff;
+    cursor: default;
+}
+
+.circle-button.small {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+}
+
+.basic-button {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 16px;
+    background-color: #fff;
+    text-decoration: none;
+    color: #526e77;
+    border: none;
+    cursor: default;
+    vertical-align: top;
+
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.basic-button:hover {
+    text-decoration: none;
+    background-color: #0984e3;
+    color: #fff;
+    cursor: default;
+}
+
+
+.btn-ctrls {
+    margin-top: 20px;
+}
+
+
+
+.basic-list {
+    padding: 10px
+}
+
+.basic-list-item {
+    display: block;
+    position: relative;
+    background-color: #fff;
+    color: #537079;
+    cursor: default;
+    padding: 4px 14px;
+    position: relative;
+    margin-bottom: 3px;
+    border-radius: 3px;
+    text-decoration: none;
+}
+.basic-list-item:hover {
+    text-decoration: none;
+    color: inherit;
+}
+.basic-list-item .hover-acts {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    background-color: rgba(121, 172, 199, 0.5);
+    display: none;
+    padding: 6px 10px;
+    text-align: right;
+}
+.basic-list-item:hover .hover-acts {
+    display: block;
+}
+.basic-list-item .lbl {
+    font-weight: 600;
+    line-height: 16px;
+}
+.basic-list-item .txt {
+    font-size: 12px;
+    color: #89999E;
+    word-wrap: break-word;
+}
+
+
+.thin-lbl {
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: 600;
+    font-size: 13px;
+}
+.thin-button {
+    display: inline-block;
+    border-radius: 9px;
+    padding: 0px 8px 1px;
+    font-size: 12px;
+    line-height: 14px;
+    cursor: default;
+    font-weight: normal;
+    background-color: #859db3;
+    color: #fff;
+    margin-right: 5px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.thin-button .icn {
+    margin-right: 4px
+}
+.thin-button:last-child {
+    margin-right: 0;
+}
+.thin-button:hover {
+    background-color: #6f899c;
+    color: #fff;
+}
+
+
+
+.relative-holder {
+    position: relative;
+}
+
+
+.text-field-holder {
+    /* margin-top: 10px; */
+    margin-top: 5px;
+    position: relative;
+    /* padding: 4px 0; */
+}
+.text-field-holder .hover-layer {
+    position: absolute;
+    top: -5px;
+    left: -10px;
+    width: 100%;
+    height: 100%;
+    /* background-color: rgba(236, 242, 246, .5); */
+    background-color: rgba(209, 220, 228, 0.6);
+    border-radius: 3px;
+    display: none;
+}
+.text-field-holder .hover-layer .hover-ctrls {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 20px;
+    /* text-align: center; */
+}
+.text-field-holder:hover .hover-layer {
+    display: block
+}
+
+.text-field-holder .label {
+    /* display: inline-block; */
+    /* width: 130px; */
+    font-weight: 600;
+    font-size: 12px;
+    color: #85969c;
+}
+.text-field-holder .text {
+    /* display: inline-block; */
+    min-height: 28px;
+    /* border-bottom: 1px solid transparent; */
+    /* line-height: 28px; */
+}
+
+.text-field-holder .text .textfield {
+    min-width: 250px;
+    outline: none;
+    padding: 2px 0 3px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #bdcdd2;
+
+    /* width: 100%;
+    outline: none;
+    background-color: #dbe4ea;
+    color: #586d7d;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin: 0;
+    -webkit-appearance: none;
+    border: none;
+    resize: none; */
+}
+.text-field-holder .text .textfield:focus {
+    border-bottom: 2px solid #72c2ff;
+    padding: 2px 0;
+}

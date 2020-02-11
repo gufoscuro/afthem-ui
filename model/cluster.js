@@ -27,10 +27,13 @@ const Cluster = sequelize.define ('Cluster', {
 });
 
 
-
 module.exports.handle = Cluster;
+module.exports.update = () => {
+    return new Promise ((resolve, reject) => {
+        Cluster.sync ({ force: true }).then (resolve).catch (reject)
+    })
+}
 module.exports.list = (req, res, opts) => {
-    // sequelize.sync ({ force: true });
     return new Promise ((resolve, reject) => {
         resolve ([ ])
     })

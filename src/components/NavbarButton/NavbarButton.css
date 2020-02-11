@@ -1,0 +1,46 @@
+.navbar-button {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #fff;
+    font-size: 18px;
+
+    -webkit-animation-duration: .1s;
+    animation-duration: .1s;
+}
+
+.navbar-button.with-badge {
+    position: relative;
+}
+.navbar-button .badge-count {
+    position: absolute;
+    bottom: 9px;
+    right: 5px;
+    background-color: #3edad6;
+    color: #444f5e;
+    font-size: 12px;
+    line-height: 12px;
+    border-radius: 8px;
+    padding: 1px 4px;
+    font-weight: 700;
+
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+    -webkit-animation-delay: .4s;
+    animation-delay: .4s;
+}
+
+.navbar-button:hover {
+    background-color: #343C48
+}
+
+.active.navbar-button, 
+.active > .navbar-button {
+    background-color: #343C48
+}
+
+.App.color-scheme-0 .active > .navbar-button, 
+.App.color-scheme-0 .active.navbar-button { background-color: #43868e }
+
+.App.color-scheme-1 .active > .navbar-button, 
+.App.color-scheme-1 .active.navbar-button { background-color: #567d9e }

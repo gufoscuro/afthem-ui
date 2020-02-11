@@ -1,0 +1,110 @@
+.ClusterSidebar {
+    position: fixed;
+    width: 260px;
+    height: 100%;
+    top: 0;
+    left: 50px;
+    background-color: #fff;
+    z-index: 7;
+    border-right: 1px solid #d5e2ea;
+    
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+}
+
+.ClusterSidebar .icon {
+    padding: 20px 0 15px;
+    text-align: center;
+}
+
+.ClusterSidebar .meta {
+    padding: 0 20px 20px;
+    text-align: center;
+}
+.ClusterSidebar .meta .name {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 18px;
+}
+.ClusterSidebar .meta .description {
+    /* text-align: left; */
+    font-size: 12px;
+    color: #88999e;
+}
+
+.ClusterSidebar .ctrls {
+    padding: 0 20px;
+}
+
+.ClusterSidebar .ctrls .view-selector {
+    display: block;
+    text-decoration: none;
+    /* background-color: #f4f8fb; */
+    padding: 5px 10px;
+    /* margin-bottom: 5px; */
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #526e77;
+    cursor: default;
+}
+.ClusterSidebar .ctrls .view-selector:hover {
+    background-color: #f4f8fb;
+    text-decoration: none;
+}
+.ClusterSidebar .ctrls .view-selector.active {
+    background-color: #ecf2f6;   
+}
+
+.ClusterSidebar .ctrls .folder-name {
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #526e77;
+    cursor: default;
+}
+.ClusterSidebar .ctrls .sub-folder {
+    padding: 0 0 0 20px;
+}
+
+.ClusterSidebar .scroll-area {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
+
+.ClusterSidebar .icon .disc {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    text-align: center;
+    background-color: #95d1ff;
+    color: #fff;
+    font-size: 24px;
+    /* border-radius: 50%; */
+    border-radius: 6px;
+    transition: background-color .35s ease-in-out;
+    transition-delay: .4s;
+    font-size: 20px;
+
+    /* -webkit-animation-duration: .2s;
+    animation-duration: .2s; */
+}
+
+.ClusterSidebar .icon .disc .avatar-image {
+    width: 100%;
+    vertical-align: top;
+    border-radius: 6px;
+}
+
+.ClusterSidebar .time-selection {
+    margin-top: 20px;
+}
+.ClusterSidebar .time-selection .lbl {
+    padding: 0 10px;
+    /* font-weight: 600; */
+    color: #88999e;
+    font-size: 12px;
+}

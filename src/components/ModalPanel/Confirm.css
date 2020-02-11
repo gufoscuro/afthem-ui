@@ -1,0 +1,33 @@
+.Confirm {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 13;
+    background-color: #c3d6e2cc;
+    display: none;
+}
+.Confirm.active {
+    display: block;
+}
+.Confirm .confirm-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.Confirm .disc {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    background-color: #00be9c;
+    border: none;
+    color: #FFF;
+    font-size: 24px;
+    border-radius: 50%;
+    -webkit-animation-duration: .5s;
+    animation-duration: .5s;
+    text-align: center;
+}
