@@ -59,7 +59,7 @@ function ActorsCatalog (props) {
 
     return (
         <div className="ActorsCatalog">
-            <div className="inner animated slideInUp">
+            <div className="inner animated softZoomInUp d-1">
                 {catalog_render}
                 <div className="close-catalog" onClick={(e) => { e.stopPropagation (); props.hide () }}>Close</div>
             </div>

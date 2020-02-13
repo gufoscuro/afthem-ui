@@ -96,6 +96,7 @@
 }
 .editor-component .editor-component-field input {
     /* background-color: #dbe4ea; */
+    min-width: 220px;
     background-color: #fff;
     padding: 3px 7px;
     -webkit-appearance: none;
