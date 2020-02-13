@@ -8,6 +8,7 @@ import ImplementersEditor from './ImplementersEditor';
 import FadeinFX from '../../hoc/FadeinFX';
 
 // import ModalPanel from '../../components/ModalPanel/ModalPanel';
+import axios from 'axios';
 import yamlUtils, { toJSON } from '../../libs/js/yaml-json';
 
 import 'codemirror/addon/selection/active-line';
@@ -207,7 +208,7 @@ class CodeEditor extends Component {
     }
 
     visualToCode = (code) => {
-        console.log ('code has been updated', code);
+        // console.log ('code has been updated', code);
         let yaml = yamlUtils.toYAML (code);
         this.updateCode (yaml);
         this.value (yaml)

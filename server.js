@@ -61,6 +61,9 @@ const action_evaulator = (req, res) => {
 
 
 
+app.get ('/', function (req, res) {
+    res.sendFile (path.join (__dirname, 'build', 'index.html'));
+});
 
 app.all ('/api/:_ctrl/:_act', action_evaulator);
 app.all ('/api/:_ctrl/:_act/:_rid', action_evaulator);
@@ -68,3 +71,4 @@ app.all ('/api/:_ctrl/:_act/:_rid', action_evaulator);
 
 
 app.listen (process.env.PORT || 3001);
+console.log ('Server listening on 3001');
