@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  afthem-ui:
+    image: afthem-ui:latest
+    container_name: afthem-ui
+    networks:
+      - default
+    ports:
+    - 3001:3001/tcp
+    volumes:
+    - ./db.js:/afthem-ui/model/db.js
+    - ./assets:/afthem-ui/assets
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: foobar
+      MYSQL_DATABASE: afthem-dashboard
+      MYSQL_USER: afthem
+      MYSQL_PASSWORD: foobar
+    networks:
+      default:
+        aliases:
+        - mariadb
+    volumes:
+    - ./mariadb_db:/var/lib/mysql
