@@ -63,11 +63,20 @@ function ThreadpoolElement (props) {
     if (editing) {
         renderer = (
             <>
-                <input type="text" name="min" value={model.min} pattern="[0-9]*" onChange={onValueChange}/>
-                <input type="text" name="max" value={model.max} pattern="[0-9]*" onChange={onValueChange}/>
-                <input type="text" name="factor" value={model.factor} pattern="[0-9]*" onChange={onValueChange}/>
+                <div className="editor-component-field">
+                    <span className="lbl">min <i className="sep far fa-long-arrow-right"></i></span>
+                    <input type="text" name="min" value={model.min} pattern="[0-9]*" onChange={onValueChange}/>
+                </div>
+                <div className="editor-component-field">
+                    <span className="lbl">max <i className="sep far fa-long-arrow-right"></i></span>
+                    <input type="text" name="max" value={model.max} pattern="[0-9]*" onChange={onValueChange}/>
+                </div>
+                <div className="editor-component-field">
+                    <span className="lbl">factor <i className="sep far fa-long-arrow-right"></i> </span>
+                    <input type="text" name="factor" value={model.factor} pattern="[0-9]*" onChange={onValueChange}/>
+                </div>
                 
-                <div>
+                <div className="e-ctrls">
                     <div className="thin-button" onClick={cancelChanges}>Cancel</div>
                     <div className="thin-button" onClick={confirmChanges}>Confirm</div>
                 </div>
@@ -83,8 +92,8 @@ function ThreadpoolElement (props) {
 
                 <div className="hover">
                     <div className="ctrls">
-                        <div className="thin-button" onClick={() => { setEditing (true) }}>Modifica</div>
-                        {props.$key === 'default' ? null : (<div className="thin-button" onClick={props.click.bind (this, { action: 'remove-threadpool', id: props.$key })}>Elimina</div>)}
+                        <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
+                        {props.$key === 'default' ? null : (<div className="thin-button" onClick={props.click.bind (this, { action: 'remove-threadpool', id: props.$key })}>Remove</div>)}
                     </div>
                 </div>
             </>
@@ -92,7 +101,7 @@ function ThreadpoolElement (props) {
     }
 
     return (
-        <div className="editor-component editor-item">
+        <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>
             {renderer}
         </div>
     );

@@ -13,6 +13,7 @@
     padding: 10px;
     flex: 0 0 50%;
     max-width: 50%;
+    position: relative;
 }
 .thread-pool {
     padding: 10px;
@@ -30,6 +31,9 @@
     border-radius: 3px;
     -webkit-animation-duration: .2s;
     animation-duration: .2s;
+}
+.editor-component.editing {
+    background-color: #cfdde6;
 }
 .editor-component .hover {
     position: absolute;
@@ -78,4 +82,27 @@
 }
 .editor-add-component:hover {
     background-color: #fff;
+}
+
+.editor-component .editor-component-field {
+    margin-bottom: 5px;
+}
+.editor-component .editor-component-field .lbl {
+    display: inline-block;
+    min-width: 60px;
+}
+.editor-component .editor-component-field .lbl .sep {
+    margin-left: 5px;
+}
+.editor-component .editor-component-field input {
+    /* background-color: #dbe4ea; */
+    background-color: #fff;
+    padding: 3px 7px;
+    -webkit-appearance: none;
+    border-radius: 2px;
+    border: none;
+    outline: none;
+}
+.editor-component .e-ctrls {
+    text-align: right;
 }

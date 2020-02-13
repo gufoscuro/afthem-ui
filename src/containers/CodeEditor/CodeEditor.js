@@ -8,7 +8,7 @@ import ImplementersEditor from './ImplementersEditor';
 import FadeinFX from '../../hoc/FadeinFX';
 
 // import ModalPanel from '../../components/ModalPanel/ModalPanel';
-import axios from 'axios';
+
 import yamlUtils, { toJSON } from '../../libs/js/yaml-json';
 
 import 'codemirror/addon/selection/active-line';
@@ -185,17 +185,7 @@ class CodeEditor extends Component {
             name: splt[splt.length - 1]
         }, ...visual_e_state});
     }
-
-    addImplementer = (handler) => {
-        handler ({
-            id: "salamigiana",
-            class: "asd"
-        })
-    }
-    addImplementerHook = (handler) => {
-        if (typeof (handler) === 'function')
-            this.addImplementer_handler = handler;
-    }
+    
 
     editorRefreshHook = (handler) => {
         if (typeof (handler) === 'function')
@@ -246,8 +236,8 @@ class CodeEditor extends Component {
             if (this.state.visualMode === 'implementers')
                 visual_editor = (<ImplementersEditor 
                     data={this.state.visualCode} 
-                    add={this.addImplementer} 
                     update={this.visualToCode} 
+                    addHook={this.addImplementerHook} 
                     refreshHook={this.editorRefreshHook} />);
             else
                 visual_editor = "Visual Editor: " + this.state.visualMode;

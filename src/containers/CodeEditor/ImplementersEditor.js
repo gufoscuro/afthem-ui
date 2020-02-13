@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
 import ImplementerElement from './ImplementerElement';
 import ThreadpoolElement from './ThreadpoolElement';
+import ActorsCatalog from './ActorsCatalog';
 import FadeinFX from '../../hoc/FadeinFX';
 import './ImplementersEditor.css';
 
@@ -9,6 +10,7 @@ import './ImplementersEditor.css';
 function ImplementersEditor (props) {
     const [ implementers, setImplementers] = useState (props.data.implementers);
     const [ thread_pools, setThreadPools ] = useState (props.data.thread_pools);
+    const [ addFlow, setAddFlow ] = useState (false);
 
     // console.log ('editor', implementers)
 
@@ -29,9 +31,11 @@ function ImplementersEditor (props) {
     })
 
     const addImplementer = useCallback ((item) => {
+        console.log ('addImplementer', item)
         let a = [...implementers]
         a.push ({...item, ...{ $editing: true }});
         setImplementers (a);
+        setAddFlow (false)
     }, [ implementers ]);
 
     const removeImplenenter = useCallback ((index) => {
@@ -46,9 +50,9 @@ function ImplementersEditor (props) {
         setThreadPools (a);
     }, [ thread_pools ]);
 
-    const add = useCallback (() => {
-        props.add (addImplementer);
-    }, [ addImplementer ]);
+    const hideCatalog = useCallback (() => {
+        setAddFlow (false)
+    }, [ addFlow ]);
 
     const addTP = useCallback (() => {
         let c = 0,
@@ -112,6 +116,9 @@ function ImplementersEditor (props) {
         })
     }, [ thread_pools ]);
 
+    const addflow_render = useMemo (() => {
+        return addFlow ? (<ActorsCatalog add={addImplementer} hide={hideCatalog} />) : null;
+    }, [ addFlow ])
 
 
     return (
@@ -120,7 +127,11 @@ function ImplementersEditor (props) {
                 <FadeinFX>
                     <div className="head">Actors</div>
                     {implementers_render}
-                    <div className="editor-add-component editor-item" onClick={add}>Add Implementer</div>
+                    <div className="editor-add-component editor-item" onClick={() => { setAddFlow (true) }}>
+                        Add Implementer
+                    
+                        {addflow_render}    
+                    </div>
                 </FadeinFX>
             </div>
             <div className="thread-pool">

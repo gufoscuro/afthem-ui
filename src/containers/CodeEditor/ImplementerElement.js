@@ -48,7 +48,7 @@ function ImplementersElement (props) {
         setModel (props.data);
     }, [ model ])
 
-    
+
     const confirmChanges = useCallback (() => {
         if (true) { // some sort of validation goes here I suppose ...
             props.change ({
@@ -63,13 +63,16 @@ function ImplementersElement (props) {
 
     if (editing) {
         renderer = (
-            <>
-                <input type="text" name="id" value={model.id} onChange={onValueChange}/>
-                <div>
+            <div className="editor-fields">  
+                <div className="editor-component-field">
+                    <span className="lbl">ID <i className="sep far fa-long-arrow-right"></i></span>
+                    <input type="text" name="id" value={model.id} onChange={onValueChange}/>
+                </div>
+                <div className="e-ctrls">
                     <div className="thin-button" onClick={cancelChanges}>Cancel</div>
                     <div className="thin-button" onClick={confirmChanges}>Confirm</div>
                 </div>
-            </>
+            </div>
         );
     } else {
         renderer = (
@@ -81,8 +84,8 @@ function ImplementersElement (props) {
 
                 <div className="hover">
                     <div className="ctrls">
-                        <div className="thin-button" onClick={() => { setEditing (true) }}>Modifica</div>
-                        <div className="thin-button" onClick={props.click.bind (this, { action: 'remove-implementer', id: props.$key })}>Elimina</div>
+                        <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
+                        <div className="thin-button" onClick={props.click.bind (this, { action: 'remove-implementer', id: props.$key })}>Remove</div>
                     </div>
                 </div>
             </>
@@ -90,7 +93,7 @@ function ImplementersElement (props) {
     }
 
     return (
-        <div className="editor-component editor-item">
+        <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>
             {renderer}
         </div>
     );
