@@ -9,7 +9,7 @@ import FadeinFX from '../../hoc/FadeinFX';
 
 // import ModalPanel from '../../components/ModalPanel/ModalPanel';
 
-import yamlUtils, { toJSON } from '../../libs/js/yaml-json';
+import yamlUtils from '../../libs/js/yaml-json';
 
 import 'codemirror/addon/selection/active-line';
 import 'codemirror/mode/yaml/yaml';

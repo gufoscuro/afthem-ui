@@ -55,7 +55,7 @@ function ActorsCatalog (props) {
         } else 
             return null;
         
-    }, [ catalog ])
+    }, [ catalog, clickElement, toggleCategory ])
 
     return (
         <div className="ActorsCatalog">

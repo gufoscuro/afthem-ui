@@ -28,15 +28,14 @@ function ImplementersEditor (props) {
     const refreshEditor = useCallback ((data) => {
         setImplementers (data.implementers);
         setThreadPools (data.thread_pools);
-    })
+    }, [])
 
     const addImplementer = useCallback ((item) => {
-        console.log ('addImplementer', item)
         let a = [...implementers]
         a.push ({...item, ...{ $editing: true }});
         setImplementers (a);
         setAddFlow (false);
-        setTimeout (() => { window.scrollTo(0, 10000) }, 20)
+        setTimeout (() => { window.scrollTo (0, 10000) }, 20)
     }, [ implementers ]);
 
     const removeImplenenter = useCallback ((index) => {
@@ -53,12 +52,12 @@ function ImplementersEditor (props) {
 
     const hideCatalog = useCallback (() => {
         setAddFlow (false)
-    }, [ addFlow ]);
+    }, []);
 
     const showCatalog = useCallback (() => {
         window.scrollTo (0, 1);
         setAddFlow (true)
-    }, [ addFlow ]);
+    }, []);
 
     const addTP = useCallback (() => {
         let c = 0,
@@ -81,18 +80,14 @@ function ImplementersEditor (props) {
             removeImplenenter (status.id);
         }
 
-        else if (status.action === 'edit-implementer') {
-            console.log ('edit', status.id)
-        }
-
         else if (status.action === 'remove-threadpool') {
             removeThreadpool (status.id);
         }
-    }, [ implementers, thread_pools ]);
+    }, [ removeImplenenter, removeThreadpool ]);
 
     const edit_element = useCallback ((status) => {
         if (status.type === 'implementers') {
-            let i = [... implementers]
+            let i = [...implementers]
             if (i[status.index] !== undefined)
                 i[status.index] = status.data;
 
@@ -114,17 +109,17 @@ function ImplementersEditor (props) {
 
     const implementers_render = useMemo (() => {
         return implementers.map ((o, i) => <ImplementerElement key={i} data={o} {...{ $key: i, click: click_element, change: edit_element }} />)
-    }, [ implementers ]);
+    }, [ implementers, click_element, edit_element ]);
 
     const threadpool_render = useMemo (() => {
         return Object.keys(thread_pools).map ((key, i) => {
             return <ThreadpoolElement key={i} data={thread_pools[key]} {...{ $key: key, click: click_element, change: edit_element }}  />
         })
-    }, [ thread_pools ]);
+    }, [ thread_pools, click_element, edit_element ]);
 
     const addflow_render = useMemo (() => {
         return addFlow ? (<ActorsCatalog add={addImplementer} hide={hideCatalog} />) : null;
-    }, [ addFlow ])
+    }, [ addFlow, addImplementer, hideCatalog ])
 
 
     return (

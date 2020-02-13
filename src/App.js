@@ -9,7 +9,7 @@ import ClusterDashboard from './containers/ClusterDashboard/ClusterDashboard';
 // import ErrorOverlay from './components/ErrorOverlay/ErrorOverlay';
 // import MaintenanceMode from './components/ErrorOverlay/MaintenanceMode';
 import Confirm from './components/ModalPanel/Confirm';
-import DnD from './Dnd';
+// import DnD from './Dnd';
 
 import storage from './libs/js/storage';
 // import axios from 'axios';
@@ -123,9 +123,9 @@ class App extends Component {
 							<ClusterDashboard {...basic_props} />
 						</Route>
 
-                        <Route exact path="/dnd">
+                        {/* <Route exact path="/dnd">
 							<DnD />
-						</Route>
+						</Route> */}
 					</main>
 
                     <Confirm active={this.state.confirm} />
