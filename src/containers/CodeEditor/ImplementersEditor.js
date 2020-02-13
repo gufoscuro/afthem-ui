@@ -35,7 +35,8 @@ function ImplementersEditor (props) {
         let a = [...implementers]
         a.push ({...item, ...{ $editing: true }});
         setImplementers (a);
-        setAddFlow (false)
+        setAddFlow (false);
+        setTimeout (() => { window.scrollTo(0, 10000) }, 20)
     }, [ implementers ]);
 
     const removeImplenenter = useCallback ((index) => {
@@ -52,6 +53,11 @@ function ImplementersEditor (props) {
 
     const hideCatalog = useCallback (() => {
         setAddFlow (false)
+    }, [ addFlow ]);
+
+    const showCatalog = useCallback (() => {
+        window.scrollTo (0, 1);
+        setAddFlow (true)
     }, [ addFlow ]);
 
     const addTP = useCallback (() => {
@@ -127,7 +133,7 @@ function ImplementersEditor (props) {
                 <FadeinFX>
                     <div className="head">Actors</div>
                     {implementers_render}
-                    <div className="editor-add-component editor-item" onClick={() => { setAddFlow (true) }}>
+                    <div className="editor-add-component editor-item" onClick={showCatalog}>
                         Add Implementer
                     
                         {addflow_render}    
