@@ -1,0 +1,81 @@
+.cols-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    /* margin-right: -15px;
+    margin-left: -15px; */
+}
+.cols-wrapper .head {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.implementers {
+    padding: 10px;
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+.thread-pool {
+    padding: 10px;
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+.editor-item {
+    /* width: 400px; */
+}
+.editor-component {
+    position: relative;
+    background-color: #fff;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+}
+.editor-component .hover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: rgba(236, 242, 246, 0.5);
+    display: none;
+}
+.editor-component:hover .hover {
+    display: block;
+}
+.editor-component .hover .ctrls {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    padding: 0 20px;
+    transform: translateY(-50%);
+    text-align: right;
+}
+
+.editor-component .lbl {
+    font-weight: 600;
+    line-height: 16px;
+}
+.editor-component .txt {
+    font-size: 12px;
+    line-height: 15px;
+}
+.editor-component .keyval {
+    font-size: 13px;
+    line-height: 16px;
+}
+.editor-component .indent-1 {
+    padding-left: 20px;
+}
+.editor-add-component {
+    background-color: #f4f8fb;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 3px;
+    cursor: default;
+}
+.editor-add-component:hover {
+    background-color: #fff;
+}

@@ -4,10 +4,11 @@ import CodeMirror from 'react-codemirror';
 // import Aux from '../../hoc/Aux';
 import InstrumentsButton from '../../components/InstrumentsButton/InstrumentsButton';
 import InstrumentsTab from '../../components/InstrumentsTab/InstrumentsTab';
+import ImplementersEditor from './ImplementersEditor';
 import FadeinFX from '../../hoc/FadeinFX';
+
 // import ModalPanel from '../../components/ModalPanel/ModalPanel';
-// import axios from 'axios';
-import yamlUtils from '../../libs/js/yaml-json';
+import yamlUtils, { toJSON } from '../../libs/js/yaml-json';
 
 import 'codemirror/addon/selection/active-line';
 import 'codemirror/mode/yaml/yaml';
@@ -33,9 +34,13 @@ class CodeEditor extends Component {
 
         codeViewActive: true,
         visualViewActive: false,
-        visualViewDisabled: false
+        visualViewDisabled: false,
+        visualMode: null,
+        visualCode: null
     }
     untouched = ''
+    refreshV_handler
+    addImplementer_handler
     
 
     componentDidMount () {
@@ -104,22 +109,36 @@ class CodeEditor extends Component {
                     visualViewActive: true,
                     codeViewActive: false
                 });
+                this.codeToVisual ();
         }
     }
 
-    hasVisualEditor = (path) => {
-        let bool = false;
+    // editorClickHandler = (status) => {
+    //     console.log ('editorClickHandler', status)
+    // }
 
-        if (path.includes ('/flows/'))
-            bool = true;
+    guessEditorType = (path) => {
+        let result = {
+            visual: false,
+            type: null
+        }
 
-        else if (path.includes ('implementers.yml'))
-            bool = true;
+        if (path.includes ('/flows/')) {
+            result.visual = true;
+            result.type = 'flow';
+        }
 
-        else if (path.includes ('backends.yml'))
-            bool = true;
+        else if (path.includes ('implementers.yml')) {
+            result.visual = true;
+            result.type = 'implementers';
+        }
 
-        return bool;
+        else if (path.includes ('backends.yml')) {
+            result.visual = true;
+            result.type = 'backends';
+        }
+
+        return result;
     }
 
     hasChanges = () => {
@@ -129,8 +148,10 @@ class CodeEditor extends Component {
     open = (file) => {
         // console.log ('open', file);
         let editor_mode     = 'yaml',
-            visual_editor   = this.hasVisualEditor (file.path),
-            splt            = file.path.split ('/');
+            veditor_guess   = this.guessEditorType (file.path),
+            visual_editor   = veditor_guess.visual,
+            splt            = file.path.split ('/'),
+            visualCode      = null;
 
         if (file.path.endsWith ('.xml'))
             editor_mode = 'xml';
@@ -140,26 +161,19 @@ class CodeEditor extends Component {
         this.value (file.data);
         this.untouched = this.value ();
 
-
-        console.log ('visual editor', this.hasVisualEditor (file.path));
-
-        // if (editor_mode === 'yaml') {
-        //     let a = yamlUtils.toJSON (this.value ());
-        //     console.log ('toJSON', a);
-        //     console.log ('toYaml', yamlUtils.toYAML (a));
-        // }
-        let visual_e_state = {
-            visualViewDisabled: !visual_editor,
-            // codeViewActive: !visual_editor,
-            // visualViewActive: visual_editor
+        if (visual_editor) {
+            visualCode = yamlUtils.toJSON (this.value ());
+            // console.log ('toJSON', a);
+            // console.log ('toYaml', yamlUtils.toYAML (a));
         }
 
-        // if (visual_editor === false && this.state.visualViewActive) {
-            
-        // } else {
-        //     visual_e_state.codeViewActive = true;
-        //     visual_e_state.visualViewActive = false;
-        // }
+        let visual_e_state = {
+            visualViewDisabled: !visual_editor,
+            codeViewActive: !visual_editor,
+            visualViewActive: visual_editor,
+            visualMode: veditor_guess.type,
+            visualCode: visualCode
+        }
 
 
 
@@ -169,6 +183,48 @@ class CodeEditor extends Component {
             saveDisabled: true,
             name: splt[splt.length - 1]
         }, ...visual_e_state});
+    }
+
+    addImplementer = (handler) => {
+        handler ({
+            id: "salamigiana",
+            class: "asd"
+        })
+    }
+    addImplementerHook = (handler) => {
+        if (typeof (handler) === 'function')
+            this.addImplementer_handler = handler;
+    }
+
+    editorRefreshHook = (handler) => {
+        if (typeof (handler) === 'function')
+            this.refreshV_handler = handler;
+    }
+
+    refreshVisual = (code) => {
+        if (typeof (this.refreshV_handler) === 'function')
+            this.refreshV_handler (code);
+    }
+
+    visualToCode = (code) => {
+        console.log ('code has been updated', code);
+        let yaml = yamlUtils.toYAML (code);
+        this.updateCode (yaml);
+        this.value (yaml)
+    }
+
+    codeToVisual = () => {
+        let code = this.state.code;
+        try {
+            code = yamlUtils.toJSON (this.value ());
+            this.setState ({
+                visualCode: code
+            })
+            this.refreshVisual (code)
+        } catch (e) {
+            this.visualToCode (this.state.visualCode);
+            console.log ('something wrong while parsing yaml');
+        }
     }
 
     render () {
@@ -182,6 +238,18 @@ class CodeEditor extends Component {
         },
         instruments_props = {
             clickHandler: this.clickHandler
+        },
+        visual_editor;
+
+        if (this.state.visualMode) {
+            if (this.state.visualMode === 'implementers')
+                visual_editor = (<ImplementersEditor 
+                    data={this.state.visualCode} 
+                    add={this.addImplementer} 
+                    update={this.visualToCode} 
+                    refreshHook={this.editorRefreshHook} />);
+            else
+                visual_editor = "Visual Editor: " + this.state.visualMode;
         }
 
         return (
@@ -199,16 +267,18 @@ class CodeEditor extends Component {
                     </div>
                 </div>
                 <div className={"EditorArea" + (this.props.active ? ' active' : '')}>
+                    <div className={"CodeArea" + (this.state.codeViewActive ? ' active' : '')}>
                     <FadeinFX>
-                        <div className={"CodeArea" + (this.state.codeViewActive ? ' active' : '')}>
-                            <CodeMirror 
-                                ref={this.editor} 
-                                value={this.state.code} 
-                                onChange={this.updateCode.bind (this)} 
-                                options={options} />
-                        </div>
-                        <div className={"VisualArea" + (this.state.visualViewActive ? ' active' : '')}>Visual</div>
-                    </FadeinFX>
+                        <CodeMirror 
+                            ref={this.editor} 
+                            value={this.state.code} 
+                            onChange={this.updateCode.bind (this)} 
+                            options={options} />
+                        </FadeinFX>
+                    </div>
+                    <div className={"VisualArea" + (this.state.visualViewActive ? ' active' : '')}>
+                        {visual_editor}
+                    </div>
                 </div>
             </div>
         );

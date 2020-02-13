@@ -1,5 +1,4 @@
 implementers:
-# PROXY
   - id: request
     class: com.apifortress.afthem.actors.proxy.RequestActor
     type: proxy
@@ -12,35 +11,29 @@ implementers:
   - id: upstream_file
     class: com.apifortress.afthem.actors.proxy.UpstreamFileActor
     type: proxy
-
-# TRANSFORMERS
   - id: transform_headers
     class: com.apifortress.afthem.actors.transformers.TransformHeadersActor
     type: transformer
     instances: 2
     thread_pool: computational
-
-# FILTERS
   - id: header_filter
     class: com.apifortress.afthem.actors.filters.FilterActor
     type: filter
     instances: 2
     thread_pool: computational
-
-# SIDECARS
   - id: access_logger
     class: com.apifortress.afthem.actors.sidecars.AccessLoggerActor
     type: sidecar
     thread_pool: secondary
   - id: file_serializer
-    class: com.apifortress.afthem.actors.sidecars.serializers.FileAppenderSerializerActor
+    class: >-
+      com.apifortress.afthem.actors.sidecars.serializers.FileAppenderSerializerActor
     type: sidecar
     thread_pool: secondary
   - id: network_metrics_logger
     class: com.apifortress.afthem.actors.sidecars.NetworkMetricsLoggerActor
     type: sidecar
     thread_pool: secondary
-
 thread_pools:
   default:
     min: 1
