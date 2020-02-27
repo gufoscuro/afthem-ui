@@ -5,6 +5,7 @@ import CodeMirror from 'react-codemirror';
 import InstrumentsButton from '../../components/InstrumentsButton/InstrumentsButton';
 import InstrumentsTab from '../../components/InstrumentsTab/InstrumentsTab';
 import ImplementersEditor from './ImplementersEditor';
+import FlowsEditor from './FlowsEditor';
 import FadeinFX from '../../hoc/FadeinFX';
 
 // import ModalPanel from '../../components/ModalPanel/ModalPanel';
@@ -70,12 +71,12 @@ class CodeEditor extends Component {
             }
         } else if (this.instance)
 		    return this.instance.doc.getValue ()
-	};
+	}
 
 	refresh = () => {
         this.checkInit ();
 		return this.instance.refresh ()
-    };
+    }
     
     updateCode = (code) => {
         let has_changes = (code !== this.untouched);
@@ -134,10 +135,10 @@ class CodeEditor extends Component {
             result.type = 'implementers';
         }
 
-        else if (path.includes ('backends.yml')) {
-            result.visual = true;
-            result.type = 'backends';
-        }
+        // else if (path.includes ('backends.yml')) {
+        //     result.visual = true;
+        //     result.type = 'backends';
+        // }
 
         return result;
     }
@@ -164,8 +165,12 @@ class CodeEditor extends Component {
 
         if (visual_editor) {
             visualCode = yamlUtils.toJSON (this.value ());
-            // console.log ('toJSON', a);
-            // console.log ('toYaml', yamlUtils.toYAML (a));
+            // console.log (visualCode)
+        }
+
+        if (this.state.visualMode !== veditor_guess.type) {
+            this.refreshV_handler = null;
+            this.addImplementer_handler = null;
         }
 
         let visual_e_state = {
@@ -184,6 +189,9 @@ class CodeEditor extends Component {
             saveDisabled: true,
             name: splt[splt.length - 1]
         }, ...visual_e_state});
+
+        if (visual_editor)
+            this.codeToVisual ();
     }
     
 
@@ -207,10 +215,11 @@ class CodeEditor extends Component {
     codeToVisual = () => {
         let code = this.state.code;
         try {
+            // console.log (code);
             code = yamlUtils.toJSON (this.value ());
             this.setState ({
                 visualCode: code
-            })
+            });
             this.refreshVisual (code)
         } catch (e) {
             this.visualToCode (this.state.visualCode);
@@ -227,6 +236,10 @@ class CodeEditor extends Component {
             theme: 'neo',
             mode: this.state.mode
         },
+        basic_props = {
+            oid: this.props.oid,
+            cid: this.props.cid
+        },
         instruments_props = {
             clickHandler: this.clickHandler
         },
@@ -238,7 +251,16 @@ class CodeEditor extends Component {
                     data={this.state.visualCode} 
                     update={this.visualToCode} 
                     addHook={this.addImplementerHook} 
-                    refreshHook={this.editorRefreshHook} />);
+                    refreshHook={this.editorRefreshHook} {...basic_props} />);
+            else if (this.state.visualMode === 'flow') {
+                visual_editor = (
+                    <FlowsEditor
+                        data={this.state.visualCode} 
+                        update={this.visualToCode} 
+                        addHook={this.addImplementerHook} 
+                        refreshHook={this.editorRefreshHook} {...basic_props} />
+                )
+            }
             else
                 visual_editor = "Visual Editor: " + this.state.visualMode;
         }

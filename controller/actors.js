@@ -17,3 +17,21 @@ exports.list = (req, res, opts) => {
         })
     })
 }
+
+exports.asMap = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        exports.list().then ((json) => {
+            var actors_map = { };
+            if (json.children !== undefined) {
+                json.children.forEach ((category, index) => {
+                    if (category.children !== undefined) {
+                        category.children.forEach ((actor, ii) => {
+                            actors_map[actor.class] = actor;
+                        })
+                    }
+                })
+            }
+            resolve (actors_map)
+        })
+    })
+}

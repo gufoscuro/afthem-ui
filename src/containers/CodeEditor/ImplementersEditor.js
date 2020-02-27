@@ -4,12 +4,12 @@ import ImplementerElement from './ImplementerElement';
 import ThreadpoolElement from './ThreadpoolElement';
 import ActorsCatalog from './ActorsCatalog';
 import FadeinFX from '../../hoc/FadeinFX';
-import './ImplementersEditor.css';
+import './VisualEditor.css';
 
 
 function ImplementersEditor (props) {
-    const [ implementers, setImplementers] = useState (props.data.implementers);
-    const [ thread_pools, setThreadPools ] = useState (props.data.thread_pools);
+    const [ implementers, setImplementers] = useState (props.data ? props.data.implementers : null);
+    const [ thread_pools, setThreadPools ] = useState (props.data ? props.data.thread_pools : null);
     const [ addFlow, setAddFlow ] = useState (false);
 
     // console.log ('editor', implementers)
@@ -108,13 +108,13 @@ function ImplementersEditor (props) {
 
 
     const implementers_render = useMemo (() => {
-        return implementers.map ((o, i) => <ImplementerElement key={i} data={o} {...{ $key: i, click: click_element, change: edit_element }} />)
+        return implementers ? implementers.map ((o, i) => <ImplementerElement key={i} data={o} {...{ $key: i, click: click_element, change: edit_element }} />) : null
     }, [ implementers, click_element, edit_element ]);
 
     const threadpool_render = useMemo (() => {
-        return Object.keys(thread_pools).map ((key, i) => {
+        return thread_pools ? Object.keys(thread_pools).map ((key, i) => {
             return <ThreadpoolElement key={i} data={thread_pools[key]} {...{ $key: key, click: click_element, change: edit_element }}  />
-        })
+        }) : null
     }, [ thread_pools, click_element, edit_element ]);
 
     const addflow_render = useMemo (() => {

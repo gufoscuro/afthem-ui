@@ -8,6 +8,10 @@ const orgDAO        = require ('../model/organization');
 const orgSqlz       = orgDAO.handle;
 
 
+const actorsCtrl    = require ('./actors');
+const yamlUtils     = require ('../src/libs/js/yaml-json');
+
+
 
 module.exports.list = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
@@ -126,6 +130,47 @@ module.exports.saveFile = (req, res, opts) => {
             }
         } else
             reject (bad_request)
+    })
+}
+
+module.exports.getImplementers = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        var clusterId = opts.rid;
+        read_file_routine('./assets/base/implementers.yml').then ((result) => {
+            var json    = yamlUtils.toJSON (result.data),
+                result  = {
+                    implementers: [],
+                    actors: { }
+                };
+
+            if (json.implementers !== undefined) {
+                actorsCtrl.asMap().then ((actors_map) => {
+                    result.actors = actors_map;
+                    result.implementers = json.implementers.map ((it, i) => {
+                        return {
+                            typeid: it.typeid = it.type + '/' + it.id,
+                            class: it.class
+                        }
+                    });
+                    resolve (result)
+                })
+            } else
+                resolve (result);
+        }).catch (reject);
+    })
+}
+
+module.exports.getFlowIds = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        var clusterId = opts.rid;
+        read_dir_routine('./assets/base/flows').then ((result) => {
+            var list = [];
+            result.files.forEach ((it) => {
+                if (it.isDir === false)
+                    list.push (it.name.replace (/\.yml/g, ''));
+            })
+            resolve (list)
+        }).catch (reject);
     })
 }
 

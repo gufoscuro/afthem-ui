@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
-// import PerfectScrollbar from 'react-perfect-scrollbar';
 import axios from 'axios';
 
 import './ActorsCatalog.css'
@@ -61,10 +60,8 @@ function ActorsCatalog (props) {
         <div className="ActorsCatalog">
             <div className="inner">
                 <div className="fx animated slideInDown d-1">
-                    {/* <PerfectScrollbar options={{ wheelPropagation: false }}> */}
-                        {catalog_render}
-                        <div className="close-catalog" onClick={(e) => { e.stopPropagation (); props.hide () }}>Close</div>
-                    {/* </PerfectScrollbar> */}
+                    {catalog_render}
+                    <div className="close-catalog" onClick={(e) => { e.stopPropagation (); props.hide () }}>Close</div>
                 </div>
             </div>
         </div>

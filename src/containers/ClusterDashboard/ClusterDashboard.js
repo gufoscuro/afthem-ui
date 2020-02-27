@@ -205,6 +205,10 @@ class ClusterDashboard extends Component {
                 files: this.state.files
             },
             modal_flow,
+            basic_props = {
+                oid: this.props.match.params.id,
+                cid: this.props.match.params.cid
+            },
             editor_props = {
                 save: this.saveFileData,
                 active: this.state.editorActive
@@ -215,7 +219,7 @@ class ClusterDashboard extends Component {
         if (this.state.currentSubview) {
             editor_renderer = (
                 <div className="WithSidebar">
-                    <CodeEditor code={this.state.editingFile} ref={this.editorRef} {...editor_props} />
+                    <CodeEditor code={this.state.editingFile} ref={this.editorRef} {...editor_props} {...basic_props} />
                 </div>
             )
         }
