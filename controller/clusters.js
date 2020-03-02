@@ -135,7 +135,9 @@ module.exports.saveFile = (req, res, opts) => {
 
 module.exports.getImplementers = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        var clusterId = opts.rid;
+        var clusterId = req.body.cid,
+            organizationId = req.body.id;
+            
         read_file_routine('./assets/base/implementers.yml').then ((result) => {
             var json    = yamlUtils.toJSON (result.data),
                 result  = {
@@ -171,6 +173,35 @@ module.exports.getFlowIds = (req, res, opts) => {
             })
             resolve (list)
         }).catch (reject);
+    })
+}
+
+module.exports.removeFlow = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        var clusterId       = req.body.cid,
+            organizationId  = req.body.id,
+            filename        = req.body.filename;
+
+        // console.log ('===>', filename)
+        fs.unlink ('./assets/base/flows/' + filename + '.yml', (err) => {
+            if (err) {
+                resolve ({ success: false });
+            } else
+                resolve ({ success: true });
+        });
+        
+    })
+}
+
+module.exports.createFlow = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        var clusterId       = req.body.cid,
+            organizationId  = req.body.id,
+            filename        = req.body.filename;
+
+        read_file_routine('./assets/defaultFiles/flow.yml').then ((result) => {
+            write_file_routine ('./assets/base/flows/' + filename + '.yml', result.data).then (resolve).catch (reject);
+        })
     })
 }
 

@@ -20,6 +20,13 @@
     flex: 0 0 50%;
     max-width: 50%;
 }
+.flows, 
+.backends {
+    padding: 10px;
+    width: 70%;
+    min-width: 650px;
+    position: relative;
+}
 .editor-item {
     /* width: 400px; */
 }
@@ -93,6 +100,9 @@
 .editor-component .editor-component-field .lbl {
     display: inline-block;
     min-width: 60px;
+}
+.backends .editor-component .editor-component-field .lbl {
+    min-width: 90px;
 }
 .editor-component .editor-component-field .lbl .arrow {
     margin-left: 5px;

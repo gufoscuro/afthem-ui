@@ -9,6 +9,9 @@ transformer/transform_headers:
       - name: x-original-remoteIP
         value: '#msg.request().remoteIP()'
         evaluated: true
+      - name: Authentication
+        value: Basic asdpuahsp98ahashdgakjshdgkajh
+        evaluated: false
     set:
       - name: user-agent
         value: Afthem
@@ -18,4 +21,6 @@ proxy/send_back:
   sidecars:
     - sidecar/access_logger
 sidecar/access_logger:
-  config: {}
+  config:
+    salame: tonno
+    feccia: 5

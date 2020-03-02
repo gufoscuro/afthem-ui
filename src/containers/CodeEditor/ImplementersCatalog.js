@@ -1,20 +1,9 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
-
-// import axios from 'axios';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import './ActorsCatalog.css'
 
 
 function ImplementersCatalog (props) {
-    // const [ catalog, setCatalog ] = useState (props.data);
-
-
-    // useEffect (() => {
-    //     axios.get ('/api/actors/list').then ((result) => {
-    //         setCatalog (result.data);
-    //     })
-    // }, []);
-
     const clickElement = useCallback ((element) => {
         // console.log (element)
         props.add (element);

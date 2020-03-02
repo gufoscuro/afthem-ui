@@ -34,6 +34,9 @@ implementers:
     class: com.apifortress.afthem.actors.sidecars.NetworkMetricsLoggerActor
     type: sidecar
     thread_pool: secondary
+  - id: FilterActor6218
+    class: com.apifortress.afthem.actors.filters.FilterActor
+    type: filter
 thread_pools:
   default:
     min: 1

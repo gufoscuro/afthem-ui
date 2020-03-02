@@ -25,9 +25,11 @@ class ClusterDashboard extends Component {
         editorFormat: null,
         editorActive: false,
 
-        dialog: null
+        dialog: null,
+        actorsSchema: null
     }
     initd       = false
+    nextfilenm  = null
     nextUrl     = null
     clusterMap  = { }
     editorRef   = React.createRef ();
@@ -133,30 +135,49 @@ class ClusterDashboard extends Component {
         })
     }
 
+    fetchActorsSchema = () => {
+        const match = this.props.match;
+        return new Promise ((resolve, reject) => {
+            if (this.state.actorsSchema === null) {
+                axios.post ('/api/clusters/getImplementers/', {
+                    id: match.params.id,
+                    cid: match.params.cid
+                }).then ((response) => {
+                    let ac_map = { };
+                    response.data.implementers.forEach ((it) => {
+                        let data    = response.data.actors[it.class];
+                        console.log ()
+                        if (data !== undefined) {
+                            ac_map[it.typeid] = { ...it, ...data };
+                        } else
+                            console.warn ('AfthemUI: Missing schema match:', it.typeid);
+                    });
+
+                    resolve (ac_map);
+                })
+            } else
+                resolve (this.state.actorsSchema);
+        })
+    }
+
     fetchFileData = (id) => {
         this.props.appBackground (true);
         axios.post ('/api/clusters/fileData/' + id).then ((response) => {
             // console.log (response.data);
             this.props.appBackground (false);
-            
-            this.setState ({
-                editingId: id,
-                editingFile: response.data,
-                editorActive: true
-            });
+            this.fetchActorsSchema().then ((schema) => {
+                this.setState ({
+                    editingId: id,
+                    editingFile: response.data,
+                    editorActive: true,
+                    actorsSchema: schema
+                })
 
-            if (this.editorRef.current) {
-                this.editorRef.current.open (response.data);
-                this.editorRef.current.refresh ();
-            }
-
-            // setTimeout (() => {
-            //     this.setState ({ editorActive: true });
-            //     if (this.editorRef.current) {
-            //         this.editorRef.current.open (response.data);
-            //         this.editorRef.current.refresh ();
-            //     }
-            // }, 300)
+                if (this.editorRef.current) {
+                    this.editorRef.current.open (response.data, schema);
+                    this.editorRef.current.refresh ();
+                }
+            })
         })
     }
 
@@ -181,13 +202,109 @@ class ClusterDashboard extends Component {
         })
     }
 
+    askRemoveFlow = (status) => {
+        let dialog = {
+            heading: 'Remove Flow?',
+            text: 'Are you sure you want to remove this flow?',
+            clickHandler: this.removeFlowHandler
+        }
+
+        this.setState ({
+            dialog: dialog
+        })
+    }
+
+    removeFlowHandler = (confirm) => {
+        if (confirm) {
+            const match = this.props.match;
+            this.props.appBackground (true);
+            axios.post ('/api/clusters/removeFlow/', {
+                id: match.params.id,
+                cid: match.params.cid,
+                filename: this.nextfilenm
+            }).then ((response) => {
+                this.props.history.push (this.nextUrl)
+                this.props.appBackground (false);
+                this.props.appConfirm ();
+                this.nextUrl = null;
+                this.nextfilenm = null;
+                this.fetchClusterData ();
+            })
+            
+        } else {
+            this.nextUrl = null;
+            this.nextfilenm = null;
+        }
+        this.setState ({
+            dialog: null
+        });
+    }
+
+    askCreateFlow = (status) => {
+        let dialog = {
+            heading: 'Create Flow',
+            text: 'Are you sure you want to remove this flow?',
+            clickHandler: this.createFlowHandler
+        }
+
+        this.setState ({
+            dialog: dialog
+        })
+    }
+
+    createFlowHandler = (confirm) => {
+        if (confirm) {
+            const match = this.props.match;
+            this.props.appBackground (true);
+            // console.log ('filename', this.nextfilenm);
+            axios.post ('/api/clusters/createFlow/', {
+                id: match.params.id,
+                cid: match.params.cid,
+                filename: this.nextfilenm
+            }).then ((response) => {
+                this.props.history.push (this.nextUrl)
+                this.props.appBackground (false);
+                this.props.appConfirm ();
+                this.nextUrl = null;
+                this.nextfilenm = null;
+                this.fetchClusterData ();
+            })
+            
+        } else {
+            this.nextUrl = null;
+            this.nextfilenm = null;
+        }
+        this.setState ({
+            dialog: null
+        });
+    }
+
     click_handler = (status) => {
         console.log ('click_handler', status);
 
     }
 
-    sidebar_link_click = (event) => {
-        if (this.editorRef.current) {
+    sidebar_link_click = (event, data) => {
+        if (data !== undefined) {
+            // console.log (data)
+            if (data.action === 'remove') {
+                event.preventDefault ();
+                event.stopPropagation ();
+                this.nextUrl = data.nextUrl;
+                this.nextfilenm = data.filename;
+                this.askRemoveFlow ();
+            }
+
+            else if (data.action === 'create-flow') {
+                event.preventDefault ();
+                this.nextfilenm = 'salamigianona';
+                this.nextUrl = data.nextUrl + this.nextfilenm;
+                this.askCreateFlow ();
+            }
+        }
+        
+        
+        else if (this.editorRef.current) {
             if (this.editorRef.current.hasChanges ()) {
                 this.nextUrl = event.target.getAttribute ('href');
                 event.preventDefault ();

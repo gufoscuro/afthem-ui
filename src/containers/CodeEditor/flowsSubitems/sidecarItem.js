@@ -1,13 +1,20 @@
 import React, { useMemo, useCallback } from 'react';
 
+import ActorSelector from './actorSelector';
 import SorterBtn from './sorterBtn';
 import DeleteBtn from './deleteBtn';
 import arrayMove from 'array-move';
 
 
 function SidecarItem (props) {
-    const { value, onUpdate, editing, definedActors } = props;
+    const { onUpdate, editing, definedActors } = props;
     const sidecars = definedActors.filter (it => it.indexOf ('sidecar') === 0)
+    let value = props.value;
+
+    if ((value instanceof Array) === false)
+        value = [];
+    
+
 
     const shiftPosition = useCallback ((old_pos, new_pos) => {
         if (new_pos >= 0 && new_pos < value.length) {
@@ -36,19 +43,15 @@ function SidecarItem (props) {
     }, [ onUpdate ]);
     
     const renderer = useMemo (() => {
-        // console.log ('sidecar renderer', value)
         if (editing) {
             return (
                 <>
                     <span className="lbl indent-1">sidecars [list] <i className="sep far fa-long-arrow-right"></i></span>
-                    {value.map ((it, ii) => {
+                    {(value instanceof Array) && value.map ((it, ii) => {
                         return (
                             <div key={ii} className="editor-component-field">
                                 <div className="lbl indent-2">
-                                    <select name="next" onChange={event => changeSidecar (event, ii)} value={it}>
-                                        {sidecars.map (opt => <option key={'opt_' + opt} value={opt}>{opt}</option>)}
-                                    </select>
-
+                                    <ActorSelector list={sidecars} name="sidecar" value={it} change={event => changeSidecar (event, ii)} />
                                     <SorterBtn position={ii} move={shiftPosition} max={value.length} type="up" />
                                     <SorterBtn position={ii} move={shiftPosition} max={value.length} type="down" />
                                     <DeleteBtn position={ii} remove={removeSidecar} />

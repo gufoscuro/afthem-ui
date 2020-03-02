@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ActorSelector from './actorSelector';
+
 
 function NextItem (props) {
     let next_items = props.definedActors.filter (it => it.indexOf ('sidecar') === -1)
@@ -9,9 +11,10 @@ function NextItem (props) {
             <div className="editor-component-field">
                 <div className="lbl indent-1">next <i className="sep far fa-long-arrow-right"></i></div>
                 <div className="indent-2">
-                    <select name="next" onChange={props.onChange} defaultValue={props.value}>
+                    {/* <select name="next" onChange={props.onChange} defaultValue={props.value}>
                         {next_items.map (opt => <option key={'opt_' + opt} value={opt}>{opt}</option>)}
-                    </select>
+                    </select> */}
+                    <ActorSelector list={next_items} name="next" value={props.value} change={props.onChange} />
                 </div>
             </div>
         );

@@ -38,6 +38,7 @@
 
 .ClusterSidebar .ctrls .view-selector {
     display: block;
+    position: relative;
     text-decoration: none;
     /* background-color: #f4f8fb; */
     padding: 5px 10px;
@@ -54,6 +55,21 @@
 }
 .ClusterSidebar .ctrls .view-selector.active {
     background-color: #ecf2f6;   
+}
+
+.ClusterSidebar .ctrls .view-selector .remove-btn {
+    display: inline-block;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    top: 0;
+    right: 0;
+    text-align: center;
+}
+.ClusterSidebar .ctrls .view-selector .remove-btn:hover {
+    background-color: #ff7675;
+    color: #fff;
 }
 
 .ClusterSidebar .ctrls .folder-name {

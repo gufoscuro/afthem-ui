@@ -8,7 +8,5 @@ proxy/send_back:
   sidecars:
     - sidecar/access_logger
     - sidecar/network_metrics_logger
-sidecar/access_logger:
-  config: {}
-sidecar/network_metrics_logger:
-  config: {}
+sidecar/access_logger: {}
+sidecar/network_metrics_logger: {}

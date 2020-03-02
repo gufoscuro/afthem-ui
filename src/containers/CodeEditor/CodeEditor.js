@@ -6,6 +6,7 @@ import InstrumentsButton from '../../components/InstrumentsButton/InstrumentsBut
 import InstrumentsTab from '../../components/InstrumentsTab/InstrumentsTab';
 import ImplementersEditor from './ImplementersEditor';
 import FlowsEditor from './FlowsEditor';
+import BackendsEditor from './BackendsEditor';
 import FadeinFX from '../../hoc/FadeinFX';
 
 // import ModalPanel from '../../components/ModalPanel/ModalPanel';
@@ -21,6 +22,7 @@ import 'codemirror/mode/properties/properties';
 import 'codemirror/lib/codemirror.css';
 import './theme-neo.css';
 import './CodeEditor.css';
+import Axios from 'axios';
 
 
 
@@ -38,7 +40,8 @@ class CodeEditor extends Component {
         visualViewActive: false,
         visualViewDisabled: false,
         visualMode: null,
-        visualCode: null
+        visualCode: null,
+        actorsSchema: null
     }
     untouched = ''
     refreshV_handler
@@ -135,10 +138,10 @@ class CodeEditor extends Component {
             result.type = 'implementers';
         }
 
-        // else if (path.includes ('backends.yml')) {
-        //     result.visual = true;
-        //     result.type = 'backends';
-        // }
+        else if (path.includes ('backends.yml')) {
+            result.visual = true;
+            result.type = 'backends';
+        }
 
         return result;
     }
@@ -147,7 +150,7 @@ class CodeEditor extends Component {
         return this.state.code !== this.untouched;
     }
 
-    open = (file) => {
+    open = (file, actorsSchema) => {
         // console.log ('open', file);
         let editor_mode     = 'yaml',
             veditor_guess   = this.guessEditorType (file.path),
@@ -178,7 +181,8 @@ class CodeEditor extends Component {
             codeViewActive: !visual_editor,
             visualViewActive: visual_editor,
             visualMode: veditor_guess.type,
-            visualCode: visualCode
+            visualCode: visualCode,
+            actorsSchema: actorsSchema
         }
 
 
@@ -240,26 +244,27 @@ class CodeEditor extends Component {
             oid: this.props.oid,
             cid: this.props.cid
         },
+        editor_props = {
+            data: this.state.visualCode,
+            update: this.visualToCode,
+            addHook: this.addImplementerHook,
+            refreshHook: this.editorRefreshHook,
+            actorsSchema: this.state.actorsSchema
+        },
         instruments_props = {
             clickHandler: this.clickHandler
         },
         visual_editor;
 
         if (this.state.visualMode) {
-            if (this.state.visualMode === 'implementers')
-                visual_editor = (<ImplementersEditor 
-                    data={this.state.visualCode} 
-                    update={this.visualToCode} 
-                    addHook={this.addImplementerHook} 
-                    refreshHook={this.editorRefreshHook} {...basic_props} />);
+            if (this.state.visualMode === 'implementers') {
+                visual_editor = (<ImplementersEditor {...editor_props} {...basic_props} />);
+            }
             else if (this.state.visualMode === 'flow') {
-                visual_editor = (
-                    <FlowsEditor
-                        data={this.state.visualCode} 
-                        update={this.visualToCode} 
-                        addHook={this.addImplementerHook} 
-                        refreshHook={this.editorRefreshHook} {...basic_props} />
-                )
+                visual_editor = (<FlowsEditor {...editor_props} {...basic_props} />);
+            }
+            else if (this.state.visualMode === 'backends') {
+                visual_editor = (<BackendsEditor {...editor_props} {...basic_props} />);
             }
             else
                 visual_editor = "Visual Editor: " + this.state.visualMode;

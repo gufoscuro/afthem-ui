@@ -18,6 +18,10 @@ filter/header_filter:
         evaluated: true
 proxy/upstream_http:
   next: proxy/send_back
+  config:
+    socket_timeout: 3000
+    redirects_enabled: true
+    max_redirects: 5
 proxy/send_back:
   sidecars:
     - sidecar/access_logger
@@ -26,7 +30,16 @@ sidecar/file_serializer:
     filename: ''
     disable_on_header: ''
     enable_on_header: ''
-    discard_request_headers: []
-    discard_response_headers: []
-    allow_content_types: []
-sidecar/access_logger: {}
+    discard_request_headers:
+      - salamigiana
+      - tonno
+      - feccia
+    discard_response_headers:
+      - salame
+    allow_content_types:
+      - formaggio
+      - culoculo
+sidecar/access_logger:
+  config:
+    salame: 1
+    feccia: 2

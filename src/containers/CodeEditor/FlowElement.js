@@ -2,34 +2,33 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
 import NextElement from './flowsSubitems/nextItem';
 import SidecarElement from './flowsSubitems/sidecarItem';
-import KeyvalItem from './flowsSubitems/keyvalItem';
+// import KeyvalItem from './flowsSubitems/keyvalItem';
 import ConfigItem from './flowsSubitems/configItem';
 
 import _ from 'lodash/core';
 
 
 function FlowElement (props) {
-    const { $key, data, change, definedActors } = props;
+    const { $key, data, change, definedActors, actorsSchema } = props;
     const [ editing, setEditing ] = useState (false);
     const [ model, setModel ] = useState (props.data)
     const [ config, setConfig ] = useState (null);
+    const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
+    
 
-    // console.log ('flow', data)
-
-
+    // console.log ('defined actors', definedActors)
     useEffect (() => {
         if (data.$editing) {
-            console.log ('create', data);
-
             let m = {...model};
             
             delete m.$editing;
             delete m.$data;
 
+            
             setConfig (data.$data);
 
             if (data.$data.sidecars)
-                m.sidecars = {};
+                m.sidecars = { };
             if (data.$data.config) {
                 m.config = { };
                 for (let k in data.$data.config) {
@@ -78,11 +77,7 @@ function FlowElement (props) {
 
         m[key] = value;
         setModel (m);
-    })
-
-    const onItemChange = useCallback ((event, status) => {
-        console.log ('on item change', status)
-    })
+    });
 
     const cancelChanges = useCallback (() => {
         setEditing (false);
@@ -105,6 +100,7 @@ function FlowElement (props) {
         let fields = [],
             field_props = {
                 definedActors: definedActors,
+                elementSchema: elementSchema,
                 onChange: onValueChange,
                 onUpdate: onValueUpdate,
                 editing: editing

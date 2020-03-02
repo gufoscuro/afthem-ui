@@ -1,62 +1,63 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { NavLink } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
 import Aux from '../../hoc/Aux';
-// import PeriodSelector from '../../../components/PeriodSelector/PeriodSelector';
-// import FadeinFX from '../../../hoc/FadeinFX';
+
 import './ClusterSidebar.css';
-// import '../../libs/css/perfect-scrollbar.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
 
-const clusterSidebar = (props) => {
-    let active          = true,
-        organization    = props.organization,
-        cluster         = props.cluster,
-        base_url        = "/organizations/" + organization.id + "/clusters",
-        links,
+const ClusterSidebar = (props) => {
+    const { organization, cluster, clickHandler, files } = props;
 
-        file_renderer   = function (name, files) {
-            return (
-                files.map ((sub_file, idx) => {
-                    return <NavLink 
-                        key={"sub_" + idx}
-                        className="view-selector" 
-                        activeClassName="active" 
-                        onClick={props.clickHandler} 
-                        to={base_url + "/" + cluster.id + "/"+ name +"@" + sub_file.normalizedName}>{sub_file.normalizedName}</NavLink>
-                })
-            );
-        },
-
-        cm_options      = {
-            wheelPropagation: false
-        }
-
-
-
-    if (props.active === false)
-        active = false;
+    let base_url        = "/organizations/" + organization.id + "/clusters",
+        active          = props.active || true;
     
 
-    if (organization && cluster) {
-        links = (
+    const links = useMemo (() => {
+        return (
             <Aux>
                 <NavLink 
                     exact 
                     className="view-selector" 
-                    onClick={props.clickHandler} 
+                    onClick={clickHandler} 
                     to={base_url}>Clusters List</NavLink>
 
-                {props.files.map ((file, index) => {
+                {organization && cluster && files.map ((file, index) => {
                     let ii;
                     if (file.isDir) {
                         ii = (
                             <Aux key={index}>
                                 <div className="folder-name">{file.normalizedName}</div>
                                 <div className="sub-folder">
-                                    {file_renderer (file.normalizedName, file.files)}
+                                    {file.files.map ((sub_file, idx) => {
+                                        return (
+                                            <NavLink 
+                                                key={"sub_" + idx}
+                                                className="view-selector" 
+                                                activeClassName="active" 
+                                                onClick={props.clickHandler} 
+                                                to={base_url + "/" + cluster.id + "/"+ file.normalizedName +"@" + sub_file.normalizedName}>
+                                                {sub_file.normalizedName}
+
+                                                {sub_file.normalizedName !== 'default' && (
+                                                    <div className="remove-btn" 
+                                                        onClick={e => clickHandler (e, {
+                                                            action: 'remove', 
+                                                            filename: sub_file.normalizedName,
+                                                            nextUrl: base_url + "/" + cluster.id + "/"+ file.normalizedName +"@default"
+                                                        })}>
+                                                        <i className="far fa-trash"></i>
+                                                    </div>
+                                                )}
+                                            </NavLink>
+                                        )
+                                    })}
+                                    <div className="view-selector" 
+                                        onClick={e => clickHandler (e, {
+                                            action: 'create-flow',
+                                            nextUrl: base_url + "/" + cluster.id + "/"+ file.normalizedName +"@"
+                                        })}>+ Create Flow</div>
                                 </div>
                             </Aux>
                         );
@@ -74,29 +75,38 @@ const clusterSidebar = (props) => {
                     return ii;
                 })}
             </Aux>
-        );
-    }
-        
-    return (
-        <div className={"ClusterSidebar animated softFadeInLeft" + (active ? "" : " d-none")}>
-            <div className="icon">
-                <div className="disc animate softZoomIn d-4">
-                    <i className="fad fa-chart-network"></i>
+        )
+    }, [ organization, cluster, files, clickHandler ]);
+    
+    const renderer = useMemo (() => {
+        let cm_options      = {
+            wheelPropagation: false
+        };
+
+        return (
+            <div className={"ClusterSidebar animated softFadeInLeft" + (active ? "" : " d-none")}>
+                <div className="icon">
+                    <div className="disc animate softZoomIn d-4">
+                        <i className="fad fa-chart-network"></i>
+                    </div>
+                </div>
+                <div className="meta">
+                    <div className="name">{cluster.name}</div>
+                    <div className="description">{cluster.description}</div>
+                </div>
+                <div className="scroll-area" style={{ height: window.innerHeight - 161 + 'px' }}>
+                    <PerfectScrollbar options={cm_options}>
+                        <div className="ctrls">
+                            {links}
+                        </div>
+                    </PerfectScrollbar>
                 </div>
             </div>
-            <div className="meta">
-                <div className="name">{props.cluster.name}</div>
-                <div className="description">{props.cluster.description}</div>
-            </div>
-            <div className="scroll-area" style={{ height: window.innerHeight - 161 + 'px' }}>
-                <PerfectScrollbar options={cm_options}>
-                    <div className="ctrls">
-                        {links}
-                    </div>
-                </PerfectScrollbar>
-            </div>
-        </div>
-    );
+        )
+    }, [ active, cluster, organization, links ]);
+
+        
+    return renderer;
 }
 
-export default clusterSidebar;
+export default ClusterSidebar;

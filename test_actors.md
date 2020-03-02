@@ -15,7 +15,7 @@ This is a special actor and needs to be instantiated with the special id **`prox
 #### config:
 
 
-* `discard_headers` [list]: a list of request header names that need to be discarded immediately
+* `discard_headers` [list[string]]: a list of request header names that need to be discarded immediately
 
 ### UpstreamHttpActor
 
@@ -34,7 +34,7 @@ The default upstream actor.
 * `socket_timeout` [int]: timeout for silent socket in milliseconds
 * `redirects_enabled` [boolean]: set to true if you want AFtheM to resolve redirects instead of forwarding to the client
 * `max_redirects` [int]: if redirects are enabled, maximum number of redirects before giving up 
-* `discard_headers` [list]: a list of response header names that need to be discarded immediately
+* `discard_headers` [list[string]]: a list of response header names that need to be discarded immediately
 
 
 ### UpstreamFileActor
@@ -113,9 +113,9 @@ Serializes a full API conversation to JSON and appends it to a file.
 * `filename` [string]: name of the file
 * `disable_on_header` [string]: if the provided header is present in the request, then the conversation will skip serialization
 * `enable_on_header` [string]: if the provided header is present in the request, then the conversation will be serialized
-* `discard_request_headers` [list]: list of request headers that should not appear in the serialized conversation
-* `discard_response_headers` [list]: list of response headers that should not appear in the serialized conversation
-* `allow_content_types` [list]: full or partial response content types which make the request eligible for serialization. If
+* `discard_request_headers` [list[string]]: list of request headers that should not appear in the serialized conversation
+* `discard_response_headers` [list[string]]: list of response headers that should not appear in the serialized conversation
+* `allow_content_types` [list[string]]: full or partial response content types which make the request eligible for serialization. If
 the list is null or empty, all content types will be accepted
 
 ***
@@ -133,7 +133,7 @@ If after, it modifies the response headers.
 #### config:
 
 
-* `add` [object]: adds a header. If `evaluated` is set to `ŧrue`, the value is treated as a SpEL script. Example:
+* `add` [list[nve]]: adds a header. If `evaluated` is set to `ŧrue`, the value is treated as a SpEL script. Example:
   ```yaml
     add:
       - name: header_name
@@ -141,13 +141,13 @@ If after, it modifies the response headers.
         evaluated: false
   
    ```
-* `remove` [object]: removes a header. Example:
+* `remove` [list[nve]]: removes a header. Example:
   ```yaml
     remove:
       - name: header_name
   
   ```
-* `set` [object]: sets the value of an existing header, or adds it if the header is not present. If `evaluated` is set to `ŧrue`,
+* `set` [list[nve]]: sets the value of an existing header, or adds it if the header is not present. If `evaluated` is set to `ŧrue`,
    the value is treated as a SpEL script. Example:
    ```yaml
    set:
@@ -174,7 +174,7 @@ Filters out any request not matching a certain set of criteria.
 #### config:
 
 
-* `accept` [object]: a list of conditions. If verified, the message will be accepted.
+* `accept` [list[ve]]: a list of conditions. If verified, the message will be accepted.
    Example:
    ```yaml
     accept:
@@ -184,7 +184,7 @@ Filters out any request not matching a certain set of criteria.
         evaluated: true  
    ```
    Just like previous filters, if evaluated is true,`value` will be evaluated as SpEL script.
-* `reject` [object]: a list of conditions. If verified, the message will be rejected.
+* `reject` [list[ve]]: a list of conditions. If verified, the message will be rejected.
   Example:
   ```yaml
   reject:
