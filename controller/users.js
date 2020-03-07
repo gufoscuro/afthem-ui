@@ -12,9 +12,8 @@ var exports = module.exports = { };
 exports.list = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
         var search = req.body && req.body.search;
-        if (search)
-            userSqlz.findAll().then (resolve).catch (reject);
-        else {
+        
+        if (search) {
             userSqlz.findAll ({
                 where: {
                     [Op.or]: [
@@ -37,7 +36,8 @@ exports.list = (req, res, opts) => {
                 },
                 limit: 5
             }).then (resolve).catch (reject);
-        }
+        } else
+            userSqlz.findAll().then (resolve).catch (reject);
     })
 }
 
