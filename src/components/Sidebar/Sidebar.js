@@ -81,6 +81,10 @@ const sidebar = (props) => {
                     <i className="fad fa-spinner-third fa-spin"></i>
                 </div>
                 {notifications_link}
+
+                <NavLink exact activeClassName="active" to="/admin/users">
+                    <NavbarButton icon="cog" clickHandler={props.clickHandler} action="admin"/>
+                </NavLink>
                 <NavbarButton icon="user" clickHandler={props.clickHandler} action="user-profile"/>
             </div>
 

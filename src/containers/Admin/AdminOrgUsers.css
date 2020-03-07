@@ -1,0 +1,21 @@
+.MembersEditor {
+    /* position: fixed;
+    top: 0;
+    right: 0;
+    left: 650px;
+    width: 300px;
+    height: 100%; */
+    /* background-color: #fff; */
+    /* background-color: #d5e6ef; */
+    padding: 10px;
+    animation-duration: .3s;
+    /* z-index: 2; */
+    /* border-left: 1px solid #d5e2ea; */
+    /* border-left: 1px solid #d5e2ea; */
+}
+.MembersEditor .heading {
+    font-size: 18px;
+    /* line-height: 20px; */
+    font-weight: 700;
+    margin-bottom: 10px;
+}

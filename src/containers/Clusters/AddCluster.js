@@ -27,8 +27,8 @@ const addCluster = (props) => {
                 <SmartTextField type="password" label="Git Password" name="gitPassword" value={props.form.gitPassword} {...genprops} />
             </div>
             <div className="panel-ctrls animated slideInDown">
-                <button className="btn btn-danger btn-sm" onClick={props.clickHandler.bind (this, { action: 'cancel-cluster' })}>Annulla</button>
-                <button className="btn btn-primary btn-sm" onClick={props.clickHandler.bind (this, { action: 'save-cluster' })}>Conferma</button>
+                <button className="btn btn-danger btn-sm" onClick={props.clickHandler.bind (this, { action: 'cancel-cluster' })}>Cancel</button>
+                <button className="btn btn-primary btn-sm" onClick={props.clickHandler.bind (this, { action: 'save-cluster' })}>Confirm</button>
             </div>
         </div>
     );

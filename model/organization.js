@@ -16,7 +16,7 @@ const Organization = sequelize.define ('Organization', {
         allowNull: false
     },
     registrationDate: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     }
 }, {

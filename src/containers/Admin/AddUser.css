@@ -1,0 +1,15 @@
+.AddUser .panel-content {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 2px;
+    padding: 20px;
+}
+.AddUser .error-message {
+    background-color: #ff7675;
+    color: #fff;
+    font-weight: 600;
+    padding: 3px 16px;
+    margin: 0 -16px;
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+}

@@ -6,10 +6,9 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Organizations from './containers/Organizations/Organizations';
 import Clusters from './containers/Clusters/Clusters';
 import ClusterDashboard from './containers/ClusterDashboard/ClusterDashboard';
-// import ErrorOverlay from './components/ErrorOverlay/ErrorOverlay';
-// import MaintenanceMode from './components/ErrorOverlay/MaintenanceMode';
+import Admin from './containers/Admin/Admin';
+import AdminOrg from './containers/Admin/AdminOrg';
 import Confirm from './components/ModalPanel/Confirm';
-import DnD from './Dnd';
 
 import storage from './libs/js/storage';
 // import axios from 'axios';
@@ -122,10 +121,16 @@ class App extends Component {
                         <Route exact path="/organizations/:id/clusters/:cid/:subview">
 							<ClusterDashboard {...basic_props} />
 						</Route>
+						
+						
+						<Route exact path="/admin/:subview" 
+							render={ ({ match }) => <Admin {...basic_props} match={match} /> } />
+						<Route path="/admin/organization/:oid/:subview" 
+							render={ ({ match }) => <AdminOrg {...basic_props} match={match} /> } />
 
-                        <Route exact path="/dnd">
+                        {/* <Route exact path="/dnd">
 							<DnD />
-						</Route>
+						</Route> */}
 					</main>
 
                     <Confirm active={this.state.confirm} />

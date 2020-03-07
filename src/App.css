@@ -78,6 +78,10 @@
   padding: 20px;
 }
 
+.width75 {
+  width: 75%;
+}
+
 
 .basic-fx {
   -webkit-animation-duration: .3s;
@@ -181,4 +185,12 @@
 
 .type-1 .bg-color-1 {
   background-color: #ff9392 !important;
+}
+
+
+
+@media (max-width: 1000px) {
+  .width75 {
+    width: 100%;
+  }
 }
