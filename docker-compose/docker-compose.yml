@@ -14,6 +14,9 @@ services:
         DB_PASSWORD: foobar
         DB_NAME: afthem-dashboard
         DB_PORT: 3306
+        ADMIN_USERNAME: test@example.com
+        ADMIN_FIRST_NAME: Info
+        ADMIN_LAST_NAME: Guy
     volumes:
     - ./assets:/afthem-ui/assets
   mariadb:
