@@ -100,11 +100,3 @@ exports.remove = (req, res, opts) => {
         }
     })
 }
-
-exports.sync = () => {
-    return new Promise ((resolve, reject) => {
-        userDAO.sync ().then (() => {
-            resolve ({ tonno: true })
-        })
-    })
-}

@@ -69,23 +69,23 @@ Organization.hasMany (Membership);
 module.exports.handle = User;
 module.exports.membership = Membership;
 
-module.exports.sync = () => {
+module.exports.initDB = () => {
     return new Promise ((resolve, reject) => {
-        sequelize.sync ({ force: true }).then (() => {
+        sequelize.sync ({ alter: true }).then (() => {
             Organization.build ({
                 name: 'My Organization',
-                description: 'The best organization in the world.',
+                description: 'My first organization, an amazing one.',
                 timezone: 'GMT'
             }).save ().then ((org) => {
                 User.build ({
-                    username: 'gufoscuro',
+                    username: 'johndoe',
                     password: 'foobar',
-                    firstName: 'Lorenzo',
-                    lastName: 'Fontana',
+                    firstName: 'John',
+                    lastName: 'Doe',
                     level: 0,
                     enabled: true,
-                    gitUsername: 'toagne',
-                    gitPassword: 'scrove'
+                    gitUsername: 'johndoe',
+                    gitPassword: 'foobar'
                 }).save().then ((usr) => {
                     // console.log ('\n\n\n ===> User then () \n\n\n\n');
                     var m = Membership.build ({

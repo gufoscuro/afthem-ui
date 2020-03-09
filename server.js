@@ -2,6 +2,7 @@ const express       = require ('express');
 const bodyParser    = require ('body-parser');
 const path          = require ('path');
 const app           = express ();
+const initCtrl      = require ('./controller/init')
 
 
 app.use (bodyParser.urlencoded ({ extended: false }));
@@ -70,5 +71,9 @@ app.all ('/api/:_ctrl/:_act/:_rid', action_evaulator);
 
 
 
-app.listen (process.env.PORT || 3001);
-console.log ('Server listening on 3001');
+
+initCtrl.initDB().then (() => {
+    app.listen (process.env.PORT || 3001);
+    console.log ('Server listening on 3001');
+})
+
