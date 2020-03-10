@@ -24,6 +24,7 @@
     "marked": "^0.8.0",
     "node-pre-gyp": "^0.14.0",
     "node-sass": "^4.13.1",
+    "nodegit": "^0.26.5",
     "path": "^0.12.7",
     "react": "^16.12.0",
     "react-codemirror": "^1.0.0",

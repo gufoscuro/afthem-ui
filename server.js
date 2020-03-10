@@ -73,7 +73,10 @@ app.all ('/api/:_ctrl/:_act/:_rid', action_evaulator);
 
 
 initCtrl.initDB().then (() => {
-    app.listen (process.env.PORT || 3001);
-    console.log ('Server listening on 3001');
+    initCtrl.fetchDefaultClusterData().catch ((r) => { console.error (r.message, r.error) }).then ((r) => {
+        console.log (r.message);
+        app.listen (process.env.PORT || 3001);
+        console.log ('Server listening on 3001');
+    })
 })
 

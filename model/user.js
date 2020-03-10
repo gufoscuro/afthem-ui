@@ -1,7 +1,6 @@
 const { DataTypes } = require ('sequelize');
 const sequelize     = require ('./db').instance;
 const Organization  = require ('./organization').handle;
-
 const Cluster       = require ('./cluster').handle;
 
 
@@ -87,14 +86,14 @@ module.exports.initDB = () => {
                     gitUsername: 'johndoe',
                     gitPassword: 'foobar'
                 }).save().then ((usr) => {
-                    // console.log ('\n\n\n ===> User then () \n\n\n\n');
                     var m = Membership.build ({
                         UserId: usr.id,
                         OrganizationId: org.id
                     });
-                    m.save ().then (resolve)
+                    m.save ().then (resolve);
                 })
             })
         })
     })
 }
+

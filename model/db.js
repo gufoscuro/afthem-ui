@@ -12,7 +12,8 @@ const { Sequelize } = require ('sequelize');
 const sequelize = new Sequelize (dbname, dbuser, dbpassw, {
     host: dbhost,
     port: dbport,
-    dialect: 'mariadb'
+    dialect: 'mariadb',
+    logging: false
 });
 
 

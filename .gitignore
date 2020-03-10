@@ -10,6 +10,8 @@
 
 # production
 /build
+/default-cluster-data
+/cluster-data
 
 # misc
 .DS_Store
