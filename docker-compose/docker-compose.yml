@@ -8,8 +8,16 @@ services:
       - default
     ports:
     - 3001:3001/tcp
+    environment:
+        DB_HOST: mariadb
+        DB_USERNAME: afthem
+        DB_PASSWORD: foobar
+        DB_NAME: afthem-dashboard
+        DB_PORT: 3306
+        ADMIN_USERNAME: test@example.com
+        ADMIN_FIRST_NAME: Info
+        ADMIN_LAST_NAME: Guy
     volumes:
-    - ./db.js:/afthem-ui/model/db.js
     - ./assets:/afthem-ui/assets
   mariadb:
     image: mariadb

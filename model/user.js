@@ -72,19 +72,19 @@ module.exports.initDB = () => {
     return new Promise ((resolve, reject) => {
         sequelize.sync ({ alter: true }).then (() => {
             Organization.build ({
-                name: 'My Organization',
-                description: 'My first organization, an amazing one.',
+                name: process.env.ORG_NAME || 'My Organization',
+                description:  process.env.ORG_DESCRIPTION || 'My first organization, an amazing one.',
                 timezone: 'GMT'
             }).save ().then ((org) => {
                 User.build ({
-                    username: 'johndoe',
-                    password: 'foobar',
-                    firstName: 'John',
-                    lastName: 'Doe',
+                    username:  process.env.ADMIN_USERNAME || 'johndoe',
+                    password:  process.env.ADMIN_PASSWORD || 'foobar',
+                    firstName:  process.env.ADMIN_FIRST_NAME || 'John',
+                    lastName:  process.env.ADMIN_LAST_NAME || 'Doe',
                     level: 0,
                     enabled: true,
-                    gitUsername: 'johndoe',
-                    gitPassword: 'foobar'
+                    gitUsername: process.env.ADMIN_GIT_USERNAME || 'johndoe',
+                    gitPassword: process.env.ADMIN_GIT_PASSWORD || 'foobar'
                 }).save().then ((usr) => {
                     var m = Membership.build ({
                         UserId: usr.id,
