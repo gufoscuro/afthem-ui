@@ -297,7 +297,7 @@ class ClusterDashboard extends Component {
                 this.props.appBackground (false);
                 this.props.appConfirm ();
                 this.fetchClusterData ();
-                this.setState ({ createFlow: false });
+                this.setState ({ commitChanges: false });
             }).catch (e => {
                 status.error (e);
                 this.props.appBackground (false);
