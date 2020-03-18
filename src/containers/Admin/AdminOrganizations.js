@@ -9,7 +9,7 @@ import axios from 'axios';
 
 
 function AdminOrganizations (props) {
-    const { appBackground, appConfirm } = props;
+    const { appBackground, appConfirm, axiosInstance } = props;
     const [ organizations, setOrganizations ] = useState ([]);
     const [ modalFlow, setModalFlow ] = useState (null);
 
@@ -29,7 +29,7 @@ function AdminOrganizations (props) {
 
     const fetchOrgs = useCallback (() => {
         return new Promise ((resolve, reject) => {
-            axios.post ('/api/organizations/list').then ((response) => {
+            axiosInstance.post ('/api/organizations/list').then ((response) => {
                 setOrganizations (response.data);
                 resolve (response.data)
             }).catch (reject)
@@ -60,7 +60,7 @@ function AdminOrganizations (props) {
 
     const removeOrg = useCallback ((id) => {
         appBackground (true);
-        axios.post ('/api/organizations/remove', {
+        axiosInstance.post ('/api/organizations/remove', {
             id: id
         }).then ((response) => {
             fetchOrgs().then (() => appBackground (false));
@@ -73,7 +73,7 @@ function AdminOrganizations (props) {
             setModalFlow (null);
         } else {
             appBackground (true);
-            axios.post ('/api/organizations/add', status.data).then ((response) => {
+            axiosInstance.post ('/api/organizations/add', status.data).then ((response) => {
                 fetchOrgs().then (() => appBackground (false));
                 setModalFlow (null);
                 appConfirm ();

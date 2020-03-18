@@ -30,9 +30,3 @@ Cluster.belongsTo (Organization);
 
 
 module.exports.handle = Organization;
-module.exports.list = (req, res, opts) => {
-    sequelize.sync ({ alter: true });
-    return new Promise ((resolve, reject) => {
-        resolve ([ ])
-    })
-}

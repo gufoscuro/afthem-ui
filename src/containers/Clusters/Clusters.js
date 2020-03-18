@@ -8,7 +8,6 @@ import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import AddCluster from './AddCluster';
 import ClusterBlock from './ClusterBlock';
 import Dialog from '../../components/ModalPanel/Dialog';
-import axios from 'axios';
 
 import '../Organizations/Dashboard.css'
 
@@ -18,39 +17,9 @@ class Clusters extends Component {
     state = {
         clusters: [],
         createCluster: false,
-        createClusterForm: {
-            name: "",
-            description: "",
-            gitUrl: "",
-            gitUsername: "",
-            gitPassword: ""
-        },
         dialog: null
     }
-
-    createClusterOnChange = (event) => {
-        let sector_form = { ...this.state.createClusterForm };
-
-        // console.log ('clientDetailsOnChange', event);
-        sector_form[event.target.name] = event.target.value;
-        this.setState ({
-            createClusterForm: sector_form
-        })
-    }
-
-    saveCluster = () => {
-        if (this.props.organization) {
-            const cluster_data = { ...this.state.createClusterForm };
-            this.props.appBackground (true);
-            axios.post ('/api/clusters/add/' + this.props.organization.id, cluster_data).then ((response) => {
-                this.fetchClusters ();
-                this.props.appBackground (false);
-                this.setState ({
-                    createCluster: false
-                })
-            })
-        }
-    }
+    
 
     askRemoveCluster = (status) => {
         let dialog = {
@@ -70,11 +39,14 @@ class Clusters extends Component {
     removeClusterHandler = (bool) => {
         if (bool === true) {
             let dialog_data = { ...this.state.dialog }
-            if (dialog_data && dialog_data.data) {
+            if (dialog_data && dialog_data.data && this.props.organization) {
                 this.props.appBackground (true);
-                axios.post ('/api/clusters/remove/' + dialog_data.data.id).then ((response) => {
+                this.props.axiosInstance.post ('/api/clusters/remove/' + dialog_data.data.id, {
+                    oid: this.props.organization.id
+                }).then ((response) => {
                     this.fetchClusters ();
                     this.props.appBackground (false);
+                    this.props.appConfirm ();
                     this.setState ({
                         dialog: null
                     })
@@ -117,13 +89,32 @@ class Clusters extends Component {
         const match = this.props.match
 
         this.props.appBackground (true);
-        axios.get ('/api/clusters/list/' + match.params.id).then ((response) => {
+        this.props.axiosInstance.get ('/api/clusters/list/' + match.params.id).then ((response) => {
             // console.log (response.data)
             this.setState ({
                 clusters: response.data
             });
             this.props.appBackground (false);
         })
+    }
+
+    createClusterOutcome = (status) => {
+        // console.log ('createClusterOutcome', status);
+        if (status.action === 'cancel-cluster-edits') {
+            this.setState ({ createCluster: false });
+        } else {
+            const cluster_data = { ...status.data };
+            this.props.appBackground (true);
+            this.props.axiosInstance.post ('/api/clusters/add/' + this.props.organization.id, cluster_data).then ((response) => {
+                // console.log ('create cluster then()...', response.data)
+                this.fetchClusters ();
+                this.props.appBackground (false);
+                this.props.appConfirm ();
+                this.setState ({
+                    createCluster: false
+                })
+            }).catch (status.error)
+        }
     }
     
     componentDidMount () {
@@ -184,12 +175,17 @@ class Clusters extends Component {
             };
 
         if (this.state.createCluster) {
+            let m_props = {
+                data: null,
+                outcome: this.createClusterOutcome
+            }
             modal_flow = (
                 <ModalPanel active={true} clickHandler={this.click_handler}>
-                    <AddCluster 
+                    <AddCluster { ...m_props } />
+                    {/* <AddCluster 
                         form={this.state.createClusterForm} 
                         clickHandler={this.click_handler} 
-                        changeHandler={this.createClusterOnChange} />
+                        changeHandler={this.createClusterOnChange} /> */}
                 </ModalPanel>
             );
         } else

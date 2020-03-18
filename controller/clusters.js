@@ -7,9 +7,15 @@ const clusterSqlz   = clusterDAO.handle;
 const orgDAO        = require ('../model/organization');
 const orgSqlz       = orgDAO.handle;
 
+const userDAO   = require ('../model/user');
+const userSqlz  = userDAO.handle;
+
 
 const actorsCtrl    = require ('./actors');
 const yamlUtils     = require ('../src/libs/js/yaml-json');
+const fservice      = require ('../services/fs-service');
+
+const c_base_path   = './clusters-data/';
 
 
 
@@ -47,13 +53,21 @@ module.exports.add = (req, res, opts) => {
 
         // console.log (JSON.stringify (config, null, '   '));
 
-        if (opts.rid && config.name && config.gitUrl && config.gitUsername && config.gitPassword) {
+        if (opts.rid && config.name && config.gitUrl) {
             orgSqlz.findByPk (opts.rid).then ((org) => {
                 var clstr = clusterSqlz.build (config);
                 clstr.setOrganization (org, { save: false });
                 clstr.save ().then ((clstr) => {
                     org.addCluster (clstr, { save: false });
-                    org.save ().then (resolve.bind (this, clstr)).catch (reject);
+                    Promise.all ([
+                        fservice.createClusterFolder (org.id, clstr.id, clstr.gitUrl),
+                        org.save ()
+                    ]).then (() => {
+                        resolve (clstr)
+                    }).catch ((errors) => {
+                        console.log (errors)
+                        reject (errors)
+                    })
                 })
             })
         } else {
@@ -66,14 +80,20 @@ module.exports.add = (req, res, opts) => {
     })
 }
 
+
 module.exports.remove = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        if (opts.rid) {
+        var oid = req.body.oid,
+            cid = opts.rid;
+
+        if (cid && oid) {
             clusterSqlz.destroy ({
                 where: {
-                    id: opts.rid
+                    id: cid
                 }
-            }).then (resolve).catch (reject);
+            }).then (() => {
+                fservice.removeClusterFolder (oid, cid).then (resolve);
+            }).catch (reject);
         } else {
             reject ({
                 code: 400,
@@ -86,7 +106,23 @@ module.exports.remove = (req, res, opts) => {
 
 module.exports.fileIndex = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        read_dir_routine('./assets/base').then (resolve).catch (reject);
+        var oid = req.body.oid ? req.body.oid : req.query.oid,
+            cid = req.body.cid ? req.body.cid : req.query.cid,
+            dir = c_base_path + oid + '/' + cid;
+
+        Promise.all ([
+            read_dir_routine (dir),
+            fservice.gitStatus (dir)
+        ]).then ((results) => {
+            var index       = results[0],
+                repo_status = results[1],
+                binding     = interpolateFilesWithRepoStatus (dir, index, repo_status);
+
+            resolve ({ files: binding });
+        }).catch ((e) => {
+            console.log ('error', e)
+            reject (e)
+        });
     })
 }
 
@@ -135,10 +171,11 @@ module.exports.saveFile = (req, res, opts) => {
 
 module.exports.getImplementers = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        var clusterId = req.body.cid,
-            organizationId = req.body.id;
-            
-        read_file_routine('./assets/base/implementers.yml').then ((result) => {
+        var cid         = req.body.cid,
+            oid         = req.body.id,
+            filepath    = c_base_path + oid + '/' + cid + '/implementers.yml';
+        
+        read_file_routine (filepath).then ((result) => {
             var json    = yamlUtils.toJSON (result.data),
                 result  = {
                     implementers: [],
@@ -162,28 +199,14 @@ module.exports.getImplementers = (req, res, opts) => {
     })
 }
 
-module.exports.getFlowIds = (req, res, opts) => {
-    return new Promise ((resolve, reject) => {
-        var clusterId = opts.rid;
-        read_dir_routine('./assets/base/flows').then ((result) => {
-            var list = [];
-            result.files.forEach ((it) => {
-                if (it.isDir === false)
-                    list.push (it.name.replace (/\.yml/g, ''));
-            })
-            resolve (list)
-        }).catch (reject);
-    })
-}
-
 module.exports.removeFlow = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        var clusterId       = req.body.cid,
-            organizationId  = req.body.id,
-            filename        = req.body.filename;
+        var cid         = req.body.cid,
+            oid         = req.body.id,
+            filename    = req.body.filename,
+            file_path   = c_base_path + oid + '/' + cid + '/flows/' + filename + '.yml';
 
-        // console.log ('===>', filename)
-        fs.unlink ('./assets/base/flows/' + filename + '.yml', (err) => {
+        fs.unlink (file_path, (err) => {
             if (err) {
                 resolve ({ success: false });
             } else
@@ -195,12 +218,42 @@ module.exports.removeFlow = (req, res, opts) => {
 
 module.exports.createFlow = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        var clusterId       = req.body.cid,
-            organizationId  = req.body.id,
-            filename        = req.body.filename;
+        var cid         = req.body.cid,
+            oid         = req.body.id,
+            filename    = req.body.filename,
+            file_path   = c_base_path + oid + '/' + cid + '/flows/' + filename.replace (/\.yml/, '') + '.yml';
 
-        read_file_routine('./assets/defaultFiles/flow.yml').then ((result) => {
-            write_file_routine ('./assets/base/flows/' + filename + '.yml', result.data).then (resolve).catch (reject);
+        fs.exists (file_path, (exists) => {
+            if (exists)
+                reject ({
+                    code: 409,
+                    error: true,
+                    message: "This flow already exists."
+                })
+            else {
+                read_file_routine ('./assets/defaultFiles/flow.yml').then ((result) => {
+                    write_file_routine (file_path, result.data).then (resolve).catch (reject);
+                })
+            }
+        })
+    })
+}
+
+module.exports.commit = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        var cid = req.body.cid,
+            oid = req.body.id,
+            mex = req.body.message,
+            dir = c_base_path + oid + '/' + cid;
+
+        userDAO.load (opts.user.id).then ((usr) => {
+            fservice.commitAndPush ({
+                repoPath: dir,
+                authorName: usr.firstName + ' ' + usr.lastName,
+                authorUsername: usr.gitUsername,
+                authorPassword: usr.gitPassword,
+                message: mex !== '' ? mex : 'commit changes @ ' + new Date().toLocaleString()
+            }).then (resolve).catch (reject)
         })
     })
 }
@@ -233,7 +286,7 @@ const read_dir_routine = (path) => {
 
         fs.readdir (path, { withFileTypes: true }, function (error, files) {
             if (error)
-                reject (error);
+                reject ({ message: error.toString (), code: 500 });
             else {
                 files.forEach (function (it) {
                     if (it.isDirectory () || it.isFile ()) {
@@ -242,11 +295,12 @@ const read_dir_routine = (path) => {
                             name_ne = it.name.replace (/\.yml/g, '').replace (/\.xml/g, ''),
                             entry   = { };
 
-                        if (it.name !== '.DS_Store') {
+                        if (it.name !== '.DS_Store' && it.name.indexOf ('.') !== 0) {
                             entry.name = it.name;
                             entry.normalizedName = name_ne;
                             entry.isDir = it.isDirectory ();
                             entry.extension = ext;
+                            entry.path = path + '/' + it.name;
 
                             if (!it.isDirectory ())
                                 entry.id = encrypt (path + '/' + it.name);
@@ -270,7 +324,7 @@ const read_dir_routine = (path) => {
                 });
 
                 resolve (dir_data);
-            })
+            }).catch (reject)
         })
     });
 }
@@ -297,3 +351,18 @@ function write_file_routine (path, data) {
     })
 }
 
+const interpolateFilesWithRepoStatus = (dir, index, repo_map) => {
+    return index.files.map ((it, index) => {
+        var path    = it.path.replace (dir + '/', ''),
+            match   = repo_map[path];
+
+        it.path = path;
+        if (it.isDir) {
+            it.files = interpolateFilesWithRepoStatus (dir, it, repo_map);
+        } else if (match !== undefined) {
+            it.repo = match;
+        }
+
+        return it;
+    })
+}

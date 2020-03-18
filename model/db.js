@@ -13,14 +13,17 @@ const sequelize = new Sequelize (dbname, dbuser, dbpassw, {
     host: dbhost,
     port: dbport,
     dialect: 'mariadb',
-    logging: false
+    logging: false,
+    dialectOptions: {
+        timezone: "Etc/GMT+1"
+    }
 });
 
 
 sequelize.authenticate().then (() => {
-    console.log ('DB authenticated')
+    console.log ('DB authentication: success')
 }).catch ((error) => {
-    console.error ('DB authentication error', error);
+    console.error ('DB authentication: failed', error);
 });
 
 

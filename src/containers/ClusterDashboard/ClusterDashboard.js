@@ -7,8 +7,9 @@ import Aux from '../../hoc/Aux';
 import ClusterSidebar from './ClusterSidebar';
 import CodeEditor from '../CodeEditor/CodeEditor';
 import ModalPanel from '../../components/ModalPanel/ModalPanel';
+import AddFlow from './AddFlow';
+import AddCommit from './AddCommit';
 import Dialog from '../../components/ModalPanel/Dialog';
-import axios from 'axios';
 
 import '../Organizations/Dashboard.css';
 import './ClusterDashboard.css';
@@ -26,7 +27,9 @@ class ClusterDashboard extends Component {
         editorActive: false,
 
         dialog: null,
-        actorsSchema: null
+        actorsSchema: null,
+        createFlow: false,
+        commitChanges: false
     }
     initd       = false
     nextfilenm  = null
@@ -112,8 +115,8 @@ class ClusterDashboard extends Component {
         const match = this.props.match
 
         this.props.appBackground (true);
-        axios.post ('/api/clusters/fileIndex/', {
-            id: match.params.id,
+        this.props.axiosInstance.post ('/api/clusters/fileIndex/', {
+            oid: match.params.id,
             cid: match.params.cid
         }).then ((response) => {
             if (response.data.files !== undefined) {
@@ -139,7 +142,7 @@ class ClusterDashboard extends Component {
         const match = this.props.match;
         return new Promise ((resolve, reject) => {
             if (this.state.actorsSchema === null) {
-                axios.post ('/api/clusters/getImplementers/', {
+                this.props.axiosInstance.post ('/api/clusters/getImplementers/', {
                     id: match.params.id,
                     cid: match.params.cid
                 }).then ((response) => {
@@ -162,7 +165,7 @@ class ClusterDashboard extends Component {
 
     fetchFileData = (id) => {
         this.props.appBackground (true);
-        axios.post ('/api/clusters/fileData/' + id).then ((response) => {
+        this.props.axiosInstance.post ('/api/clusters/fileData/' + id).then ((response) => {
             // console.log (response.data);
             this.props.appBackground (false);
             this.fetchActorsSchema().then ((schema) => {
@@ -184,12 +187,13 @@ class ClusterDashboard extends Component {
     saveFileData = (data) => {
         // console.log ('saveFileData', data)
         this.props.appBackground (true);
-        axios.post ('/api/clusters/saveFile/' + this.state.editingId, {
+        this.props.axiosInstance.post ('/api/clusters/saveFile/' + this.state.editingId, {
             data: data
         }).then ((response) => {
             // console.log (response.data);
             this.props.appBackground (false);
             this.props.appConfirm ();
+            this.fetchClusterData ();
             
             if (this.editorRef.current) {
                 let editing_file = {
@@ -218,7 +222,7 @@ class ClusterDashboard extends Component {
         if (confirm) {
             const match = this.props.match;
             this.props.appBackground (true);
-            axios.post ('/api/clusters/removeFlow/', {
+            this.props.axiosInstance.post ('/api/clusters/removeFlow/', {
                 id: match.params.id,
                 cid: match.params.cid,
                 filename: this.nextfilenm
@@ -240,43 +244,65 @@ class ClusterDashboard extends Component {
         });
     }
 
-    askCreateFlow = (status) => {
-        let dialog = {
-            heading: 'Create Flow',
-            text: 'Are you sure you want to remove this flow?',
-            clickHandler: this.createFlowHandler
-        }
-
-        this.setState ({
-            dialog: dialog
-        })
-    }
-
-    createFlowHandler = (confirm) => {
-        if (confirm) {
+    createFlowHandler = (status) => {
+        // console.log ('createFlowHandler', status)
+        if (status.action === 'confirm') {
             const match = this.props.match;
             this.props.appBackground (true);
-            // console.log ('filename', this.nextfilenm);
-            axios.post ('/api/clusters/createFlow/', {
+            this.props.axiosInstance.post ('/api/clusters/createFlow/', {
                 id: match.params.id,
                 cid: match.params.cid,
-                filename: this.nextfilenm
+                filename: status.data.name
             }).then ((response) => {
-                this.props.history.push (this.nextUrl)
+                this.props.history.push (this.nextUrl + status.data.name)
                 this.props.appBackground (false);
                 this.props.appConfirm ();
                 this.nextUrl = null;
                 this.nextfilenm = null;
                 this.fetchClusterData ();
-            })
-            
+                this.setState ({ createFlow: false });
+            }).catch (e => {
+                status.error (e);
+                this.props.appBackground (false);
+            });
         } else {
+            this.setState ({ createFlow: false });
             this.nextUrl = null;
             this.nextfilenm = null;
         }
-        this.setState ({
-            dialog: null
-        });
+    }
+
+    // askCommitChanges = (status) => {
+    //     let dialog = {
+    //         heading: 'Commit Changes',
+    //         text: 'Are you sure you want to commit and push all your changes?',
+    //         clickHandler: this.commitChangesHandler
+    //     }
+
+    //     this.setState ({
+    //         dialog: dialog
+    //     })
+    // }
+
+    commitChangesHandler = (status) => {
+        // console.log ('commitChangesHandler', status)
+        if (status.action === 'confirm') {
+            const match = this.props.match;
+            this.props.appBackground (true);
+            this.props.axiosInstance.post ('/api/clusters/commit/', {
+                id: match.params.id,
+                cid: match.params.cid,
+                message: status.data.message
+            }).then ((response) => {
+                this.props.appBackground (false);
+                this.props.appConfirm ();
+                this.fetchClusterData ();
+                this.setState ({ createFlow: false });
+            }).catch (e => {
+                status.error (e);
+                this.props.appBackground (false);
+            })
+        }
     }
 
     click_handler = (status) => {
@@ -297,9 +323,13 @@ class ClusterDashboard extends Component {
 
             else if (data.action === 'create-flow') {
                 event.preventDefault ();
-                this.nextfilenm = 'salamigianona';
-                this.nextUrl = data.nextUrl + this.nextfilenm;
-                this.askCreateFlow ();
+                this.setState ({ createFlow: true });
+                this.nextUrl = data.nextUrl
+            }
+
+            else if (data.action === 'commit') {
+                this.setState ({ commitChanges: true });
+                // this.askCommitChanges ();
             }
         }
         
@@ -324,7 +354,8 @@ class ClusterDashboard extends Component {
             modal_flow,
             basic_props = {
                 oid: this.props.match.params.id,
-                cid: this.props.match.params.cid
+                cid: this.props.match.params.cid,
+                axiosInstance: this.props.axiosInstance
             },
             editor_props = {
                 save: this.saveFileData,
@@ -346,6 +377,22 @@ class ClusterDashboard extends Component {
             modal_flow = (
                 <ModalPanel active={true} clickHandler={this.click_handler}>
                     <Dialog {...this.state.dialog} />
+                </ModalPanel>
+            );
+        }
+
+        else if (this.state.createFlow) {
+            modal_flow = (
+                <ModalPanel active={true} clickHandler={this.click_handler}>
+                    <AddFlow outcome={this.createFlowHandler} />
+                </ModalPanel>
+            );
+        }
+
+        else if (this.state.commitChanges) {
+            modal_flow = (
+                <ModalPanel active={true} clickHandler={this.click_handler}>
+                    <AddCommit outcome={this.commitChangesHandler} />
                 </ModalPanel>
             );
         }

@@ -6,11 +6,12 @@ import './ActorsCatalog.css'
 
 
 function ActorsCatalog (props) {
+    const { axiosInstance } = props;
     const [ catalog, setCatalog ] = useState (null);
 
 
     useEffect (() => {
-        axios.get ('/api/actors/list').then ((result) => {
+        axiosInstance.get ('/api/actors/list').then ((result) => {
             setCatalog (result.data);
         })
     }, []);

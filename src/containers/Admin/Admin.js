@@ -7,10 +7,10 @@ import AdminOrganizations from './AdminOrganizations';
 import './Admin.css';
 
 function Admin (props) {
+    console.log (props)
     const { match, appBackground, appConfirm } = props;
     const subview = match.params.subview;
     
-    // console.log ('match', match)
 
     const renderer = useMemo (() => {
         let subview_renderer,

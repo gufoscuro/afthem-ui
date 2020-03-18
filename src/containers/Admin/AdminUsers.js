@@ -4,11 +4,10 @@ import FadeinFX from '../../hoc/FadeinFX';
 import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import AddUser from './AddUser';
 import Dialog from '../../components/ModalPanel/Dialog';
-import axios from 'axios';
 
 
 function AdminUsers (props) {
-    const { appBackground, appConfirm } = props;
+    const { appBackground, appConfirm, axiosInstance } = props;
     const [ users, setUsers ] = useState ([]);
     const [ modalFlow, setModalFlow ] = useState (null);
 
@@ -27,7 +26,7 @@ function AdminUsers (props) {
 
     const fetchUsers = useCallback (() => {
         return new Promise ((resolve, reject) => {
-            axios.post ('/api/users/list').then ((response) => {
+            axiosInstance.post ('/api/users/list').then ((response) => {
                 setUsers (response.data);
                 resolve (response.data)
             }).catch (reject)
@@ -56,7 +55,7 @@ function AdminUsers (props) {
 
     const removeUser = useCallback ((id) => {
         appBackground (true);
-        axios.post ('/api/users/remove', {
+        axiosInstance.post ('/api/users/remove', {
             id: id
         }).then ((response) => {
             fetchUsers().then (() => appBackground (false));
@@ -69,7 +68,7 @@ function AdminUsers (props) {
             setModalFlow (null);
         } else {
             appBackground (true);
-            axios.post ('/api/users/add', status.data).then ((response) => {
+            axiosInstance.post ('/api/users/add', status.data).then ((response) => {
                 fetchUsers().then (() => appBackground (false));
                 setModalFlow (null);
                 appConfirm ();

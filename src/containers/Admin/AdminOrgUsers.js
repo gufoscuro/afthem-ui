@@ -4,12 +4,11 @@ import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import Dialog from '../../components/ModalPanel/Dialog';
 import AddMembership from './AddMembership';
 import FadeinFX from '../../hoc/FadeinFX';
-import axios from 'axios';
 
 import './AdminOrgUsers.css'
 
 function OrgUsersEditor (props) {
-    const { org, appBackground, appConfirm } = props;
+    const { org, appBackground, appConfirm, axiosInstance } = props;
     const [ users, setUsers ] = useState ([]);
     const [ modalFlow, setModalFlow ] = useState (null);
 
@@ -22,7 +21,7 @@ function OrgUsersEditor (props) {
 
     const fetchUsers = useCallback (() => {
         return new Promise ((resolve, reject) => {
-            axios.post ('/api/organizations/associatedUsers/' + org.id).then ((response) => {
+            axiosInstance.post ('/api/organizations/associatedUsers/' + org.id).then ((response) => {
                 setUsers (response.data);
                 resolve (response.data)
             })
@@ -31,7 +30,7 @@ function OrgUsersEditor (props) {
 
     const removeMembership = useCallback ((id) => {
         appBackground (true)
-        axios.post ('/api/organizations/removeMembership/', {
+        axiosInstance.post ('/api/organizations/removeMembership/', {
             uid: id,
             oid: org.id
         }).then ((response) => {
@@ -55,7 +54,7 @@ function OrgUsersEditor (props) {
 
     const saveMembership = useCallback ((id) => {
         appBackground (true)
-        axios.post ('/api/organizations/addMembership/', {
+        axiosInstance.post ('/api/organizations/addMembership/', {
             uid: id,
             oid: org.id
         }).then ((response) => {
@@ -85,7 +84,8 @@ function OrgUsersEditor (props) {
             if (modalFlow.type === 'add-member') {
                 m_props = {
                     data: org,
-                    outcome: addMembershipOutcome
+                    outcome: addMembershipOutcome,
+                    axiosInstance: axiosInstance
                 }
                 modal = (
                     <ModalPanel active={true} >

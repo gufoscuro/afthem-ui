@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { NavLink } from 'react-router-dom';
+import ClusterControl from './ClusterControl';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Aux from '../../hoc/Aux';
 
@@ -17,11 +18,7 @@ const ClusterSidebar = (props) => {
     const links = useMemo (() => {
         return (
             <Aux>
-                <NavLink 
-                    exact 
-                    className="view-selector" 
-                    onClick={clickHandler} 
-                    to={base_url}>Clusters List</NavLink>
+                
 
                 {organization && cluster && files.map ((file, index) => {
                     let ii;
@@ -34,7 +31,7 @@ const ClusterSidebar = (props) => {
                                         return (
                                             <NavLink 
                                                 key={"sub_" + idx}
-                                                className="view-selector" 
+                                                className={"view-selector " + (sub_file.repo ? sub_file.repo.status : '')} 
                                                 activeClassName="active" 
                                                 onClick={props.clickHandler} 
                                                 to={base_url + "/" + cluster.id + "/"+ file.normalizedName +"@" + sub_file.normalizedName}>
@@ -65,7 +62,7 @@ const ClusterSidebar = (props) => {
                         ii = (
                             <NavLink 
                                 key={index}
-                                className="view-selector" 
+                                className={"view-selector " + (file.repo ? file.repo.status : '')}
                                 activeClassName="active" 
                                 onClick={props.clickHandler} 
                                 to={base_url + "/" + cluster.id + "/" + file.normalizedName}>{file.normalizedName}</NavLink>
@@ -94,7 +91,11 @@ const ClusterSidebar = (props) => {
                     <div className="name">{cluster.name}</div>
                     <div className="description">{cluster.description}</div>
                 </div>
-                <div className="scroll-area" style={{ height: window.innerHeight - 161 + 'px' }}>
+                <div className="general-ctrls">
+                    <ClusterControl click={clickHandler} url={base_url} icon="arrow-left" label="Back" />
+                    <ClusterControl click={clickHandler} icon="code-commit" label="Commit" action="commit" />
+                </div>
+                <div className="scroll-area" style={{ height: window.innerHeight - 191 + 'px' }}>
                     <PerfectScrollbar options={cm_options}>
                         <div className="ctrls">
                             {links}

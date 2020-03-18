@@ -9,18 +9,40 @@ import ClusterDashboard from './containers/ClusterDashboard/ClusterDashboard';
 import Admin from './containers/Admin/Admin';
 import AdminOrg from './containers/Admin/AdminOrg';
 import Confirm from './components/ModalPanel/Confirm';
+import Login from './containers/Login/Login';
+import ProtectedRoute from './components/ProtectedRoute/protected.route';
+
+// import ErrorOverlay from './components/ErrorOverlay/ErrorOverlay';
+// import MaintenanceMode from './components/ErrorOverlay/MaintenanceMode';
 
 import storage from './libs/js/storage';
-// import axios from 'axios';
+import axios from 'axios';
 
 class App extends Component {
 	state = {
         background: false,
         confirm: false,
         organization: null,
-        cluster: null
+		cluster: null,
+		sidebar_busy: false
     }
-    confirm_timer = null
+	confirm_timer = null
+	axiosInstance = axios.create ({
+		// baseURL: '/api',
+		headers: { 'X-Custom-Header': 'foobar' }
+	})
+
+
+	constructor (props) {
+		super (props);
+		this.axiosInstance.interceptors.response.use ((response) => response, (error, n) => {
+			const { status, data, config } = error.response;
+			if (status === 401) {
+				window.location.href = '/login'
+			} 
+			return Promise.reject (error);
+		});
+	}
 
 
 	componentDidMount () {
@@ -32,13 +54,11 @@ class App extends Component {
             
         if (cluster)
             this.setState ({ cluster: cluster });
-
-        // window.addEventListener ('resize', this.updateDimensions);
     }
 
     componentWillUnmount () {
         // window.removeEventListener ('resize', this.updateDimensions);
-    }
+	}
 
 	app_background = (bool) => {
         // console.log ('app_background', bool)
@@ -91,6 +111,7 @@ class App extends Component {
 	render () {
 		let app_clsses 	= "App",
 			basic_props = {
+				axiosInstance: this.axiosInstance,
                 appBackground: this.app_background,
                 appConfirm: this.app_confirm,
                 orgHandler: this.organization_handler,
@@ -101,7 +122,8 @@ class App extends Component {
 			side_props = {
                 organization: this.state.organization,
 				clickHandler: this.sidebar_clickhandler,
-				background: this.state.background
+				background: this.state.background,
+				busy: this.state.sidebar_busy
 			};
 
 		if (this.state.sector)
@@ -112,21 +134,31 @@ class App extends Component {
 				<div className={app_clsses}>
 					<Sidebar {...side_props} />
 					<main>
-						<Route exact path="/">
-							<Organizations {...basic_props} />
-						</Route>
-                        <Route exact path="/organizations/:id/clusters">
-							<Clusters {...basic_props} />
-						</Route>
-                        <Route exact path="/organizations/:id/clusters/:cid/:subview">
-							<ClusterDashboard {...basic_props} />
-						</Route>
+						<Route exact path="/login" render={(props) => <Login {...props} {...basic_props} /> } />
+						
+						<ProtectedRoute exact path="/" render={props =>
+							<Organizations {...props} {...basic_props} />
+						}/>
+						<ProtectedRoute exact path="/organizations/:id/clusters" render={props =>
+							<Clusters {...props} {...basic_props} />
+						}/>
+                        <ProtectedRoute exact path="/organizations/:id/clusters/:cid/:subview" render={props =>
+							<ClusterDashboard {...props} {...basic_props} />
+						}/>
+
+
+						<ProtectedRoute exact path="/admin/:subview" render={props => 
+							<Admin {...props} {...basic_props} />
+						}/>
+						<ProtectedRoute path="/admin/organization/:oid/:subview" render={props => 
+							<AdminOrg {...props} {...basic_props} /> 
+						}/>
 						
 						
-						<Route exact path="/admin/:subview" 
+						{/* <ProtectedRoute exact path="/admin/:subview" 
 							render={ ({ match }) => <Admin {...basic_props} match={match} /> } />
-						<Route path="/admin/organization/:oid/:subview" 
-							render={ ({ match }) => <AdminOrg {...basic_props} match={match} /> } />
+						<ProtectedRoute path="/admin/organization/:oid/:subview" 
+							render={ ({ match }) => <AdminOrg {...basic_props} match={match} /> } /> */}
 
                         {/* <Route exact path="/dnd">
 							<DnD />

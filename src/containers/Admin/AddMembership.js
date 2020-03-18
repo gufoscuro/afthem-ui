@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 function AddMembership (props) {
-    let { data, outcome } = props;
+    let { data, outcome, axiosInstance } = props;
     const [ users, setUsers ] = useState ([]);
     const [ search, setSearch ] = useState ('');
     const [ selected, setSelected ] = useState (null);
@@ -25,7 +25,7 @@ function AddMembership (props) {
             clearTimeout (timer);
 
         timer = setTimeout (() => {
-            axios.post ('/api/users/list/', {
+            axiosInstance.post ('/api/users/list/', {
                 search: text
             }).then ((response) => {
                 // console.log ('searchUser', response.data)

@@ -242,7 +242,8 @@ class CodeEditor extends Component {
         },
         basic_props = {
             oid: this.props.oid,
-            cid: this.props.cid
+            cid: this.props.cid,
+            axiosInstance: this.props.axiosInstance
         },
         editor_props = {
             data: this.state.visualCode,
@@ -280,7 +281,7 @@ class CodeEditor extends Component {
                         </div>
                         <div className="btn-holder instruments">
                             <InstrumentsButton label="Save" icon="save" action="save" disabled={this.state.saveDisabled} {...instruments_props} />
-                            <InstrumentsButton label="Push" icon="code-commit" action="push" disabled={this.state.pushDisabled} {...instruments_props} />
+                            {/* <InstrumentsButton label="Push" icon="code-commit" action="push" disabled={this.state.pushDisabled} {...instruments_props} /> */}
                         </div>
                     </div>
                 </div>

@@ -8,11 +8,12 @@ import './VisualEditor.css';
 
 
 function ImplementersEditor (props) {
+    const { axiosInstance } = props;
     const [ implementers, setImplementers] = useState (props.data ? props.data.implementers : null);
     const [ thread_pools, setThreadPools ] = useState (props.data ? props.data.thread_pools : null);
     const [ addFlow, setAddFlow ] = useState (false);
 
-    // console.log ('editor', implementers)
+    // console.log ('ImplementersEditor', axiosInstance)
 
     useEffect (() => {
         props.update ({
@@ -118,8 +119,8 @@ function ImplementersEditor (props) {
     }, [ thread_pools, click_element, edit_element ]);
 
     const addflow_render = useMemo (() => {
-        return addFlow ? (<ActorsCatalog add={addImplementer} hide={hideCatalog} />) : null;
-    }, [ addFlow, addImplementer, hideCatalog ])
+        return addFlow ? (<ActorsCatalog axiosInstance={axiosInstance} add={addImplementer} hide={hideCatalog} />) : null;
+    }, [ addFlow, addImplementer, hideCatalog, axiosInstance ])
 
 
     return (

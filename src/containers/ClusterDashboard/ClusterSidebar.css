@@ -36,6 +36,10 @@
     padding: 0 20px;
 }
 
+.ClusterSidebar .general-ctrls {
+    padding: 0 20px 10px 20px;
+}
+
 .ClusterSidebar .ctrls .view-selector {
     display: block;
     position: relative;
@@ -57,6 +61,15 @@
     background-color: #ecf2f6;   
 }
 
+.ClusterSidebar .ctrls .view-selector.new {
+    color: #2fb367
+}
+.ClusterSidebar .ctrls .view-selector.modified, 
+.ClusterSidebar .ctrls .view-selector.renamed {
+    color: #da8f3f
+}
+
+
 .ClusterSidebar .ctrls .view-selector .remove-btn {
     display: inline-block;
     position: absolute;
@@ -66,6 +79,7 @@
     top: 0;
     right: 0;
     text-align: center;
+    color: #526e77;
 }
 .ClusterSidebar .ctrls .view-selector .remove-btn:hover {
     background-color: #ff7675;

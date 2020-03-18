@@ -7,7 +7,7 @@ import FadeinFX from '../../hoc/FadeinFX';
 import ModalPanel from '../../components/ModalPanel/ModalPanel';
 // import AddSector from '../../components/Sectors/AddSector';
 import OrgBlock from './OrgBlock/OrgBlock';
-import axios from 'axios';
+// import axios from 'axios';
 
 import './Dashboard.css'
 
@@ -36,7 +36,7 @@ class Organizations extends Component {
     componentDidMount () {
         this.props.appBackground (true);
         this.props.orgHandler (null);
-        axios.get ('/api/organizations/list/').then ((response) => {
+        this.props.axiosInstance.get ('/api/organizations/list/').then ((response) => {
             this.setState ({
                 organizations: response.data
             });

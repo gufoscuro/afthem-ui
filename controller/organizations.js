@@ -5,6 +5,7 @@ const usrDAO    = require ('../model/user');
 const usrSqlz   = usrDAO.handle;
 const memSqlz   = usrDAO.membership;
 
+const fservice  = require ('../services/fs-service');
 
 
 var exports = module.exports = { };
@@ -12,7 +13,12 @@ var exports = module.exports = { };
 
 exports.list = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        orgSqlz.findAll().then (resolve).catch (reject);
+        memSqlz.findAll ({
+            where: {
+                UserId: opts.user.id
+            },
+            include: orgSqlz
+        }).then (results => resolve (results.map (it => it.Organization))).catch (reject);
     })
 }
 
@@ -39,7 +45,11 @@ exports.add = (req, res, opts) => {
                 orgSqlz.update (u_data, { where: { id: body.id } }).then ((usr) => resolve (usr)).catch (err => reject (err))
             } else {
                 org = orgSqlz.build (u_data);
-                org.save ().then ((usr) => resolve (usr)).catch (err => reject (err))
+                org.save ().then ((org) => {
+                    fservice.createOrganizationFolder (org.id)
+                        .then (() => resolve (org))
+                        .catch (err => reject (err));
+                }).catch (err => reject (err))
             }
         } else 
             reject ({
@@ -50,12 +60,15 @@ exports.add = (req, res, opts) => {
 
 exports.remove = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        if (req.body.id) {
+        var oid = req.body.id;
+        if (oid) {
             orgSqlz.destroy ({
                 where: {
-                    id: req.body.id
+                    id: oid
                 }
-            }).then (resolve).catch (reject);
+            }).then (() => {
+                fservice.removeOrganizationFolder (oid).then (resolve).catch (reject);
+            }).catch (reject);
         } else {
             reject ({
                 code: 400,

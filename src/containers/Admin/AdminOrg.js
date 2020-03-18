@@ -2,14 +2,11 @@ import React, { useMemo, useState, useEffect } from 'react';
 
 import AdminSidebar from './AdminSidebar';
 import AdminOrgUsers from './AdminOrgUsers';
-import axios from 'axios';
-// import AdminUsers from './AdminUsers';
-// import AdminOrganizations from './AdminOrganizations';
 
 import './Admin.css';
 
 function AdminOrg (props) {
-    const { match, appBackground } = props;
+    const { match, appBackground, axiosInstance } = props;
     const [ organization, setOrganization ] = useState (null);
 
     const subview = match.params.subview;
@@ -19,7 +16,7 @@ function AdminOrg (props) {
     // console.log ('AdminOrg', subview, oid);
     useEffect (() => {
         appBackground (true);
-        axios.post ('/api/organizations/get/' + oid).then ((response) => {
+        axiosInstance.post ('/api/organizations/get/' + oid).then ((response) => {
             setOrganization (response.data);
             appBackground (false)
         })
