@@ -30,7 +30,7 @@
     flex: 0 0 50%;
     max-width: 50%;
     position: relative;
-    
+    /* min-height: 161px; */
 }
 .Login .right {
     flex: 0 0 50%;
@@ -41,13 +41,16 @@
 .Login .right .logo {
     width: 140px;
     position: absolute;
-    top: 50%;
+    top: 49%;
     transform: translateY(-50%);
 }
 .Login .right .logo-image {
     width: 140px;
 }
 
+.Login .error-box {
+    min-height: 21px;
+}
 .Login .error-message {
     color: #ea7675;
     /* color: #fff; */

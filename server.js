@@ -33,7 +33,6 @@ const is_authorized = (action_name, unauth_map, token) => {
     let is_unauth = unauth_map !== undefined && unauth_map[action_name] === true;
 
     return new Promise ((resolve, reject) => {
-        console.log ('is_unauth', is_unauth);
         if (is_unauth)
             resolve ({ success: true });
         else if (token && token !== undefined)

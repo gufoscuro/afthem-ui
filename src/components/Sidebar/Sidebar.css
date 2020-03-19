@@ -11,16 +11,17 @@
 
 .Sidebar .labels-layer {
     position: absolute;
-    width: 140px;
+    width: 180px;
     height: 100%;
     top: 0;
     left: 50px;
-    background-color: #454F5E;
+    /* background-color: #454F5E; */
+    background-color: #5c6879;
     z-index: -1;
     display: none;
     -webkit-animation-duration: .2s;
     animation-duration: .2s;
-
+    overflow: hidden;
     /* background-color: #6a7e9a; */
 }
 .Sidebar .labels-layer .logo-label {
@@ -37,20 +38,25 @@
     cursor: default;
     position: relative;
 }
-.Sidebar .logo-label .lbl, 
-.Sidebar .link-label .lbl {
-    display: inline-block;
-    line-height: normal;
+.Sidebar .logo-label.lbl, 
+.Sidebar .link-label.lbl {
+    display: block;
+    /* line-height: normal; */
     /* background-color: #fff; */
-    padding: 1px 8px;
+    padding: 0 8px;
     border-radius: 2px;
-    margin-left: 7px;
+    /* margin-left: 7px; */
     /* box-shadow: 0 0 3px #bcccd6; */
     -webkit-animation-duration: .2s;
     animation-duration: .2s;
 
     /* background-color: #6a7e9a; */
     color: #fff;
+}
+.Sidebar .labels-layer .lbl:hover, 
+.Sidebar .labels-layer .lbl.active {
+    text-decoration: none;
+    background-color: #525e6f;
 }
 /* .Sidebar .labels-layer .logo-name {
     line-height: 55px;

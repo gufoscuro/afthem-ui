@@ -27,9 +27,6 @@
     min-width: 650px;
     position: relative;
 }
-.editor-item {
-    /* width: 400px; */
-}
 .editor-component {
     position: relative;
     background-color: #fff;

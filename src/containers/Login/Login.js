@@ -65,7 +65,9 @@ function Login (props) {
                 <div className="login-box">
                     <div className="fx animated softFadeInUp d-1">
                         <div className="left">
-                            {error && (<div className="error-message animated fadeIn">{error}</div>)}
+                            <div className="error-box">
+                                {error && (<div className="error-message animated softFadeInUp">{error}</div>)}
+                            </div>
                             <div className="form">
                                 <SimpleFormField type="text" label="Username" name="username" value={model.username} {...field_props} />
                                 <SimpleFormField type="password" label="Password" name="password" value={model.password} {...field_props} />

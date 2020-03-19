@@ -24,12 +24,12 @@ class App extends Component {
         confirm: false,
         organization: null,
 		cluster: null,
-		sidebar_busy: false
+		sidebar_busy: false,
+		user_nfo: null
     }
 	confirm_timer = null
 	axiosInstance = axios.create ({
-		// baseURL: '/api',
-		headers: { 'X-Custom-Header': 'foobar' }
+		headers: { 'X-Custom-Header': 'afthem-ui' }
 	})
 
 
@@ -37,11 +37,14 @@ class App extends Component {
 		super (props);
 		this.axiosInstance.interceptors.response.use ((response) => response, (error, n) => {
 			const { status, data, config } = error.response;
-			if (status === 401) {
-				window.location.href = '/login'
-			} 
+			if (status === 401)
+				window.location.href = '/login';
 			return Promise.reject (error);
 		});
+
+		this.axiosInstance.get ('/api/users/load').then ((response) => {
+			this.setState ({ user_nfo: response.data })
+		})
 	}
 
 
@@ -62,10 +65,6 @@ class App extends Component {
 
 	app_background = (bool) => {
         this.setState ({ background: bool });
-		// if (bool === true)
-		// 	this.setState ({ background: true });
-		// else
-		// 	this.setState ({ background: false })
     }
 
     app_confirm = () => {
@@ -128,7 +127,8 @@ class App extends Component {
                 organization: this.state.organization,
 				clickHandler: this.sidebar_clickhandler,
 				background: this.state.background,
-				busy: this.state.sidebar_busy
+				busy: this.state.sidebar_busy,
+				user: this.state.user_nfo
 			};
 
 		if (this.state.sector)

@@ -47,6 +47,12 @@ exports.get = (req, res, opts) => {
     })
 }
 
+exports.load = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        userSqlz.findByPk(opts.user.id).then (resolve).catch (reject);
+    })
+}
+
 exports.add = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
         const body = req.body;

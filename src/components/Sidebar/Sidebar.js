@@ -28,11 +28,15 @@ const sidebar = (props) => {
         );
         org_links_lbls = (
             <Aux>
-                <div className="link-label">
+                <NavLink className="link-label lbl animated fadeIn d-1" 
+                    activeClassName="active" to={"/organizations/" + props.organization.id + "/clusters"}>
+                    Clusters
+                </NavLink>
+                {/* <div className="link-label">
                     <span className="lbl animated fadeInRight">
                         Clusters
                     </span>
-                </div>
+                </div> */}
             </Aux>
         );
     }
@@ -64,24 +68,32 @@ const sidebar = (props) => {
                 </div>
                 {notifications_link}
 
-                <NavLink exact activeClassName="active" to="/admin/users">
+                {props.user && props.user.level === 0 && 
+                (<NavLink exact activeClassName="active" to="/admin/users">
                     <NavbarButton icon="cog" clickHandler={props.clickHandler} action="admin"/>
-                </NavLink>
+                </NavLink>)}
                 <NavbarButton icon="user" clickHandler={props.clickHandler} action="user-profile"/>
             </div>
 
             <div className="labels-layer animated slideInLeft">
-                <div className="logo-label">
-                    <div className="lbl animated fadeInRight">
-                        AFthemUI
-                    </div>
-                    <div className="link-label">
-                        <span className="lbl animated fadeInRight">
-                            Organizations
-                        </span>
+                <div className="logo-label lbl animated fadeIn d-1">
+                    AFthemUI
+                </div>
+
+                <NavLink className="link-label lbl animated fadeIn d-1" exact activeClassName="active" to="/">
+                    Organizations
+                </NavLink>
+                {org_links_lbls}
+
+                <div className="bottom">
+                    {props.user && props.user.level === 0 && 
+                    (<NavLink className="link-label lbl animated fadeIn d-1" exact activeClassName="active" to="/admin/users">
+                        Admin Panel
+                    </NavLink>)}
+                    <div className="link-label lbl animated fadeIn d-1">
+                        User Profile
                     </div>
                 </div>
-                {org_links_lbls}
             </div>
             {busy_layer}
         </div>
