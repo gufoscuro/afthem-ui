@@ -45,5 +45,5 @@ exports.auth = function (req, res, opts) {
 exports.check = function (req) {
     const token = req.cookies.auth || null;
     return token ? JWTUtil.verify (token) 
-        : new Promise ((r, j) => j ({ success: false, code: 400, error: 'No token provided.' }));
+        : new Promise ((r, j) => j ({ success: false, error: 'No token provided.' }));
 }

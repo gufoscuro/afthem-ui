@@ -41,10 +41,6 @@ class App extends Component {
 				window.location.href = '/login';
 			return Promise.reject (error);
 		});
-
-		this.axiosInstance.get ('/api/users/load').then ((response) => {
-			this.setState ({ user_nfo: response.data })
-		})
 	}
 
 
@@ -56,7 +52,13 @@ class App extends Component {
             this.setState ({ organization: organization });
             
         if (cluster)
-            this.setState ({ cluster: cluster });
+			this.setState ({ cluster: cluster });
+		
+		this.axiosInstance.get ('/api/login/check').then ((res) => {
+			this.axiosInstance.get ('/api/users/load').then ((response) => {
+				this.setState ({ user_nfo: response.data })
+			})
+		})
     }
 
     componentWillUnmount () {
