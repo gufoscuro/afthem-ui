@@ -78,6 +78,9 @@
 .Sidebar:hover .labels-layer {
     display: block;
 }
+.Sidebar.busy .labels-layer, .Sidebar.busy:hover .labels-layer {
+    display: none;
+}
 
 .Sidebar .maintenance-layer {
     position: absolute;

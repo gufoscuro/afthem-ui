@@ -61,11 +61,11 @@ class App extends Component {
 	}
 
 	app_background = (bool) => {
-        // console.log ('app_background', bool)
-		if (bool === true)
-			this.setState ({ background: true });
-		else
-			this.setState ({ background: false })
+        this.setState ({ background: bool });
+		// if (bool === true)
+		// 	this.setState ({ background: true });
+		// else
+		// 	this.setState ({ background: false })
     }
 
     app_confirm = () => {
@@ -78,7 +78,11 @@ class App extends Component {
         this.confirm_timer = setTimeout (() => {
             this.setState ({ confirm: false });
         }, 1000);
-    }
+	}
+	
+	app_locked = (bool) => {
+		this.setState ({ sidebar_busy: bool });
+	}
     
 
 
@@ -113,7 +117,8 @@ class App extends Component {
 			basic_props = {
 				axiosInstance: this.axiosInstance,
                 appBackground: this.app_background,
-                appConfirm: this.app_confirm,
+				appConfirm: this.app_confirm,
+				appLocked: this.app_locked,
                 orgHandler: this.organization_handler,
                 clusterHandler: this.cluster_handler,
                 organization: this.state.organization,
@@ -154,11 +159,6 @@ class App extends Component {
 							<AdminOrg {...props} {...basic_props} /> 
 						}/>
 						
-						
-						{/* <ProtectedRoute exact path="/admin/:subview" 
-							render={ ({ match }) => <Admin {...basic_props} match={match} /> } />
-						<ProtectedRoute path="/admin/organization/:oid/:subview" 
-							render={ ({ match }) => <AdminOrg {...basic_props} match={match} /> } /> */}
 
                         {/* <Route exact path="/dnd">
 							<DnD />
@@ -168,7 +168,7 @@ class App extends Component {
                     <Confirm active={this.state.confirm} />
 					
 
-					{/* <ErrorOverlay active={this.state.maintenance}>
+					{/* <ErrorOverlay active={true}>
 						<MaintenanceMode />
 					</ErrorOverlay> */}
 				</div>

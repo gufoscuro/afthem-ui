@@ -23,16 +23,6 @@ class Organizations extends Component {
         }
     }
 
-    createSectorOnChange = (event) => {
-        let sector_form = { ...this.state.createSectorForm };
-
-        // console.log ('clientDetailsOnChange', event);
-        sector_form[event.target.name] = event.target.value;
-        this.setState ({
-            createSectorForm: sector_form
-        })
-    }
-    
     componentDidMount () {
         this.props.appBackground (true);
         this.props.orgHandler (null);
@@ -60,18 +50,6 @@ class Organizations extends Component {
             if (hit)
                 this.props.orgHandler (hit);
         }
-
-        else if (status === 'close-modal-panel') {
-            this.setState ({
-                createSector: false
-            })
-        }
-
-        else if (status === 'cancel-add-sector') {
-            this.setState ({
-                createSector: false
-            })
-        }
     }
 
     
@@ -81,18 +59,6 @@ class Organizations extends Component {
             basic_props = {
                 clickHandler: this.click_handler
             };
-
-        if (this.state.createSector) {
-            modal_flow = (
-                <ModalPanel active={true} clickHandler={this.click_handler}>
-                    {/* <AddSector 
-                        form={this.state.createSectorForm} 
-                        clickHandler={this.click_handler} 
-                        changeHandler={this.createSectorOnChange} /> */}
-                </ModalPanel>
-            );
-        } else
-            modal_flow = (<ModalPanel active={false} />);
 
         if (this.state.organizations.length)
             orgs = this.state.organizations.map ((element, index) =>

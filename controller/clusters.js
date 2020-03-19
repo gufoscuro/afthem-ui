@@ -1,6 +1,8 @@
 const fs            = require ('fs');
 const crypto        = require ('crypto');
 
+const sequelize     = require ('../model/db').instance;
+
 const clusterDAO    = require ('../model/cluster');
 const clusterSqlz   = clusterDAO.handle;
 
@@ -56,18 +58,28 @@ module.exports.add = (req, res, opts) => {
         if (opts.rid && config.name && config.gitUrl) {
             orgSqlz.findByPk (opts.rid).then ((org) => {
                 var clstr = clusterSqlz.build (config);
-                clstr.setOrganization (org, { save: false });
-                clstr.save ().then ((clstr) => {
-                    org.addCluster (clstr, { save: false });
-                    Promise.all ([
-                        fservice.createClusterFolder (org.id, clstr.id, clstr.gitUrl),
-                        org.save ()
-                    ]).then (() => {
-                        resolve (clstr)
-                    }).catch ((errors) => {
-                        console.log (errors)
-                        reject (errors)
-                    })
+
+                sequelize.transaction().then ((t) => {
+                    clstr.setOrganization (org, { save: false });
+                    clstr.save ({ transaction: t }).then ((clstr) => {
+                        org.addCluster (clstr, { save: false });
+                        org.save ({ transaction: t }).then (() => {
+                            fservice.createClusterFolder (org.id, clstr.id, clstr.gitUrl)
+                                .then (() => t.commit().then (() => resolve (clstr)))
+                                .catch (error => {
+                                    t.rollback ().then (() => {
+                                        if (error.errorFunction !== undefined) {
+                                            reject ({
+                                                code: 500,
+                                                error: true,
+                                                message: 'Git: ' + error
+                                            })
+                                        } else
+                                            reject (errors);
+                                    })
+                                });
+                        }).catch (reject);
+                    }).catch (reject);
                 })
             })
         } else {

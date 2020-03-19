@@ -28,7 +28,7 @@ function AddCluster (props) {
     const backend_error = useCallback ((error) => {
         setDisabled (false);
         if (error.response && error.response.data && error.response.data.message)
-            setError ('Server: ' + error.response.data.message);
+            setError (error.response.data.message);
         else
             setError ('We\'re sorry, something went wrong.');
     }, [ setError ]);

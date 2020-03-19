@@ -9,24 +9,11 @@ import './Sidebar.css'
 
 const sidebar = (props) => {
     let sidebar_clss = 'Sidebar',
-        // homelnk,
         org_links,
         org_links_lbls,
         notifications_link,
         busy_layer;
-        // partialPathCheck = function (path) {
-        //     return function (match, location) {
-        //         return location.pathname.indexOf (path) !== -1;
-        //     }
-        // };
-
-    // homelnk = (
-    //     <Link to="/">
-    //         <div className="logo">
-    //             <i className="fad fa-rocket"></i>
-    //         </div>
-    //     </Link>
-    // );
+        
 
     if (props.background)
         sidebar_clss += ' background';
@@ -49,15 +36,10 @@ const sidebar = (props) => {
             </Aux>
         );
     }
-
-    // if (props.notifications)
-    //     notifications_link = (
-    //         <NavLink activeClassName="active" to="/notifications">
-    //             <NavbarButton icon="exclamation-triangle" badge={props.notifications} clickHandler={props.clickHandler} action="notifications"/>
-    //         </NavLink>
-    //     );
+    
 
     if (props.busy) {
+        sidebar_clss += ' busy';
         busy_layer = (
             <div className="maintenance-layer"></div>
         );

@@ -33,13 +33,13 @@ const is_authorized = (action_name, unauth_map, token) => {
     let is_unauth = unauth_map !== undefined && unauth_map[action_name] === true;
 
     return new Promise ((resolve, reject) => {
-        // resolve (true); // while in development ...
+        console.log ('is_unauth', is_unauth);
         if (is_unauth)
-            resolve (true);
+            resolve ({ success: true });
         else if (token && token !== undefined)
             JWTUtil.verify (token).then (resolve);
         else
-            resolve (false);
+            resolve ({ success: false });
     })
 }
 const action_evaulator = (req, res) => {

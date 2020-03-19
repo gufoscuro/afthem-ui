@@ -99,21 +99,20 @@ class Clusters extends Component {
     }
 
     createClusterOutcome = (status) => {
-        // console.log ('createClusterOutcome', status);
         if (status.action === 'cancel-cluster-edits') {
             this.setState ({ createCluster: false });
         } else {
             const cluster_data = { ...status.data };
             this.props.appBackground (true);
             this.props.axiosInstance.post ('/api/clusters/add/' + this.props.organization.id, cluster_data).then ((response) => {
-                // console.log ('create cluster then()...', response.data)
                 this.fetchClusters ();
                 this.props.appBackground (false);
                 this.props.appConfirm ();
-                this.setState ({
-                    createCluster: false
-                })
-            }).catch (status.error)
+                this.setState ({ createCluster: false })
+            }).catch (e => {
+                status.error (e);
+                this.props.appBackground (false);
+            })
         }
     }
     
@@ -182,10 +181,6 @@ class Clusters extends Component {
             modal_flow = (
                 <ModalPanel active={true} clickHandler={this.click_handler}>
                     <AddCluster { ...m_props } />
-                    {/* <AddCluster 
-                        form={this.state.createClusterForm} 
-                        clickHandler={this.click_handler} 
-                        changeHandler={this.createClusterOnChange} /> */}
                 </ModalPanel>
             );
         } else
