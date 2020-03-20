@@ -84,6 +84,19 @@ class App extends Component {
 	app_locked = (bool) => {
 		this.setState ({ sidebar_busy: bool });
 	}
+
+	app_logout = () => {
+		this.app_background (true);
+		this.app_locked (true);
+		this.axiosInstance.get ('/api/login/logout')
+			.then ((response) => {
+				window.location.href = '/login';
+			})
+			.catch (e => {
+				this.app_background (false);
+				this.app_locked (false);
+			})
+	}
     
 
 
@@ -110,7 +123,8 @@ class App extends Component {
 	sidebar_clickhandler = (action, ev) => {
 		console.log ('===>', 'sidebar_clickhandler', action);
 
-		
+		if (action === 'logout')
+			this.app_logout ();
 	}
 
 	render () {

@@ -23,7 +23,8 @@ module.exports.schema = {
     },
     level: {
         nullable: false,
-        type: 'int',
+        // type: 'int',
+        type: 'select',
         defaultValue: 0
     },
     gitUsername: {

@@ -11,7 +11,7 @@ function SimpleFormField (props) {
             v = event.target.checked;
             // v = val === 'true';
         }
-        else if (type === 'int') {
+        else if (type === 'int' || type === 'select:int') {
             let vv = val.replace(/\D/, '');
             v = (vv !== '' ? parseInt (vv) : 0);
         }
@@ -32,7 +32,7 @@ function SimpleFormField (props) {
             )
         }
 
-        else if (type === 'select') {
+        else if (type === 'select' || type === 'select:int') {
             inpt = (
                 <select name={name} value={value} onChange={hndl}>
                     {options !== undefined ? options.map ((it, index) => {

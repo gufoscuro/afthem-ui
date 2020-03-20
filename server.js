@@ -1,17 +1,17 @@
+const PROD          = process.env.PROD || false;
 const express       = require ('express');
 const bodyParser    = require ('body-parser');
 const cookieParser  = require ('cookie-parser');
 const path          = require ('path');
 const JWTUtil       = require ('./lib/jwt/jwt');
 const app           = express ();
-const bootService   = require ('./services/bootstrap-services')
+const bootService   = require ('./services/bootstrap-services');
 
 
 app.use (bodyParser.urlencoded ({ extended: false }));
 app.use (bodyParser.json ());
 app.use (cookieParser());
 
-app.use (express.static (path.join (__dirname, 'build')));
 
 
 
@@ -58,8 +58,10 @@ const action_evaulator = (req, res) => {
                     ctrls[opts.action](req, res, opts).then ((result) => {
                         res.json (result)
                     }).catch ((e, t) => {
-                        res.status(e.code ? e.code : 500).send (e)
-                        throw e;
+                        res.status(e.code ? e.code : 500).send (e);
+                        if (PROD === false)
+                            console.error (e);
+                            // throw e;
                     })
                 } else 
                     res.status (401).json (generic_error ('Unauthorized.')); 
@@ -79,6 +81,11 @@ app.get ('/', function (req, res) {
 
 app.all ('/api/:_ctrl/:_act', action_evaulator);
 app.all ('/api/:_ctrl/:_act/:_rid', action_evaulator);
+
+
+
+app.use (express.static (path.join (__dirname, 'build')));
+app.use ('*', express.static (path.join (__dirname, 'build')));
 
 
 

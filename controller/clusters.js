@@ -124,15 +124,19 @@ module.exports.fileIndex = (req, res, opts) => {
 
         Promise.all ([
             read_dir_routine (dir),
-            fservice.gitStatus (dir)
+            fservice.gitStatus (dir),
+            clusterSqlz.findByPk (cid),
+            orgSqlz.findByPk (oid)
         ]).then ((results) => {
             var index       = results[0],
                 repo_status = results[1],
+                cluster_d   = results[2],
+                org_data    = results[3],
                 binding     = interpolateFilesWithRepoStatus (dir, index, repo_status);
 
-            resolve ({ files: binding });
+            resolve ({ files: binding, cluster: cluster_d, organization: org_data });
         }).catch ((e) => {
-            console.log ('error', e)
+            // console.log ('error', e)
             reject (e)
         });
     })

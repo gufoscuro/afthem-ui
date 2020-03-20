@@ -18,24 +18,22 @@ exports.auth = function (req, res, opts) {
             password = req.body.password;
 
         if (username !== undefined) {
-            userDAO.getByUsername (username).then ((result) => {
-                if (result) {
-                    var valid   = username === result.username && password === result.password,
-                        payload = {
-                            id: result.id,
-                            level: result.level,
-                            isAdmin: result.level === 0
+            userDAO.getByUsername (username).then ((user) => {
+                if (user) {
+                    if (user.authenticate (password)) {
+                        var payload = {
+                            id: user.id,
+                            level: user.level,
+                            isAdmin: user.level === 0
                         };
 
-                        if (valid) {
-                            JWTUtil.sign (payload).then ((r) => {
-                                res.cookie ('auth', r.token);
-                                // console.log (r);
-                                resolve (r);
-                            }).catch (reject);
-                        } else
-                            resolve ({ authenticated: false });
-                } else 
+                        JWTUtil.sign (payload).then ((r) => {
+                            res.cookie ('auth', r.token);
+                            resolve (r);
+                        }).catch (reject);
+                    } else
+                        resolve ({ authenticated: false });
+                } else
                     resolve ({ authenticated: false });
             }).catch (resolve)
         }
@@ -46,4 +44,11 @@ exports.check = function (req) {
     const token = req.cookies.auth || null;
     return token ? JWTUtil.verify (token) 
         : new Promise ((r, j) => j ({ success: false, error: 'No token provided.' }));
+}
+
+exports.logout = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        res.clearCookie ('auth');
+        resolve ();
+    })
 }

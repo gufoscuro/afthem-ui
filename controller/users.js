@@ -77,7 +77,8 @@ exports.add = (req, res, opts) => {
             }, usr;
 
             if (body.id !== undefined) {
-                userSqlz.update (u_data, { where: { id: body.id } }).then ((usr) => resolve (usr)).catch (err => reject (err))
+                userSqlz.findByPk (body.id).then (record => record.update (u_data)).then (usr => resolve (usr)).catch (err => reject (err))
+                // userSqlz.update (u_data, { where: { id: body.id } }).then ((usr) => resolve (usr)).catch (err => reject (err))
             } else {
                 usr = userSqlz.build (u_data);
                 usr.save ().then ((usr) => resolve (usr)).catch (err => reject (err))

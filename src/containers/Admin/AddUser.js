@@ -48,7 +48,11 @@ function AddUser (props) {
     }, [ outcome, model, ModelUtil ]);
 
     let renderer = useMemo (() => {
-        let field_props = { change: fieldChange }
+        let field_props = { change: fieldChange },
+            levels_list = [
+                { text: 'Admin (level 0)', value: 0 },
+                { text: 'User (level 5)', value: 5 }
+            ];
 
         return (
             <div className="AddUser">
@@ -60,7 +64,8 @@ function AddUser (props) {
                     <SimpleFormField type="text" label="Firstname" name="firstName" value={model.firstName} {...field_props} />
                     <SimpleFormField type="text" label="Lastname" name="lastName" value={model.lastName} {...field_props} />
                     <SimpleFormField type="boolean" label="Enabled" name="enabled" value={model.enabled} {...field_props} />
-                    <SimpleFormField type="int" label="Level" name="level" value={model.level} {...field_props} />
+                    {/* <SimpleFormField type="int" label="Level" name="level" value={model.level} {...field_props} /> */}
+                    <SimpleFormField type="select:int" label="Level" name="level" value={model.level} options={levels_list} {...field_props} />
                     <SimpleFormField type="text" label="Git Username" name="gitUsername" value={model.gitUsername} {...field_props} />
                     <SimpleFormField type="password" label="Git Password" name="gitPassword" value={model.gitPassword} {...field_props} />
                 </div>

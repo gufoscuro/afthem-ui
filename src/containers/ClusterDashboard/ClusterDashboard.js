@@ -119,6 +119,11 @@ class ClusterDashboard extends Component {
             oid: match.params.id,
             cid: match.params.cid
         }).then ((response) => {
+            if (response.data.cluster)
+                this.props.clusterHandler (response.data.cluster);
+            if (response.data.organization)
+                this.props.orgHandler (response.data.organization);
+
             if (response.data.files !== undefined) {
                 response.data.files.forEach ((it) => {
                     this.clusterMap[it.normalizedName] = it.id;
@@ -272,18 +277,6 @@ class ClusterDashboard extends Component {
         }
     }
 
-    // askCommitChanges = (status) => {
-    //     let dialog = {
-    //         heading: 'Commit Changes',
-    //         text: 'Are you sure you want to commit and push all your changes?',
-    //         clickHandler: this.commitChangesHandler
-    //     }
-
-    //     this.setState ({
-    //         dialog: dialog
-    //     })
-    // }
-
     commitChangesHandler = (status) => {
         // console.log ('commitChangesHandler', status)
         if (status.action === 'confirm') {
@@ -302,7 +295,8 @@ class ClusterDashboard extends Component {
                 status.error (e);
                 this.props.appBackground (false);
             })
-        }
+        } else
+            this.setState ({ commitChanges: false });
     }
 
     click_handler = (status) => {

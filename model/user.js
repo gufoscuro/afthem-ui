@@ -1,3 +1,5 @@
+const crypto        = require ('crypto');
+
 const { DataTypes } = require ('sequelize');
 const sequelize     = require ('./db').instance;
 const Organization  = require ('./organization').handle;
@@ -49,9 +51,34 @@ const User = sequelize.define ('User', {
         type: DataTypes.STRING,
         allowNull: false
     }
-}, {
-    // Other model options go here
+},
+{
+    defaultScope: {
+        attributes: {
+            exclude: [ 'password' ]
+        }
+    },
+    scopes: {
+        withPassword: {
+            attributes: {
+                include: [ 'password' ]
+            }
+        }
+    },
+    hooks: {
+        beforeCreate: (user) => {
+            user.password = crypto.createHash('sha256').update(user.password).digest('base64')
+        },
+        beforeUpdate: (user) => {
+            if (user.password)
+                user.password = crypto.createHash('sha256').update(user.password).digest('base64')
+        }
+    } 
 });
+
+User.prototype.authenticate = function (password) {
+    return this.password === crypto.createHash('sha256').update(password).digest('base64');
+};
 
 const Membership = sequelize.define ('Membership', { })
 
@@ -65,7 +92,7 @@ Organization.hasMany (Membership);
 
 
 module.exports.getByUsername = (username) => {
-    return User.findOne ({
+    return User.scope('withPassword').findOne ({
         where: {
             username: username
         }

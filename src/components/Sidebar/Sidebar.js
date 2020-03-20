@@ -72,11 +72,11 @@ const sidebar = (props) => {
                 (<NavLink exact activeClassName="active" to="/admin/users">
                     <NavbarButton icon="cog" clickHandler={props.clickHandler} action="admin"/>
                 </NavLink>)}
-                <NavbarButton icon="user" clickHandler={props.clickHandler} action="user-profile"/>
+                <NavbarButton icon="user" clickHandler={props.clickHandler} action="user-profile" classes="no-hover"/>
             </div>
 
             <div className="labels-layer animated slideInLeft">
-                <div className="logo-label lbl animated fadeIn d-1">
+                <div className="logo-label lbl no-hover animated fadeIn d-1">
                     AFthemUI
                 </div>
 
@@ -90,8 +90,9 @@ const sidebar = (props) => {
                     (<NavLink className="link-label lbl animated fadeIn d-1" exact activeClassName="active" to="/admin/users">
                         Admin Panel
                     </NavLink>)}
-                    <div className="link-label lbl animated fadeIn d-1">
-                        User Profile
+                    <div className="link-label profile-link no-hover lbl animated fadeIn d-1">
+                        {props.user ? props.user.username : 'User Profile'}
+                        <i className="far fa-power-off logout" onClick={props.clickHandler.bind (this, 'logout')}></i>
                     </div>
                 </div>
             </div>

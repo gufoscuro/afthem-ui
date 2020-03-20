@@ -25,7 +25,7 @@ const navbarButton = (props) => {
 
     return (
         <div 
-            className={"navbar-button " + clsses.join (' ')} 
+            className={"navbar-button " + props.classes + ' ' + clsses.join (' ')} 
             onClick={props.clickHandler.bind (this, props.action)}>
             <i className={"far fa-" + props.icon}></i> {badge}
         </div>
