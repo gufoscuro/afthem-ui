@@ -60,7 +60,7 @@ function BackendElement (props) {
                 <>
                     <div className="editor-component-field">
                         <span className="lbl">prefix <i className="sep far fa-long-arrow-right"></i></span>
-                        <input type="text" name="prefox" value={model.prefix} onChange={onValueChange}/>
+                        <input type="text" name="prefix" value={model.prefix} onChange={onValueChange}/>
                     </div>
                     <div className="editor-component-field">
                         <span className="lbl">upstream <i className="sep far fa-long-arrow-right"></i></span>
