@@ -19,7 +19,7 @@ function Login (props) {
 
     const onMount = useCallback (() => {
         appLocked (true);
-    }, [ appLocked, axiosInstance, history ]);
+    }, [ appLocked ]);
 
     const doLogin = useCallback (() => {
         const data = { ...model };
@@ -56,7 +56,7 @@ function Login (props) {
         } else {
             setError ('Username/Password can\'t be empty.')
         }
-    }, [ axiosInstance, history, model, appLocked, appBackground, fetchUserInfo ]);
+    }, [ axiosInstance, history, model, appLocked, appBackground, fetchUserInfo, appAuthenticated ]);
 
     const fieldChange = useCallback ((name, value) => {
         setModel ((prevModel) => {
@@ -69,7 +69,7 @@ function Login (props) {
     const fieldKeypress = useCallback ((event) => {
         if (event.key === 'Enter')
             doLogin ();
-    }, [ model ]);
+    }, [ doLogin ]);
     
     const renderer = useMemo (() => {
         let field_props = { change: fieldChange, keypress: fieldKeypress }
@@ -97,7 +97,7 @@ function Login (props) {
                 </div>
             </div>
         )
-    }, [ doLogin, model, fieldChange, error, disabled, loginSuccess ])
+    }, [ doLogin, model, fieldChange, error, disabled, loginSuccess, fieldKeypress ])
 
     return renderer;
 }

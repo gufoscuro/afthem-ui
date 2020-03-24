@@ -8,15 +8,11 @@ function Layout (props) {
         authenticated, 
         axiosInstance,
         appBackground,
-        appConfirm,
         appLocked,
         appAuthenticated,
-        orgHandler,
-        clusterHandler,
         fetchingUser,
         fetchUserInfo,
         organization,
-        cluster,
         user,
         background,
         busy,
@@ -60,35 +56,21 @@ function Layout (props) {
     }, [ organization, sidebarClick, background, busy, user ]);
 
     const renderer = useMemo (() => {
-        const basic_props = {
-            axiosInstance: axiosInstance,
-            appBackground: appBackground,
-            appConfirm: appConfirm,
-            appLocked: appLocked,
-            appAuthenticated: appAuthenticated,
-            orgHandler: orgHandler,
-            clusterHandler: clusterHandler,
-            organization: organization,
-            cluster: cluster,
-            user: user,
-            history: history,
-            fetchUserInfo: fetchUserInfo,
-            match: match
-        }
+        const basic_props = { ...props }
         return (
             <>
                 {sidebar_memo}
                 {appview (basic_props)}
             </>
         )
-    }, [ axiosInstance, appBackground, appConfirm, appLocked, orgHandler, clusterHandler, organization, cluster, user, sidebar_memo, appview ]);
+    }, [ props, appview, sidebar_memo ]);
 
     useEffect (() => {
         if (authenticated === false) {
             history.push ('/login');
         } else if (user === null && fetchingUser === false && match.path !== '/login')
             fetchUserInfo ();
-    }, [ authenticated, history, fetchUserInfo, match ]);
+    }, [ authenticated, history, fetchUserInfo, fetchingUser, match, user ]);
 
     return renderer;
 }
