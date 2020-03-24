@@ -67,11 +67,11 @@ function ConfigItem (props) {
     const onSingleFieldChange = useCallback ((key, val) => {
         let configs = { ...value };
 
-        console.log ('onSingleFieldChange', key, val)
+        // console.log ('onSingleFieldChange', key, val)
 
         configs[key] = val;
         onUpdate ('config', configs);
-    }, [ value ]);
+    }, [ value, onUpdate ]);
 
 
     
@@ -152,7 +152,7 @@ function ConfigItem (props) {
                 </>
             );
         }
-    }, [ editing, value, onCMChange ])
+    }, [ editing, value, onCMChange, onSingleFieldChange, onSingleCMChange, elementSchema ])
 
     return (
         <>

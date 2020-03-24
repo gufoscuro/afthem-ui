@@ -4,8 +4,9 @@ import _ from 'lodash/core';
 
 
 function ImplementersElement (props) {
+    const { data, change, click, $key } = props;
     const [ editing, setEditing ] = useState (false);
-    const [ model, setModel ] = useState (props.data)
+    const [ model, setModel ] = useState (data)
 
     let class_match     = 'com.apifortress.afthem.',
         class_string    = props.data.class.indexOf (class_match) !== -1 ? 
@@ -14,51 +15,57 @@ function ImplementersElement (props) {
 
 
     useEffect (() => {
-        if (props.data.$editing) {
+        onMount ();
+    }, [])
+
+    useEffect (() =>  {
+        if (editing === false && _.isEqual (data, model) === false) {
+            setModel (data);
+        }
+    }, [ model, data, editing ]);
+
+    
+    const onMount = useCallback (() => {
+        if (data.$editing) {
             let m = {...model};
             delete m.$editing;
 
             setModel (m);
-            props.change ({
-                index: props.$key,
+            change ({
+                index: $key,
                 type: 'implementers',
                 data: m
             });
             setEditing (true);
         }
-    }, [])
-
-    useEffect (() =>  {
-        if (editing === false && _.isEqual (props.data, model) === false) {
-            setModel (props.data);
-        }
-    }, [ model ]);
-
+    }, [ change, model, data, $key ]);
 
     const onValueChange = useCallback ((event) => {
-        let v = event.target.value,
-            m = { ...model };
+        const v = event.target.value;
+        setModel ((prevModel) => {
+            let m = { ...prevModel };
 
-        m.id = v;
-        setModel (m); // need to check id is unique
-    }, [ model ]);
+            m.id = v;
+            return m;
+        });
+    }, [ ]);
 
     const cancelChanges = useCallback (() => {
         setEditing (false);
-        setModel (props.data);
-    }, [ model ])
+        setModel (data);
+    }, [ data ])
 
 
     const confirmChanges = useCallback (() => {
         if (true) { // some sort of validation goes here I suppose ...
-            props.change ({
-                index: props.$key,
+            change ({
+                index: $key,
                 type: 'implementers',
                 data: { ...model }
             });
             setEditing (false);
         }
-    }, [ model ])
+    }, [ $key, change, model ])
 
 
     if (editing) {
@@ -77,15 +84,15 @@ function ImplementersElement (props) {
     } else {
         renderer = (
             <>
-                <div className="lbl">id: {props.data.id}</div>
+                <div className="lbl">id: {data.id}</div>
                 <div className="txt">class: {class_string}</div>
-                <div className="txt">type: {props.data.type}</div>
-                {props.data.thread_pool ? (<div className="txt">thread_pool: {props.data.thread_pool}</div>) : ''}
+                <div className="txt">type: {data.type}</div>
+                {data.thread_pool ? (<div className="txt">thread_pool: {data.thread_pool}</div>) : ''}
 
                 <div className="hover">
                     <div className="ctrls">
                         <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
-                        <div className="thin-button" onClick={props.click.bind (this, { action: 'remove-implementer', id: props.$key })}>Remove</div>
+                        <div className="thin-button" onClick={click.bind (this, { action: 'remove-implementer', id: $key })}>Remove</div>
                     </div>
                 </div>
             </>

@@ -5,7 +5,7 @@ function SingleValConfig (props) {
     const { name, value, change, type } = props;
 
     const onValueChange = useCallback ((val) => {
-        console.log ('SingleValConfig change', value);
+        // console.log ('SingleValConfig change', value);
         let v = val;
 
         if (type === 'boolean')
@@ -16,7 +16,7 @@ function SingleValConfig (props) {
         }
         
         change (name, v);
-    }, [ name, value, change ]);
+    }, [ name, change, type ]);
 
     const renderer = useMemo (() => {
         let inpt,
@@ -38,7 +38,7 @@ function SingleValConfig (props) {
                 <div className="indent-1">{inpt}</div>
             </div>
         )
-    }, [ name, value, type, change, onValueChange ]);
+    }, [ name, value, type, onValueChange ]);
 
 
     return renderer;

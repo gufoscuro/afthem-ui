@@ -20,7 +20,7 @@ function AdminOrg (props) {
             setOrganization (response.data);
             appBackground (false)
         })
-    }, [ oid ]);
+    }, [ oid, appBackground, axiosInstance ]);
 
     const renderer = useMemo (() => {
         let subview_renderer,
@@ -40,7 +40,7 @@ function AdminOrg (props) {
                 {subview_renderer}
             </>
         )
-    }, [ subview, organization ])
+    }, [ subview, organization, oid, props ])
 
     return renderer;
 }

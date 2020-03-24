@@ -50,7 +50,7 @@ function AddCluster (props) {
                 setDisabled (false);
             }
         })
-    }, [ outcome, model, ModelUtil ]);
+    }, [ outcome, model, backend_error, model_schema ]);
 
     let renderer = useMemo (() => {
         let field_props = { change: fieldChange }
@@ -73,7 +73,7 @@ function AddCluster (props) {
                 </div>
             </div>
         )
-    }, [ saveCluster, data, outcome, error, model, disabled ]);
+    }, [ saveCluster, outcome, error, model, disabled, fieldChange ]);
 
     return renderer;
 }

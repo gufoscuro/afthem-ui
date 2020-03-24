@@ -19,7 +19,7 @@ function ListConfig (props) {
         a[index] = v;
 
         change (name, a);
-    }, [ name, value, change ]);
+    }, [ name, value, change, type ]);
 
     const addItem = useCallback (() => {
         let a = [ ...value ],
@@ -66,7 +66,7 @@ function ListConfig (props) {
                 <div onClick={addItem.bind (this)} className="editor-add-subcomponent">+ item to {name}</div>
             </div>
         )
-    }, [ name, value, change, onValueChange, shiftPosition, removeItem, addItem ]);
+    }, [ name, value, onValueChange, shiftPosition, removeItem, addItem ]);
 
 
     return renderer;

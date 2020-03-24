@@ -65,7 +65,7 @@ function ListVEConfig (props) {
                 <div onClick={addVEItem.bind (this)} className="editor-add-subcomponent">+ item to {name}</div>
             </div>
         )
-    }, [ name, value, change, onValueChange, shiftPosition, removeItem, addVEItem ]);
+    }, [ name, value, onValueChange, shiftPosition, removeItem, addVEItem ]);
 
 
     return renderer;

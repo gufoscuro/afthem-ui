@@ -31,7 +31,7 @@ function AdminUsers (props) {
                 resolve (response.data)
             }).catch (reject)
         })
-    }, [ setUsers ])
+    }, [ setUsers, axiosInstance ])
 
     const addUser = useCallback ((id) => {
         let d = null;
@@ -61,7 +61,7 @@ function AdminUsers (props) {
             fetchUsers().then (() => appBackground (false));
             appConfirm ();
         })
-    }, [ appBackground, appConfirm, fetchUsers ]);
+    }, [ appBackground, appConfirm, fetchUsers, axiosInstance ]);
 
     const addUserOutcome = useCallback ((status) => {
         if (status.action === 'cancel-user-edits') {
@@ -74,7 +74,7 @@ function AdminUsers (props) {
                 appConfirm ();
             }).catch (status.error)
         }
-    }, [ appBackground, appConfirm, fetchUsers ]);
+    }, [ appBackground, appConfirm, fetchUsers, axiosInstance ]);
     
     const modal_memo = useMemo (() => {
         let m_props,
@@ -113,7 +113,7 @@ function AdminUsers (props) {
             modal = (<ModalPanel active={false}></ModalPanel>);
 
         return modal;
-    }, [ modalFlow, removeUser ])
+    }, [ modalFlow, removeUser, addUserOutcome ])
 
     const renderer = useMemo (() => {
         let users_list = (
@@ -132,12 +132,6 @@ function AdminUsers (props) {
 
                                 <div className="hover">
                                     <div className="ctrls">
-                                        {/* <button className="circle-button" onClick={() => addUser (it.id)}>
-                                            <i className="far fa-pencil"></i>
-                                        </button>
-                                        <button className="circle-button danger" onClick={() => askRemoveUser (it.id)}>
-                                            <i className="far fa-trash"></i>
-                                        </button> */}
                                         <div className="thin-button" onClick={() => addUser (it.id)}>Edit</div>
                                         <div className="thin-button" onClick={() => askRemoveUser (it.id)}>Remove</div>
                                     </div>
@@ -157,7 +151,7 @@ function AdminUsers (props) {
                 </div>
             </>
         )
-    }, [ users, modalFlow, addUser ])
+    }, [ users, addUser, askRemoveUser, modal_memo ])
 
     return renderer;
 }

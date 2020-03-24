@@ -46,7 +46,7 @@ function AddOrganization (props) {
             } else
                 setError ('Please fill all the required fields.');
         })
-    }, [ outcome, model, ModelUtil, model_schema ]);
+    }, [ outcome, model, model_schema, backend_error ]);
 
     let renderer = useMemo (() => {
         let field_props = { change: fieldChange }
@@ -66,7 +66,7 @@ function AddOrganization (props) {
                 </div>
             </div>
         )
-    }, [ save, data, outcome, error, model ]);
+    }, [ save, fieldChange, outcome, error, model ]);
 
     return renderer;
 }

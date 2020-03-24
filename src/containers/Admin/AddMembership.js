@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useCallback } from 'react';
 
 import FadeinFX from '../../hoc/FadeinFX';
-import axios from 'axios';
 
 
 function AddMembership (props) {
@@ -14,11 +13,6 @@ function AddMembership (props) {
     const save = useCallback (() => {
         outcome ({ action: 'save-membership', id: selected });
     }, [ outcome, selected ]);
-
-    const change = useCallback ((event) => {
-        setSearch (event.target.value);
-        searchUsers (event.target.value);
-    }, []);
 
     const searchUsers = useCallback ((text) => {
         if (timer)
@@ -33,6 +27,11 @@ function AddMembership (props) {
             })
         }, 300);
     }, [ data ]);
+
+    const change = useCallback ((event) => {
+        setSearch (event.target.value);
+        searchUsers (event.target.value);
+    }, [ searchUsers ]);
 
     const users_renderer = useMemo (() => {
         return (
@@ -51,8 +50,6 @@ function AddMembership (props) {
     }, [ users, selected ]);
 
     let renderer = useMemo (() => {
-        let field_props = { change: change }
-
         return (
             <div className="AddUser">
                 <div className="panel-content">
@@ -71,7 +68,7 @@ function AddMembership (props) {
                 </div>
             </div>
         )
-    }, [ change, save, outcome, search, users_renderer ]);
+    }, [ change, save, selected, outcome, search, users_renderer ]);
 
     return renderer;
 }

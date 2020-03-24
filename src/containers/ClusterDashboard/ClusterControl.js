@@ -8,13 +8,12 @@ const ClusterControl = (props) => {
     const content = useMemo (() => {
         return (
             <>
-                <i className={"far fa-"+ props.icon +" icn"}></i> {props.label}
+                <i className={"far fa-"+ icon +" icn"}></i> {label}
             </>
         )
     }, [ icon, label ]);
     
     const renderer = useMemo (() => {
-        let r;
         if (url !== undefined) {
             return (<div className="cluster-control"><NavLink exact onClick={click} to={url}>{content}</NavLink></div>);
         } else {

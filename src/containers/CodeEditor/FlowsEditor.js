@@ -3,43 +3,44 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import FlowElement from './FlowElement';
 import ImplementersCatalog from './ImplementersCatalog';
 import FadeinFX from '../../hoc/FadeinFX';
-import axios from 'axios';
 
 import './VisualEditor.css';
 
 
 function FlowsEditor (props) {
-    const { actorsSchema } = props;
+    const { actorsSchema, update, refreshHook } = props;
     const [ model, setModel ] = useState (props.data);
     const [ addFlow, setAddFlow ] = useState (false);
     const [ implementersIds, setImplementersIds ] = useState (null);
-    const [ actorsMap, setActorsMap ] = useState (null);
+    // const [ actorsMap, setActorsMap ] = useState (null);
     const [ definedActors, setDefinedActors ] = useState ([]);
     
     
     useEffect (() => {
-        props.update (model);
+        update (model);
         setDefinedActors (Object.keys (model));
-    }, [ model ]);
+    }, [ model, update ]);
 
     useEffect (() => {
-        setImplementersIds (Object.keys (actorsSchema).map (it => actorsSchema[it]))
-        props.refreshHook (refreshEditor);
+        onMount ();
     }, []);
 
     const refreshEditor = useCallback ((data) => {
         setModel (data)
     }, [])
 
+    const onMount = useCallback (() => {
+        setImplementersIds (Object.keys (actorsSchema).map (it => actorsSchema[it]))
+        refreshHook (refreshEditor);
+    }, [ refreshHook, refreshEditor, actorsSchema ]);
+
     const removeItem = useCallback ((key) => {
-        let a = { ...model };
-
-        // console.log (a);
-        delete a[key];
-        // console.log (a);
-
-        setModel (a);
-    }, [ model ]);
+        setModel (prevModel => {
+            let a = { ...prevModel };
+            delete a[key];
+            return a;
+        });
+    }, []);
 
     const hideCatalog = useCallback (() => {
         setAddFlow (false)
@@ -51,9 +52,6 @@ function FlowsEditor (props) {
     }, []);
 
     const addItem = useCallback ((item) => {
-        // let item_spec = actorsMap[item.class];
-        // console.log ('add item', item)
-
         setModel ((m) => {
             let t = { ...m };
 
@@ -71,7 +69,7 @@ function FlowsEditor (props) {
         });
 
         setAddFlow (false);
-    }, [ actorsMap ]);
+    }, [ ]);
 
     const click_element = useCallback ((status) => {
         console.log ('click', status);
@@ -79,7 +77,7 @@ function FlowsEditor (props) {
         if (status.action === 'remove')
             removeItem (status.id)
 
-    }, [ removeItem, model ]);
+    }, [ removeItem ]);
 
     const edit_element = useCallback ((status) => {
         setModel (prevModel => {
@@ -87,7 +85,7 @@ function FlowsEditor (props) {
             m[status.key] = status.data;
             return m;
         });
-    }, [ model ])
+    }, [])
 
     const model_renderer = useMemo (() => {
         const flowitems_props = {
@@ -99,11 +97,11 @@ function FlowsEditor (props) {
         return model ? Object.keys(model).map ((key, i) => {
             return <FlowElement key={i} data={model[key]} {...{ $key: key, ...flowitems_props  }}  />
         }) : null;
-    }, [ model, definedActors, click_element, edit_element ]);
+    }, [ model, definedActors, actorsSchema, click_element, edit_element ]);
 
     const addflow_render = useMemo (() => {
         return addFlow ? (<ImplementersCatalog data={implementersIds} add={addItem} hide={hideCatalog} />) : null;
-    }, [ addFlow, addItem, hideCatalog ])
+    }, [ addFlow, addItem, hideCatalog, implementersIds ])
 
 
     return (
@@ -117,7 +115,6 @@ function FlowsEditor (props) {
                     </div>
                 </FadeinFX>
             </div>
-            {/* <div className="thread-pool"> </div> */}
         </div>
     );
 }

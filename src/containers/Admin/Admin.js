@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 
 import AdminSidebar from './AdminSidebar';
 import AdminUsers from './AdminUsers';
@@ -7,13 +8,12 @@ import AdminOrganizations from './AdminOrganizations';
 import './Admin.css';
 
 function Admin (props) {
-    console.log (props)
-    const { match, appBackground, appConfirm } = props;
+    const { match, user, history } = props;
     const subview = match.params.subview;
-    
 
     const renderer = useMemo (() => {
-        let subview_renderer,
+        let enable_render = user !== null && user.level === 0,
+            subview_renderer,
             subview_props = {
                 ...props
             }
@@ -25,11 +25,16 @@ function Admin (props) {
 
         return (
             <>
-                <AdminSidebar/>
-                {subview_renderer}
+                {enable_render && <AdminSidebar/>}
+                {enable_render && subview_renderer}
+                {enable_render === false && 
+                    <div className="unauthorized-message">
+                        <div className="heading">Unauthorized</div>
+                        You are not authorized to access this area. <Link to="/">Back</Link>
+                    </div>}
             </>
         )
-    }, [ subview ])
+    }, [ subview, props, user ])
 
     return renderer;
 }

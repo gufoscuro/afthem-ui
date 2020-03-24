@@ -84,7 +84,7 @@ const AdminSidebar = (props) => {
                 {links_renderer}
             </div>
         )
-    }, [ view, data ]);
+    }, [ view, data, id ]);
 
         
     return renderer;

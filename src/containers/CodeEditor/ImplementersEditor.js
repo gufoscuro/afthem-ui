@@ -8,28 +8,31 @@ import './VisualEditor.css';
 
 
 function ImplementersEditor (props) {
-    const { axiosInstance } = props;
-    const [ implementers, setImplementers] = useState (props.data ? props.data.implementers : null);
-    const [ thread_pools, setThreadPools ] = useState (props.data ? props.data.thread_pools : null);
+    const { axiosInstance, data, refreshHook, update } = props;
+    const [ implementers, setImplementers] = useState (data ? data.implementers : null);
+    const [ thread_pools, setThreadPools ] = useState (data ? data.thread_pools : null);
     const [ addFlow, setAddFlow ] = useState (false);
-
-    // console.log ('ImplementersEditor', axiosInstance)
+    
 
     useEffect (() => {
-        props.update ({
+        onMount ();
+    }, []);
+
+    useEffect (() => {
+        update ({
             implementers: implementers,
             thread_pools: thread_pools
         });
-    }, [ implementers, thread_pools ]);
-
-    useEffect (() => {
-        props.refreshHook (refreshEditor)
-    }, [])
+    }, [ implementers, thread_pools, update ]);
 
     const refreshEditor = useCallback ((data) => {
         setImplementers (data.implementers);
         setThreadPools (data.thread_pools);
-    }, [])
+    }, []);
+
+    const onMount = useCallback (() => {
+        refreshHook (refreshEditor)
+    }, [ refreshHook, refreshEditor ]);
 
     const addImplementer = useCallback ((item) => {
         let a = [...implementers]

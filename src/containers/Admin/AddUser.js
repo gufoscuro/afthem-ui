@@ -45,7 +45,7 @@ function AddUser (props) {
             } else
                 setError ('Please fill all the required fields.');
         })
-    }, [ outcome, model, ModelUtil ]);
+    }, [ outcome, model, backend_error, model_schema ]);
 
     let renderer = useMemo (() => {
         let field_props = { change: fieldChange },
@@ -75,7 +75,7 @@ function AddUser (props) {
                 </div>
             </div>
         )
-    }, [ saveUser, data, outcome, error, model ]);
+    }, [ saveUser, fieldChange, outcome, error, model ]);
 
     return renderer;
 }

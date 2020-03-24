@@ -5,7 +5,6 @@ import FadeinFX from '../../hoc/FadeinFX';
 import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import AddOrganization from './AddOrganization';
 import Dialog from '../../components/ModalPanel/Dialog';
-import axios from 'axios';
 
 
 function AdminOrganizations (props) {
@@ -13,19 +12,17 @@ function AdminOrganizations (props) {
     const [ organizations, setOrganizations ] = useState ([]);
     const [ modalFlow, setModalFlow ] = useState (null);
 
-
-    
     useEffect (() => {
         appBackground (true);
         fetchOrgs().then (() => appBackground (false))
     }, []);
-    
+
     const orgsMap = useMemo (() => {
         return organizations.reduce (function (map, obj) {
             map[obj.id] = obj;
             return map;
         }, { });
-    }, [  organizations ]);
+    }, [ organizations ]);
 
     const fetchOrgs = useCallback (() => {
         return new Promise ((resolve, reject) => {
@@ -34,7 +31,7 @@ function AdminOrganizations (props) {
                 resolve (response.data)
             }).catch (reject)
         })
-    }, [ setOrganizations ]);
+    }, [ setOrganizations, axiosInstance ]);
 
     const addOrg = useCallback ((id) => {
         let d = null;
@@ -66,7 +63,7 @@ function AdminOrganizations (props) {
             fetchOrgs().then (() => appBackground (false));
             appConfirm ();
         })
-    }, [ appBackground, appConfirm, fetchOrgs ]);
+    }, [ appBackground, appConfirm, fetchOrgs, axiosInstance ]);
 
     const addOrgOutcome = useCallback ((status) => {
         if (status.action === 'cancel-org-edits') {
@@ -79,12 +76,7 @@ function AdminOrganizations (props) {
                 appConfirm ();
             }).catch (status.error)
         }
-    }, [ appBackground, appConfirm, fetchOrgs ]);
-
-    const editOrgUsers = useCallback ((id) => {
-        // console.log ('editOrgUsers', id)
-        // setOrgUsersFlow (id)
-    }, []);
+    }, [ appBackground, appConfirm, fetchOrgs, axiosInstance ]);
     
     const modal_memo = useMemo (() => {
         let m_props,
@@ -123,7 +115,7 @@ function AdminOrganizations (props) {
             modal = (<ModalPanel active={false}></ModalPanel>);
 
         return modal;
-    }, [ modalFlow, removeOrg ])
+    }, [ modalFlow, removeOrg, addOrgOutcome ])
 
     const renderer = useMemo (() => {
         let org_list = (
@@ -143,7 +135,6 @@ function AdminOrganizations (props) {
                                 <div className="hover">
                                     <div className="ctrls">
                                         <NavLink className="thin-button" to={"/admin/organization/" + it.id + "/users"}>Manage</NavLink>
-                                        {/* <div className="thin-button" onClick={() => editOrgUsers (it.id)}>Edit Users</div> */}
                                         <div className="thin-button" onClick={() => addOrg (it.id)}>Edit</div>
                                         <div className="thin-button" onClick={() => askRemoveOrg (it.id)}>Remove</div>
                                     </div>
@@ -163,7 +154,7 @@ function AdminOrganizations (props) {
                 </div>
             </>
         )
-    }, [ organizations, modalFlow, addOrg ])
+    }, [ organizations, addOrg, askRemoveOrg, modal_memo ])
 
     return renderer;
 }

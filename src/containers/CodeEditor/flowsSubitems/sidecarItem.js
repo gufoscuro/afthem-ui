@@ -8,39 +8,39 @@ import arrayMove from 'array-move';
 
 function SidecarItem (props) {
     const { onUpdate, editing, definedActors } = props;
-    const sidecars = definedActors.filter (it => it.indexOf ('sidecar') === 0)
-    let value = props.value;
+    let { value } = props;
+    // const sidecars = definedActors.filter (it => it.indexOf ('sidecar') === 0)
 
     if ((value instanceof Array) === false)
         value = [];
     
-
+    const sidecars = useMemo (() => definedActors.filter (it => it.indexOf ('sidecar') === 0), [ definedActors ]);
 
     const shiftPosition = useCallback ((old_pos, new_pos) => {
         if (new_pos >= 0 && new_pos < value.length) {
             let a = arrayMove (value, old_pos, new_pos);
             onUpdate ('sidecars', a);
         }
-    }, [ onUpdate ]);
+    }, [ onUpdate, value ]);
 
     const changeSidecar = useCallback ((event, pos) => {
         const val = event.target.value;
         const a = [ ...value ];
         a[pos] = val;
         onUpdate ('sidecars', a);
-    }, [ onUpdate ]);
+    }, [ onUpdate, value ]);
 
     const addSidecar = useCallback (() => {
         const a = [ ...value ];
         a.push (sidecars[0]);
         onUpdate ('sidecars', a);
-    }, [ onUpdate ]);
+    }, [ onUpdate, sidecars, value ]);
 
     const removeSidecar = useCallback ((index) => {
         const a = [ ...value ];
         a.splice (index, 1);
         onUpdate ('sidecars', a);
-    }, [ onUpdate ]);
+    }, [ onUpdate, value ]);
     
     const renderer = useMemo (() => {
         if (editing) {
@@ -78,7 +78,7 @@ function SidecarItem (props) {
                 </>
             );
         }
-    }, [ editing, value ])
+    }, [ editing, value, addSidecar, changeSidecar, removeSidecar, shiftPosition, sidecars ])
 
     return (
         <>

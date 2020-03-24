@@ -9,7 +9,7 @@ function BackendElement (props) {
     const [ model, setModel ] = useState (props.data)
     
 
-    useEffect (() => {
+    const onMount = useCallback (() => {
         if (data.$editing) {
             let m = {...model};
             
@@ -18,13 +18,17 @@ function BackendElement (props) {
             change ($key, m);
             setEditing (true);
         }
-    }, [])
+    }, [ data, change, model, $key ]);
+
+    useEffect (() => {
+        onMount ();
+    }, []);
 
     useEffect (() =>  {
         if (editing === false && _.isEqual (data, model) === false) {
             setModel (data);
         }
-    }, [ model, data ]);
+    }, [ model, data, editing ]);
 
     const onValueChange = useCallback ((event) => {
         let v = event.target.value,
@@ -37,7 +41,7 @@ function BackendElement (props) {
                 return m;
             }); // need to check id is unique
         }
-    }, [ model ]);
+    }, []);
 
     const cancelChanges = useCallback (() => {
         setEditing (false);
@@ -97,7 +101,7 @@ function BackendElement (props) {
                 {rrr}
             </div>
         );
-    }, [ model, editing, onValueChange, cancelChanges, confirmChanges, $key ]);
+    }, [ model, editing, click, onValueChange, cancelChanges, confirmChanges, $key ]);
 
     return renderer;
 }

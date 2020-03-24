@@ -1,36 +1,38 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
 import _ from 'lodash/core';
 
 
 function ThreadpoolElement (props) {
+    const { data, $key, change, click } = props;
     const [ editing, setEditing ] = useState (false);
-    const [ model, setModel ] = useState (props.data)
-
-    let renderer;
+    const [ model, setModel ] = useState (props.data);
 
 
     useEffect (() => {
-        if (props.data.$editing) {
+        onMount ();
+    }, [])
+
+    useEffect (() =>  {
+        if (editing === false && _.isEqual (data, model) === false) {
+            setModel (data);
+        }
+    }, [ model, data, editing ]);
+
+    const onMount = useCallback (() => {
+        if (data.$editing) {
             let m = {...model};
             delete m.$editing;
 
             setModel (m);
-            props.change ({
-                key: props.$key,
+            change ({
+                key: $key,
                 type: 'threadpools',
                 data: m
             });
             setEditing (true);
         }
-    }, [])
-
-    useEffect (() =>  {
-        if (editing === false && _.isEqual (props.data, model) === false) {
-            setModel (props.data);
-        }
-    }, [ model ]);
-
+    }, [ data, change, model, $key ]);
 
     const onValueChange = useCallback ((event) => {
         let v = event.target.value,
@@ -44,67 +46,71 @@ function ThreadpoolElement (props) {
 
     const cancelChanges = useCallback (() => {
         setEditing (false);
-        setModel (props.data);
-    }, [ model ])
+        setModel (data);
+    }, [ data ])
 
     
     const confirmChanges = useCallback (() => {
         if (true) { // some sort of validation goes here I suppose ...
-            props.change ({
-                key: props.$key,
+            change ({
+                key: $key,
                 type: 'threadpools',
                 data: { ...model }
             });
             setEditing (false);
         }
-    }, [ model ])
+    }, [ model, change, $key ])
 
 
-    if (editing) {
-        renderer = (
-            <>
-                <div className="editor-component-field">
-                    <span className="lbl">min <i className="sep far fa-long-arrow-right"></i></span>
-                    <input type="text" name="min" value={model.min} pattern="[0-9]*" onChange={onValueChange}/>
-                </div>
-                <div className="editor-component-field">
-                    <span className="lbl">max <i className="sep far fa-long-arrow-right"></i></span>
-                    <input type="text" name="max" value={model.max} pattern="[0-9]*" onChange={onValueChange}/>
-                </div>
-                <div className="editor-component-field">
-                    <span className="lbl">factor <i className="sep far fa-long-arrow-right"></i> </span>
-                    <input type="text" name="factor" value={model.factor} pattern="[0-9]*" onChange={onValueChange}/>
-                </div>
-                
-                <div className="e-ctrls">
-                    <div className="thin-button" onClick={cancelChanges}>Cancel</div>
-                    <div className="thin-button" onClick={confirmChanges}>Confirm</div>
-                </div>
-            </>
-        );
-    } else {
-        renderer = (
-            <>
-                <div className="lbl">{props.$key}</div>
-                <div className="keyval indent-1">min <i className="far fa-long-arrow-right"></i> {props.data.min}</div>
-                <div className="keyval indent-1">max <i className="far fa-long-arrow-right"></i> {props.data.max}</div>
-                <div className="keyval indent-1">factor <i className="far fa-long-arrow-right"></i> {props.data.factor}</div>
-
-                <div className="hover">
-                    <div className="ctrls">
-                        <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
-                        {props.$key === 'default' ? null : (<div className="thin-button" onClick={props.click.bind (this, { action: 'remove-threadpool', id: props.$key })}>Remove</div>)}
+    const renderer = useMemo (() => {
+        let r;
+        if (editing) {
+            r = (
+                <>
+                    <div className="editor-component-field">
+                        <span className="lbl">min <i className="sep far fa-long-arrow-right"></i></span>
+                        <input type="text" name="min" value={model.min} pattern="[0-9]*" onChange={onValueChange}/>
                     </div>
-                </div>
-            </>
-        )
-    }
+                    <div className="editor-component-field">
+                        <span className="lbl">max <i className="sep far fa-long-arrow-right"></i></span>
+                        <input type="text" name="max" value={model.max} pattern="[0-9]*" onChange={onValueChange}/>
+                    </div>
+                    <div className="editor-component-field">
+                        <span className="lbl">factor <i className="sep far fa-long-arrow-right"></i> </span>
+                        <input type="text" name="factor" value={model.factor} pattern="[0-9]*" onChange={onValueChange}/>
+                    </div>
+                    
+                    <div className="e-ctrls">
+                        <div className="thin-button" onClick={cancelChanges}>Cancel</div>
+                        <div className="thin-button" onClick={confirmChanges}>Confirm</div>
+                    </div>
+                </>
+            );
+        } else {
+            r = (
+                <>
+                    <div className="lbl">{$key}</div>
+                    <div className="keyval indent-1">min <i className="far fa-long-arrow-right"></i> {data.min}</div>
+                    <div className="keyval indent-1">max <i className="far fa-long-arrow-right"></i> {data.max}</div>
+                    <div className="keyval indent-1">factor <i className="far fa-long-arrow-right"></i> {data.factor}</div>
+    
+                    <div className="hover">
+                        <div className="ctrls">
+                            <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
+                            {$key === 'default' ? null : (<div className="thin-button" onClick={click.bind (this, { action: 'remove-threadpool', id: $key })}>Remove</div>)}
+                        </div>
+                    </div>
+                </>
+            )
+        }
 
-    return (
-        <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>
-            {renderer}
-        </div>
-    );
+        return (
+            <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>{r}</div>
+        )
+    }, [ editing, click, data, model, $key, onValueChange, confirmChanges, cancelChanges ])
+    
+
+    return renderer;
 }
 
 export default ThreadpoolElement;

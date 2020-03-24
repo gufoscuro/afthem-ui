@@ -7,25 +7,25 @@ import './VisualEditor.css';
 
 
 function BackendsEditor (props) {
-    const { definedFlows, refreshHook } = props;
+    const { update, refreshHook } = props;
     const [ model, setModel ] = useState (props.data && props.data.backends ? props.data.backends : []);
 
 
     
     useEffect (() => {
-        props.update ({
+        update ({
             backends: model
         });
-    }, [ model ]);
+    }, [ model, update ]);
 
     useEffect (() => {
         refreshHook (refreshEditor);
     }, []);
 
     const refreshEditor = useCallback ((data) => {
-        console.log ('refresh', data)
+        // console.log ('refresh', data)
         setModel (data.backends)
-    }, [])
+    }, []);
 
     const removeItem = useCallback ((index) => {
         setModel ((prevModel) => {
@@ -33,7 +33,7 @@ function BackendsEditor (props) {
             a.splice (index, 1);
             return a;
         })
-    }, [ model ]);
+    }, []);
 
     const addItem = useCallback (() => {
         setModel ((m) => {
@@ -47,7 +47,7 @@ function BackendsEditor (props) {
 
             return t;
         });
-    }, [ model ]);
+    }, []);
 
     const click_element = useCallback ((status) => {
         console.log ('click', status);
@@ -55,7 +55,7 @@ function BackendsEditor (props) {
         if (status.action === 'remove')
             removeItem (status.id)
 
-    }, [ removeItem, model ]);
+    }, [ removeItem ]);
 
     const edit_element = useCallback ((index, data) => {
         setModel (prevModel => {
@@ -63,7 +63,7 @@ function BackendsEditor (props) {
             m[index] = data;
             return m;
         });
-    }, [ model ])
+    }, [])
 
     const model_renderer = useMemo (() => {
         const backendsitems_props = {

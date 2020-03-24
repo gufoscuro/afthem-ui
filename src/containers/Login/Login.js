@@ -6,19 +6,20 @@ import './Login.css';
 
 
 function Login (props) {
-    const { appBackground, appConfirm, appLocked, history, axiosInstance } = props;
+    const { appBackground, appLocked, appAuthenticated, history, axiosInstance, fetchUserInfo } = props;
     const [ model, setModel ] = useState ({ username: '', password: '' });
     const [ error, setError ] = useState (null);
     const [ disabled, setDisabled ] = useState (false)
     const [ loginSuccess, setLoginSuccess ] = useState (false)
 
+
     useEffect (() => {
+        onMount ();
+    }, []);
+
+    const onMount = useCallback (() => {
         appLocked (true);
-        axiosInstance.post ('/api/login/check/').then ((response) => {
-            if (response.data.success)
-                history.push ('/');
-        });
-    }, [])
+    }, [ appLocked, axiosInstance, history ]);
 
     const doLogin = useCallback (() => {
         const data = { ...model };
@@ -35,11 +36,18 @@ function Login (props) {
                 .then ((response) => {
                     appBackground (false);
                     if (response.data.token) {
-                        setLoginSuccess (true)
-                        setTimeout (() => {
+                        setLoginSuccess (true);
+                        fetchUserInfo().then (() => {
                             appLocked (false);
-                            history.push ('/');
-                        }, 1000)
+                            setTimeout (() => {
+                                appAuthenticated (true);
+                                history.push ('/');
+                            }, 1000)
+                        }).catch (() => {
+                            setLoginSuccess (false);
+                            setDisabled (false);
+                            setError ('Username/Password are incorrect.')
+                        })
                     } else {
                         setDisabled (false);
                         setError ('Username/Password are incorrect.')
@@ -48,7 +56,7 @@ function Login (props) {
         } else {
             setError ('Username/Password can\'t be empty.')
         }
-    }, [ axiosInstance, history, model ]);
+    }, [ axiosInstance, history, model, appLocked, appBackground, fetchUserInfo ]);
 
     const fieldChange = useCallback ((name, value) => {
         setModel ((prevModel) => {
@@ -56,10 +64,15 @@ function Login (props) {
             m[name] = value;
             return m;
         })
-    }, [ ]);
+    }, []);
+
+    const fieldKeypress = useCallback ((event) => {
+        if (event.key === 'Enter')
+            doLogin ();
+    }, [ model ]);
     
     const renderer = useMemo (() => {
-        let field_props = { change: fieldChange }
+        let field_props = { change: fieldChange, keypress: fieldKeypress }
         return (
             <div className="Login">
                 <div className="login-box">

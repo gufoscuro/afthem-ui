@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import ClusterControl from './ClusterControl';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -33,7 +33,7 @@ const ClusterSidebar = (props) => {
                                                 key={"sub_" + idx}
                                                 className={"view-selector " + (sub_file.repo ? sub_file.repo.status : '')} 
                                                 activeClassName="active" 
-                                                onClick={props.clickHandler} 
+                                                onClick={clickHandler} 
                                                 to={base_url + "/" + cluster.id + "/"+ file.normalizedName +"@" + sub_file.normalizedName}>
                                                 {sub_file.normalizedName}
 
@@ -64,7 +64,7 @@ const ClusterSidebar = (props) => {
                                 key={index}
                                 className={"view-selector " + (file.repo ? file.repo.status : '')}
                                 activeClassName="active" 
-                                onClick={props.clickHandler} 
+                                onClick={clickHandler} 
                                 to={base_url + "/" + cluster.id + "/" + file.normalizedName}>{file.normalizedName}</NavLink>
                         )
                     }
@@ -73,7 +73,7 @@ const ClusterSidebar = (props) => {
                 })}
             </Aux>
         )
-    }, [ organization, cluster, files, clickHandler ]);
+    }, [ organization, cluster, files, clickHandler, base_url ]);
     
     const renderer = useMemo (() => {
         let cm_options      = {
@@ -104,7 +104,7 @@ const ClusterSidebar = (props) => {
                 </div>
             </div>
         )
-    }, [ active, cluster, organization, links ]);
+    }, [ active, cluster, links, base_url, clickHandler ]);
 
         
     return renderer;

@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 
 
 function SimpleFormField (props) {
-    const { name, value, change, type, options } = props;
+    const { name, value, change, keypress, type, options } = props;
 
     const onValueChange = useCallback ((val, event) => {
         let v = val;
@@ -17,7 +17,7 @@ function SimpleFormField (props) {
         }
         
         change (name, v);
-    }, [ name, value, change, type ]);
+    }, [ name, change, type ]);
 
     const renderer = useMemo (() => {
         let inpt,
@@ -44,18 +44,21 @@ function SimpleFormField (props) {
         
         else if (type === 'text' || type === 'password' || type === 'int') {
             let t_type = (type === 'password' ? type : 'text');
-            inpt = (<input className="textfield" type={t_type} name={name} value={value} placeholder={name} onChange={hndl} autoComplete="off" />);
+            if (keypress !== undefined)
+                inpt = (<input className="textfield" type={t_type} name={name} value={value} 
+                    placeholder={name} onChange={hndl} onKeyPress={keypress} autoComplete="off" />);
+            else
+                inpt = (<input className="textfield" type={t_type} name={name} value={value} 
+                    placeholder={name} onChange={hndl} autoComplete="off" />);
         }
 
         return (
             <div className="text-field-holder clearfix">
                 <div className="label">{name}</div>
-                <div className="text">
-                    {inpt}
-                </div>
+                <div className="text">{inpt}</div>
             </div>
         )
-    }, [ name, value, type, change, onValueChange ]);
+    }, [ name, value, type, options, onValueChange, keypress ]);
 
 
     return renderer;

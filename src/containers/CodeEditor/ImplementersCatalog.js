@@ -1,17 +1,19 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import './ActorsCatalog.css'
 
 
 function ImplementersCatalog (props) {
+    const { add, hide, data } = props;
+    
+    
     const clickElement = useCallback ((element) => {
-        // console.log (element)
-        props.add (element);
-    })
+        add (element);
+    }, [ add ])
 
     let catalog_render = useMemo (() => {
-        if (props.data) {
-            return props.data.map ((c, ci) => {
+        if (data) {
+            return data.map ((c, ci) => {
                 return (
                     <div key={ci} className="actor-item" onClick={(e) => { e.stopPropagation (); clickElement (c) }}>
                         <div className="lbl">{c.typeid}</div>
@@ -22,14 +24,14 @@ function ImplementersCatalog (props) {
         } else 
             return null;
         
-    }, [ clickElement ])
+    }, [ clickElement, data ])
 
     return (
         <div className="ActorsCatalog">
             <div className="inner">
                 <div className="fx animated slideInDown d-1">
                     {catalog_render}
-                    <div className="close-catalog" onClick={(e) => { e.stopPropagation (); props.hide () }}>Close</div>
+                    <div className="close-catalog" onClick={(e) => { e.stopPropagation (); hide () }}>Close</div>
                 </div>
             </div>
         </div>

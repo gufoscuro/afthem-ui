@@ -1,12 +1,10 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
-import axios from 'axios';
-
 import './ActorsCatalog.css'
 
 
 function ActorsCatalog (props) {
-    const { axiosInstance } = props;
+    const { axiosInstance, add } = props;
     const [ catalog, setCatalog ] = useState (null);
 
 
@@ -18,12 +16,12 @@ function ActorsCatalog (props) {
 
     const clickElement = useCallback ((element) => {
         // console.log (element)
-        props.add ({
+        add ({
             id: element.name + Math.floor(Math.random() * 10000),
             class: element.class,
             type: element.type
         });
-    }, [ catalog ])
+    }, [ add ])
 
     const toggleCategory = useCallback ((index) => {
         let a = { ...catalog },

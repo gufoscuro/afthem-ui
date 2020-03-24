@@ -11,13 +11,7 @@ function OrgUsersEditor (props) {
     const { org, appBackground, appConfirm, axiosInstance } = props;
     const [ users, setUsers ] = useState ([]);
     const [ modalFlow, setModalFlow ] = useState (null);
-
-
-
-    useEffect (() => {
-        appBackground (true)
-        fetchUsers ().then (usrs => appBackground (false))
-    }, [ org ]);
+    
 
     const fetchUsers = useCallback (() => {
         return new Promise ((resolve, reject) => {
@@ -26,7 +20,7 @@ function OrgUsersEditor (props) {
                 resolve (response.data)
             })
         })
-    }, [ org ]);
+    }, [ org, axiosInstance ]);
 
     const removeMembership = useCallback ((id) => {
         appBackground (true)
@@ -37,7 +31,7 @@ function OrgUsersEditor (props) {
             fetchUsers ().then (usrs => appBackground (false));
             appConfirm ();
         })
-    }, [ org ]);
+    }, [ org, axiosInstance, appBackground, appConfirm, fetchUsers ]);
 
     const askRemoveMembership = useCallback ((id) => {
         setModalFlow ({
@@ -61,7 +55,7 @@ function OrgUsersEditor (props) {
             fetchUsers ().then (usrs => appBackground (false));
             appConfirm ();
         })
-    }, [ org ]);
+    }, [ org, appBackground, appConfirm, fetchUsers, axiosInstance ]);
 
     const addMembershipOutcome = useCallback ((status) => {
         // console.log ('addMembershipOutcome', status);
@@ -74,7 +68,12 @@ function OrgUsersEditor (props) {
             setModalFlow (null);
             saveMembership (status.id);
         }
-    }, []);
+    }, [ saveMembership ]);
+
+    useEffect (() => {
+        appBackground (true)
+        fetchUsers ().then (usrs => appBackground (false))
+    }, [ appBackground, fetchUsers ]);
 
     const modal_memo = useMemo (() => {
         let m_props,
@@ -112,7 +111,7 @@ function OrgUsersEditor (props) {
             modal = (<ModalPanel active={false}></ModalPanel>);
 
         return modal;
-    }, [ modalFlow, removeMembership ]);
+    }, [ modalFlow, removeMembership, addMembershipOutcome, axiosInstance, org ]);
 
     const renderer = useMemo (() => {
         return (
@@ -143,7 +142,7 @@ function OrgUsersEditor (props) {
                 {modal_memo}
             </div>
         )
-    }, [ org, users, modal_memo ])
+    }, [ users, modal_memo, askRemoveMembership, addMembership ])
 
     return renderer;
 }

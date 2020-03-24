@@ -40,7 +40,7 @@ function AddFlow (props) {
             setError ('The name can\'t be empty.');
             setDisabled (false);
         }
-    }, [ outcome, name ]);
+    }, [ outcome, name, backend_error ]);
 
     let renderer = useMemo (() => {
         let field_props = { change: fieldChange }
@@ -59,7 +59,7 @@ function AddFlow (props) {
                 </div>
             </div>
         )
-    }, [ save, name, outcome, error, disabled ]);
+    }, [ save, name, outcome, error, disabled, fieldChange ]);
 
     return renderer;
 }

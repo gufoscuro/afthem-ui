@@ -40,7 +40,7 @@ function AddCommit (props) {
             setError ('The commit message can\'t be empty.');
             setDisabled (false);
         }
-    }, [ outcome, message ]);
+    }, [ outcome, message, backend_error ]);
 
     let renderer = useMemo (() => {
         let field_props = { change: fieldChange }
@@ -59,7 +59,7 @@ function AddCommit (props) {
                 </div>
             </div>
         )
-    }, [ save, message, outcome, error, disabled ]);
+    }, [ save, message, outcome, error, disabled, fieldChange ]);
 
     return renderer;
 }

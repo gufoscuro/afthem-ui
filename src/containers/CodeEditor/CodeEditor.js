@@ -22,7 +22,6 @@ import 'codemirror/mode/properties/properties';
 import 'codemirror/lib/codemirror.css';
 import './theme-neo.css';
 import './CodeEditor.css';
-import Axios from 'axios';
 
 
 

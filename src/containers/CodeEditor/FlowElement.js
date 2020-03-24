@@ -12,7 +12,7 @@ function FlowElement (props) {
     const { $key, data, change, definedActors, actorsSchema } = props;
     const [ editing, setEditing ] = useState (false);
     const [ model, setModel ] = useState (props.data)
-    const [ config, setConfig ] = useState (null);
+    // const [ config, setConfig ] = useState (null);
     const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
     
 
@@ -25,7 +25,7 @@ function FlowElement (props) {
             delete m.$data;
 
             
-            setConfig (data.$data);
+            // setConfig (data.$data);
 
             if (data.$data.sidecars)
                 m.sidecars = { };
@@ -45,7 +45,7 @@ function FlowElement (props) {
             
             setModel (m);
             change ({
-                key: props.$key,
+                key: $key,
                 type: 'flows',
                 data: m
             });
@@ -57,7 +57,7 @@ function FlowElement (props) {
         if (editing === false && _.isEqual (data, model) === false) {
             setModel (data);
         }
-    }, [ model, data ]);
+    }, [ model, data, editing ]);
 
     const onValueChange = useCallback ((event) => {
         let v = event.target.value,
@@ -70,14 +70,15 @@ function FlowElement (props) {
                 return m;
             }); // need to check id is unique
         }
-    }, [ model ]);
+    }, []);
 
     const onValueUpdate = useCallback ((key, value) => {
-        let m = { ...model };
-
-        m[key] = value;
-        setModel (m);
-    });
+        setModel (prevModel => {
+            let m = { ...prevModel };
+            m[key] = value;
+            return m;
+        });
+    }, []);
 
     const cancelChanges = useCallback (() => {
         setEditing (false);
@@ -119,7 +120,7 @@ function FlowElement (props) {
                 {fields}
             </>
         )
-    }, [ model, editing, onValueUpdate, onValueChange ]);
+    }, [ model, editing, onValueUpdate, onValueChange, definedActors, elementSchema ]);
 
 
     let ctrls;

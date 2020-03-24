@@ -4,10 +4,7 @@ import { withRouter } from 'react-router'
 
 import Aux from '../../hoc/Aux';
 import FadeinFX from '../../hoc/FadeinFX';
-import ModalPanel from '../../components/ModalPanel/ModalPanel';
-// import AddSector from '../../components/Sectors/AddSector';
 import OrgBlock from './OrgBlock/OrgBlock';
-// import axios from 'axios';
 
 import './Dashboard.css'
 
