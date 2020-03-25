@@ -66,7 +66,7 @@ module.exports.add = (req, res, opts) => {
                                 fservice.createClusterFolder (org.id, clstr, usr)
                                     .then (() => t.commit().then (() => resolve (clstr)))
                                     .catch (error => {
-                                        fservice.removeClusterFolder (org.id, clstr.id).then (resolve);
+                                        fservice.removeClusterFolder (org.id, clstr.id);
                                         t.rollback ().then (() => reject ({ code: 500, error: true, message: error.toString() }));
                                     });
                             }).catch (() => reject ({ code: 500, error: true, message: 'Invalid user' }));
