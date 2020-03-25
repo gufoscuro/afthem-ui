@@ -3,15 +3,13 @@ import { Route, Redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 const ProtectedRoute = ({ render: render, ...rest }) => {
-    const isAuthenticated = useCallback (() => {
-        return Cookies.get ('auth') !== undefined
-    }, []);
-
+    // console.log ('protectedroute', {...rest})
     return (
         <Route 
             {...rest} 
             render={props => {
-                if (isAuthenticated ())
+                console.log ({...rest})
+                if (Cookies.get ('auth') !== undefined)
                     return render (props);
                 else {
                     return <Redirect to={{

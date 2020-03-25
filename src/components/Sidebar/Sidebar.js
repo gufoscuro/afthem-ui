@@ -87,32 +87,54 @@ const Sidebar = (props) => {
         )
     }, [ organization, user, clickHandler ])
 
-    const renderer = useMemo (() => {
-        let sidebar_clss = 'Sidebar',
-            busy_layer;
+    // const renderer = useMemo (() => {
+    //     let sidebar_clss = 'Sidebar',
+    //         busy_layer;
 
-        if (busy) {
-            sidebar_clss += ' busy';
-            busy_layer = (
-                <div className="maintenance-layer"></div>
-            );
-        }
+    //     if (busy) {
+    //         sidebar_clss += ' busy';
+    //         busy_layer = (
+    //             <div className="maintenance-layer"></div>
+    //         );
+    //     }
 
-        if (background)
-            sidebar_clss += ' background';
+    //     if (background)
+    //         sidebar_clss += ' background';
 
-        return (
-            <div className={sidebar_clss}>
-                {top_links}
-                {bottom_links}
-                {labels_panel}
-                {busy_layer}
-            </div>
-        )
-    }, [ background, busy, top_links, bottom_links, labels_panel ]);
+    //     return (
+    //         <div className={sidebar_clss}>
+    //             {top_links}
+    //             {bottom_links}
+    //             {labels_panel}
+    //             {busy_layer}
+    //         </div>
+    //     )    
+    // }, [ background, busy, top_links, bottom_links, labels_panel ]);
     
 
-    return renderer;
+    // return renderer;
+
+    let sidebar_clss = 'Sidebar',
+        busy_layer;
+
+    if (busy) {
+        sidebar_clss += ' busy';
+        busy_layer = (
+            <div className="maintenance-layer"></div>
+        );
+    }
+
+    if (background)
+        sidebar_clss += ' background';
+
+    return (
+        <div className={sidebar_clss}>
+            {top_links}
+            {bottom_links}
+            {labels_panel}
+            {busy_layer}
+        </div>
+    )
 }
 
 export default Sidebar;

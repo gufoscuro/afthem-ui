@@ -1,5 +1,8 @@
-const NodeGit       = require ('nodegit');
-const fs            = require ('fs');
+const fs            = require ('fs-extra');
+const path          = require ('path')
+const git           = require ('isomorphic-git')
+const http          = require ('isomorphic-git/http/node')
+const Spinner       = require ('cli-spinner').Spinner;
 
 const sequelize     = require ('../model/db').instance;
 
@@ -12,8 +15,13 @@ const orgDAO        = require ('../model/organization');
 const orgSqlz       = orgDAO.handle;
 
 
-const clusterMRepo  = "https://github.com/theirish81/afthem-base"
-const clusterMPath  = "./default-cluster-data"
+const clusterMRepo  = process.env.BASE_REPOSITORY || "https://github.com/theirish81/afthem-base.git";
+const clusterMPath  = "./default-cluster-data";
+
+
+const ADMIN_USERNAME        =  process.env.ADMIN_USERNAME || 'johndoe';
+const ADMIN_GIT_USERNAME    =  process.env.ADMIN_GIT_USERNAME || 'johndoe';
+const ADMIN_GIT_PASSWORD    =  process.env.ADMIN_GIT_PASSWORD || 'foobar';
 
 
 
@@ -26,14 +34,14 @@ const init_script = () => {
                 timezone: 'GMT'
             }).save ().then ((org) => {
                 userSqlz.build ({
-                    username:  process.env.ADMIN_USERNAME || 'johndoe',
+                    username:  ADMIN_USERNAME,
                     password:  process.env.ADMIN_PASSWORD || 'foobar',
                     firstName:  process.env.ADMIN_FIRST_NAME || 'John',
                     lastName:  process.env.ADMIN_LAST_NAME || 'Doe',
                     level: 0,
                     enabled: true,
-                    gitUsername: process.env.ADMIN_GIT_USERNAME || 'johndoe',
-                    gitPassword: process.env.ADMIN_GIT_PASSWORD || 'foobar'
+                    gitUsername: ADMIN_GIT_USERNAME,
+                    gitPassword: ADMIN_GIT_PASSWORD
                 }).save().then ((usr) => {
                     var m = memberSqlz.build ({
                         UserId: usr.id,
@@ -46,38 +54,96 @@ const init_script = () => {
     })
 }
 
-exports.initDB = () => {
+const initDB = () => {
     return new Promise ((resolve, reject) => {
         userSqlz.count().then ((result) => {
             if (result === 0) {
                 init_script ().then (resolve).catch (reject)
-            } else
-                resolve ();
+            } else {
+                userSqlz.findOne ({
+                    where: {
+                        level: 0
+                    }
+                }).then (usr => resolve (usr));
+            }
         }).catch (() => {
             init_script ().then (resolve).catch (reject)
         })
     })
 }
 
-module.exports.fetchDefaultClusterData = () => {
+const fetchDefaultClusterData = (adminUser) => {
+    const spinner = new Spinner ();
+    spinner.setSpinnerTitle ('Base repository');
+    spinner.start ();
+    
     return new Promise ((resolve, reject) => {
+        var dir = path.join (process.cwd (), clusterMPath);
+
         fs.exists (clusterMPath + '/.git', (exists) => {
             if (exists) {
-                console.log ('Default cluster data found. Searching for updates...');
-                NodeGit.Repository.open (clusterMPath)
-                    .catch (err => reject ({ success: false, message: 'Pull error –', error: err }))
-                    .then ((repository) => {
-                        return repository.fetchAll()
-                            .catch (err => reject ({ success: false, message: 'Pull error –', error: err }))
-                            .then (d => repository.mergeBranches ("master", "origin/master"))
-                            .done (hash => resolve ({ success: true, message: 'Repository updated.' }));
-                    });
+                git.pull ({
+                    fs,
+                    http,
+                    dir: clusterMPath,
+                    ref: 'master',
+                    singleBranch: true,
+                    author: {
+                        name: ADMIN_USERNAME
+                    },
+                    onAuth: (url) => {
+                        return {
+                            username: ADMIN_GIT_USERNAME,
+                            password: ADMIN_GIT_PASSWORD
+                        }
+                    },
+                    onAuthSuccess: () => { },
+                    onAuthFailure: () => { },
+                    onProgress: (event) => { },
+                    onMessage: (message) => {
+                        spinner.setSpinnerTitle ('Base repository: ' + message)
+                    }
+                }).then ((payload) => {
+                    spinner.stop ();
+                    console.log ('\n');
+                    resolve ({ success: true, message: 'Base repository successfully updated.' });
+                })
+                .catch ((error) => {
+                    spinner.stop ();
+                    reject ({ success: false, message: error.toString(), error: error })
+                })
             } else {
-                console.log ('Fetching default cluster data from github ...');
-                NodeGit.Clone (clusterMRepo, clusterMPath)
-                    .then (rep => resolve ({ success: true, message: 'Respository successfully cloned.' }))
-                    .catch (err => reject ({ success: false, message: 'Clone error –', error: err }))
+                git.clone ({
+                    fs, http, dir,
+                    url: clusterMRepo,
+                    onAuth: (url) => {
+                        return {
+                            username: ADMIN_GIT_USERNAME,
+                            password: ADMIN_GIT_PASSWORD
+                        }
+                    },
+                    onAuthSuccess: () => { },
+                    onAuthFailure: () => { },
+                    onProgress: (event) => { },
+                    onMessage: (message) => {
+                        spinner.setSpinnerTitle ('Base repository: ' + message)
+                    }
+                }).then ((payload) => {
+                    spinner.stop ();
+                    console.log ('\n');
+                    resolve ({ success: true, message: 'Base repository successfully cloned.' })
+                })
+                .catch ((error) => {
+                    spinner.stop ();
+                    reject ({ success: false, message: error.toString(), error: error })
+                })
             }
         })
+    })
+}
+
+module.exports.serverPreBootstrap = () => {
+    return new Promise ((resolve, reject) => {
+        initDB().then (admin => fetchDefaultClusterData (admin).catch (reject).then (resolve))
     })
 }

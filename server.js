@@ -1,4 +1,5 @@
 const PROD          = process.env.PROD || false;
+const PORT          = process.env.PORT || 3001;
 const express       = require ('express');
 const bodyParser    = require ('body-parser');
 const cookieParser  = require ('cookie-parser');
@@ -6,6 +7,7 @@ const path          = require ('path');
 const JWTUtil       = require ('./lib/jwt/jwt');
 const app           = express ();
 const bootService   = require ('./services/bootstrap-services');
+const chalk         = require ('chalk');
 
 
 app.use (bodyParser.urlencoded ({ extended: false }));
@@ -58,10 +60,9 @@ const action_evaulator = (req, res) => {
                     ctrls[opts.action](req, res, opts).then ((result) => {
                         res.json (result)
                     }).catch ((e, t) => {
-                        res.status(e.code ? e.code : 500).send (e);
-                        if (PROD === false)
-                            console.error (e);
-                            // throw e;
+                        res.status ((e && e.code) ? e.code : 500).send (e);
+                        if (!PROD)
+                            console.log ('\n\n', chalk.redBright (e));
                     })
                 } else 
                     res.status (401).json (generic_error ('Unauthorized.')); 
@@ -90,12 +91,13 @@ app.use ('*', express.static (path.join (__dirname, 'build')));
 
 
 
-bootService.initDB().then (() => {
-    // console.clear ();
-    bootService.fetchDefaultClusterData().catch ((r) => { console.error (r.message, r.error) }).then ((r) => {
-        console.log (r.message);
-        app.listen (process.env.PORT || 3001);
-        console.log ('\nServer listening on http://localhost:3001');
-    })
-})
+bootService.serverPreBootstrap ()
+    .catch (r =>  console.log ('\n', chalk.redBright (r.message), '\n'))
+    .then (r => {
+        if (r && r.message)
+            console.log (chalk.greenBright (r.message));
+
+        app.listen (PORT || 3001);
+        console.log ('\nServer listening on http://localhost:' + PORT);
+    });
 

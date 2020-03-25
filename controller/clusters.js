@@ -48,9 +48,7 @@ module.exports.add = (req, res, opts) => {
         var config = {
             name: req.body.name,
             description: req.body.description,
-            gitUrl: req.body.gitUrl,
-            gitUsername: req.body.gitUsername,
-            gitPassword: req.body.gitPassword
+            gitUrl: req.body.gitUrl
         }
 
         // console.log (JSON.stringify (config, null, '   '));
@@ -64,20 +62,14 @@ module.exports.add = (req, res, opts) => {
                     clstr.save ({ transaction: t }).then ((clstr) => {
                         org.addCluster (clstr, { save: false });
                         org.save ({ transaction: t }).then (() => {
-                            fservice.createClusterFolder (org.id, clstr.id, clstr.gitUrl)
-                                .then (() => t.commit().then (() => resolve (clstr)))
-                                .catch (error => {
-                                    t.rollback ().then (() => {
-                                        if (error.errorFunction !== undefined) {
-                                            reject ({
-                                                code: 500,
-                                                error: true,
-                                                message: 'Git: ' + error
-                                            })
-                                        } else
-                                            reject (errors);
-                                    })
-                                });
+                            userDAO.load (opts.user.id).then ((usr) => {
+                                fservice.createClusterFolder (org.id, clstr, usr)
+                                    .then (() => t.commit().then (() => resolve (clstr)))
+                                    .catch (error => {
+                                        fservice.removeClusterFolder (org.id, clstr.id).then (resolve);
+                                        t.rollback ().then (() => reject ({ code: 500, error: true, message: error.toString() }));
+                                    });
+                            }).catch (() => reject ({ code: 500, error: true, message: 'Invalid user' }));
                         }).catch (reject);
                     }).catch (reject);
                 })
@@ -113,6 +105,18 @@ module.exports.remove = (req, res, opts) => {
                 message: "invalid parameters"
             })
         }
+    })
+}
+
+module.exports.gitStatus = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        var oid = req.body.oid ? req.body.oid : req.query.oid,
+            cid = req.body.cid ? req.body.cid : req.query.cid,
+            dir = c_base_path + oid + '/' + cid;
+
+        fservice.gitStatus (dir).then ((result) => {
+            resolve ({ files: result });
+        })
     })
 }
 

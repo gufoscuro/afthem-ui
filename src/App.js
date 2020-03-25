@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Route, BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import './App.css';
 
-import Layout from './Layout';
 import Organizations from './containers/Organizations/Organizations';
 import Clusters from './containers/Clusters/Clusters';
 import ClusterDashboard from './containers/ClusterDashboard/ClusterDashboard';
@@ -11,17 +10,20 @@ import Admin from './containers/Admin/Admin';
 import AdminOrg from './containers/Admin/AdminOrg';
 import Confirm from './components/ModalPanel/Confirm';
 import Login from './containers/Login/Login';
-import ProtectedRoute from './components/ProtectedRoute/protected.route';
+import SmartRoute from './components/ProtectedRoute/SmartRoute';
+// import ProtectedRoute from './components/ProtectedRoute/protected.route';
+import Layout from './Layout';
 
 // import ErrorOverlay from './components/ErrorOverlay/ErrorOverlay';
 // import MaintenanceMode from './components/ErrorOverlay/MaintenanceMode';
 
 import storage from './libs/js/storage';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 
 class App extends Component {
 	state = {
-		authenticated: true,
+		isUserAuthenticated: true,
         background: false,
         confirm: false,
         organization: null,
@@ -42,12 +44,11 @@ class App extends Component {
 			const { status } = error.response;
 			if (status === 401) {
 				this.setState ({
-					authenticated: false,
+					background: false,
+					isUserAuthenticated: false,
 					user_nfo: null
 				});
 			}
-			// if (status === 401)
-			// 	window.location.href = '/login';
 			return Promise.reject (error);
 		});
 	}
@@ -64,13 +65,11 @@ class App extends Component {
 			this.setState ({ cluster: cluster });
 	}
 	
-	app_authenticated = (bool) => {
-		this.setState ({ authenticated: false });
-	}
+	app_authenticated = bool => this.setState ({ isUserAuthenticated: bool });
 
-	app_background = (bool) => {
-        this.setState ({ background: bool });
-    }
+	app_background = bool => this.setState ({ background: bool });
+
+	app_locked = bool => this.setState ({ sidebar_busy: bool });
 
     app_confirm = () => {
         if (this.confirm_timer) {
@@ -84,9 +83,7 @@ class App extends Component {
         }, 1000);
 	}
 	
-	app_locked = (bool) => {
-		this.setState ({ sidebar_busy: bool });
-	}
+	
 
 	organization_handler = (organization) => {
 		if (organization && organization !== undefined) {
@@ -111,13 +108,18 @@ class App extends Component {
 	fetchUserInfo = () => {
         this.setState ({ fetching_user: true })
         return new Promise ((resolve, reject) => {
-            this.axiosInstance.get ('/api/users/load').then ((payload) => {
-                this.setState ({
-					fetching_user: false,
-					user_nfo: payload.data
-				});
-                resolve ();
-            }).catch (reject);
+			if (Cookies.get ('auth') === undefined) {
+				this.setState ({ isUserAuthenticated: false, fetching_user: false });
+				reject ();
+			} else
+				this.axiosInstance.get ('/api/users/load').then ((payload) => {
+					this.setState ({
+						isUserAuthenticated: true,
+						fetching_user: false,
+						user_nfo: payload.data
+					});
+					resolve ();
+				}).catch (reject);
         })
     };
 
@@ -130,7 +132,7 @@ class App extends Component {
 
 	render () {
 		let basic_props = {
-				authenticated: this.authenticated,
+				isUserAuthenticated: this.state.isUserAuthenticated,
 				axiosInstance: this.axiosInstance,
                 appBackground: this.app_background,
 				appConfirm: this.app_confirm,
@@ -144,6 +146,9 @@ class App extends Component {
 				cluster: this.state.cluster,
 				user: this.state.user_nfo
 			},
+			route_p = {
+				isUserAuthenticated: this.state.isUserAuthenticated
+			},
 			side_props = {
                 background: this.state.background,
 				busy: this.state.sidebar_busy
@@ -153,41 +158,36 @@ class App extends Component {
 		return (
 			<Router>
 				<div className="App">
-					<Route exact path="/login" render={(props) => 
-						<Layout {...props} {...basic_props} {...side_props} 
-							appview={lprops => <Login {...lprops} />} />
-					} />
-					
-					<ProtectedRoute exact path="/" render={props =>
-						<Layout {...props} {...basic_props} {...side_props} 
-							appview={lprops => <Organizations {...lprops} />} />
+					<Layout {...basic_props} {...side_props}>
+						<SmartRoute exact path="/login" {...route_p} render={props =>
+							<Login {...basic_props} {...side_props} {...props} />
+						} />
 						
-					}/>
-					<ProtectedRoute exact path="/organizations/:id/clusters" render={props =>
-						<Layout {...props} {...basic_props} {...side_props} 
-							appview={lprops => <Clusters {...lprops} />} />
-					}/>
-					<ProtectedRoute exact path="/organizations/:id/clusters/:cid/:subview" render={props =>
-						<Layout {...props} {...basic_props} {...side_props} 
-							appview={lprops => <ClusterDashboard {...lprops} />} />
-					}/>
+						<SmartRoute exact path="/" authenticated {...route_p} render={props =>
+							<Organizations {...basic_props} {...side_props} {...props} />
+						} />
+						<SmartRoute exact path="/organizations/:id/clusters" authenticated {...route_p} render={props =>
+							<Clusters {...props} {...basic_props} {...side_props} />
+						} />
+						<SmartRoute exact path="/organizations/:id/clusters/:cid/:subview" authenticated {...route_p} render={props =>
+							<ClusterDashboard {...props} {...basic_props} {...side_props} />
+						} />
 
 
-					<ProtectedRoute exact path="/admin/:subview" render={props => 
-						<Layout {...props} {...basic_props} {...side_props} 
-							appview={lprops => <Admin {...lprops} />} />
-					}/>
-					<ProtectedRoute path="/admin/organization/:oid/:subview" render={props => 
-						<Layout {...props} {...basic_props} {...side_props} 
-							appview={lprops => <AdminOrg {...lprops} /> } />
-					}/>
-					
+						<SmartRoute exact path="/admin/:subview" authenticated {...route_p} render={props =>
+							<Admin {...props} {...basic_props} {...side_props} />
+						} />
+						<SmartRoute exact path="/admin/organization/:oid/:subview" authenticated {...route_p} render={props =>
+							<AdminOrg {...props} {...basic_props} {...side_props} />
+						} />
+						
 
-					{/* <Route exact path="/dnd">
-						<DnD />
-					</Route> */}
+						{/* <Route exact path="/dnd">
+							<DnD />
+						</Route> */}
 
-                    <Confirm active={this.state.confirm} />
+						<Confirm active={this.state.confirm} />
+					</Layout>
 				</div>
 			</Router>
 		);

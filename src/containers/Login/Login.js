@@ -41,7 +41,10 @@ function Login (props) {
                             appLocked (false);
                             setTimeout (() => {
                                 appAuthenticated (true);
-                                history.push ('/');
+                                if (history && history.location && history.location.state && history.location.state.from)
+                                    history.push (history.location.state.from);
+                                else
+                                    history.push ('/');
                             }, 1000)
                         }).catch (() => {
                             setLoginSuccess (false);

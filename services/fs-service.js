@@ -1,6 +1,7 @@
 const fs                = require ('fs-extra');
-const NodeGit           = require ('nodegit');
-const path              = require ('path');
+const path              = require ('path')
+const git               = require ('isomorphic-git')
+const http              = require ('isomorphic-git/http/node')
 
 const def_cdata_path    = './default-cluster-data/cluster_model'
 const base_path         = './clusters-data/'
@@ -21,18 +22,36 @@ module.exports.removeOrganizationFolder = (id) => {
     })
 }
 
-module.exports.createClusterFolder = (oid, cid, gitUrl) => {
+module.exports.createClusterFolder = (oid, cluster, user) => {
     return new Promise ((resolve, reject) => {
-        var dir_path = base_path + oid + '/' + cid;
+        var cid         = cluster.id,
+            gitUrl      = cluster.gitUrl,
+            gitUsername = user.gitUsername,
+            gitPassword = user.gitPassword,
+            dir_path    = base_path + oid + '/' + cid,
+            dir         = path.join (process.cwd (), dir_path);
+            
 
-        // console.log ('cluster', cdata);
         fs.ensureDir (dir_path).then (() => {
             if (gitUrl) {
                 fs.exists (dir_path + '/.git', (exists) => {
                     if (exists) {
                         resolve ();
                     } else {
-                        NodeGit.Clone (gitUrl, dir_path).catch (reject).then (() => {
+                        git.clone ({
+                            fs, http, dir,
+                            url: gitUrl,
+                            onAuth: (url) => {
+                                return {
+                                    username: gitUsername,
+                                    password: gitPassword
+                                }
+                            },
+                            onAuthSuccess: () => { },
+                            onAuthFailure: (e) => { },
+                            onProgress: (event) => { },
+                            onMessage: (message) => { }
+                        }).then ((payload) => {
                             var hasFiles = false;
                             fs.readdir (dir_path, (err, info) => {
                                 info.forEach ((it) => {
@@ -49,6 +68,9 @@ module.exports.createClusterFolder = (oid, cid, gitUrl) => {
                                 }
                             });
                         })
+                        .catch ((error) => {
+                            reject (error);
+                        })
                     }
                 })
             } else 
@@ -64,83 +86,65 @@ module.exports.removeClusterFolder = (oid, cid) => {
     })
 }
 
-module.exports.gitStatus = (path) => {
+module.exports.gitStatus = (dir_path) => {
     return new Promise ((resolve, reject) => {
-        NodeGit.Repository.open (path).catch (reject)
-            .then ((repository) => {
-                repository.getStatus().then ((statuses) => {
-                    var result = { };
-                    statuses.forEach ((file) => {
-                        var status = 'new';
+        var dir     = path.join (process.cwd (), dir_path),
+            results = { };
+        git.statusMatrix ({
+            fs,
+            dir: dir
+        }).then ((result) => {
+            result.forEach ((it) => {
+                var filepath    = it[0],
+                    headSts     = it[1],
+                    workdirSts  = it[2],
+                    stageSts    = it[3],
+                    isNew       = headSts === 0 && workdirSts > headSts,
+                    isModified  = headSts === 1 && workdirSts > headSts,
+                    isStaged    = workdirSts == stageSts,
+                    status      = 'unmodified';
 
-                        if (file.isModified ())
-                            status = 'modified';
-                        else if (file.isTypechange ())
-                            status = 'typechange';
-                        else if (file.isRenamed ())
-                            status = 'renamed';
-                        else if (file.isIgnored ())
-                            status = 'ignored';
+                // console.log (filepath, headSts, workdirSts, stageSts)
+                if (isNew)
+                    status = 'new';
+                else if (isModified)
+                    status = 'modified';
 
-                        result[file.path ()] = {
-                            path: file.path (),
-                            status: status
-                        };
-                    });
-
-                    resolve (result);
-                });
+                results[filepath] = {
+                    path: filepath,
+                    status: status,
+                    staged: isStaged
+                }
             })
+            resolve (results)
+        })
     })
 }
 
 module.exports.commitAndPush = (opts) => {
     return new Promise ((resolve, reject) => {
-        var repo, 
-            index, 
-            oid;
-
-        NodeGit.Repository.open (opts.repoPath).catch (reject)
-            .then ((repository) => {
-                repo = repository
-            })
-            .then (() => {
-                return repo.refreshIndex ();
-            })
-            .then ((results) => {
-                index = results;
-            })
-            .then (() => {
-                return index.addAll ()
-            })
-            .then (() => {
-                return index.write ();
-            })
-            .then (() => {
-                return index.writeTree ();
-            })
-            .then ((oidResult) => {
-                oid = oidResult;
-                if (NodeGit.Reference.hasLog (repo, "HEAD"))
-                    return new Promise ((rs, rj) => {
-                        NodeGit.Reference.nameToId(repo, "HEAD").then ((head) => {
-                            repo.getCommit (head).then (rs)
-                        })
-                    })
-                else
-                    return new Promise ((rs, rj) => {
-                        rs (null)
-                    });
-            })
-            .then ((parent) => {
-                var author = NodeGit.Signature.now (opts.authorName, opts.authorUsername),
-                    parents = parent ? [ parent ] : [];
-
-                return repo.createCommit ("HEAD", author, author, opts.message, oid, parents);
-            })
-            .done ((commitId) => {
-                // console.log ("committed: ", commitId);
-                resolve ({ commit: commitId });
-            });
+        // repoPath: dir,
+        // authorName: usr.firstName + ' ' + usr.lastName,
+        // authorUsername: usr.gitUsername,
+        // authorPassword: usr.gitPassword,
+        // message: mex !== '' ? mex : 'commit changes @ ' + new Date().toLocaleString()
+            
+        var dir = path.join (process.cwd (), opts.repoPath);
+        git.statusMatrix ({ fs, dir: dir }).then (files => {
+            Promise.all (
+                files.filter ((f) => { return (f[1] === 0 && f[2] === 2 && f[3] === 0) })
+                    .map ((f) => git.add ({ fs, dir: dir, filepath: f[0] }))
+            ).then ((r) => {
+                git.commit ({
+                    fs,
+                    dir: dir,
+                    author: {
+                        name: opts.authorName,
+                        email: '',
+                    },
+                    message: opts.message
+                }).then (result => resolve ({ success: true })).catch (reject)
+            }).catch (e => reject (e));
+        })
     })
 }

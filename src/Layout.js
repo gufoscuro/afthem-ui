@@ -1,11 +1,12 @@
 import React, { useMemo, useCallback, useEffect } from 'react';
+import { withRouter } from 'react-router';
 
 import Sidebar from './components/Sidebar/Sidebar';
 
 
 function Layout (props) {
     const {
-        authenticated, 
+        isUserAuthenticated, 
         axiosInstance,
         appBackground,
         appLocked,
@@ -16,13 +17,12 @@ function Layout (props) {
         user,
         background,
         busy,
-        appview,
         history,
         match
     } = props;
+
     
-
-
+    
     const appLogout = useCallback (() => {
 		appBackground (true);
 		appLocked (true);
@@ -39,7 +39,6 @@ function Layout (props) {
     }, [ axiosInstance, appBackground, appLocked, appAuthenticated ]);
 
     const sidebarClick = useCallback ((action, ev) => {
-        // console.log ('===>', 'sidebarClick', action);
 		if (action === 'logout')
             appLogout ();
     }, [ appLogout ]);
@@ -55,24 +54,18 @@ function Layout (props) {
         return (<Sidebar {...side_props} />)
     }, [ organization, sidebarClick, background, busy, user ]);
 
-    const renderer = useMemo (() => {
-        const basic_props = { ...props }
-        return (
-            <>
-                {sidebar_memo}
-                {appview (basic_props)}
-            </>
-        )
-    }, [ props, appview, sidebar_memo ]);
-
     useEffect (() => {
-        if (authenticated === false) {
-            history.push ('/login');
-        } else if (user === null && fetchingUser === false && match.path !== '/login')
+        // console.log ('Test.useEffect', isUserAuthenticated, 'user', user, 'routePath', window.location.pathname)
+        if (user === null && fetchingUser === false && window.location.pathname !== '/login')
             fetchUserInfo ();
-    }, [ authenticated, history, fetchUserInfo, fetchingUser, match, user ]);
+    }, [ isUserAuthenticated, history, fetchUserInfo, fetchingUser, match, user ]);
 
-    return renderer;
+    return (
+        < >
+            {sidebar_memo}
+            {props.children}
+        </>
+    )
 }
 
-export default Layout;
+export default withRouter (Layout);
