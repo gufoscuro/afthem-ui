@@ -73,6 +73,7 @@ const initDB = () => {
 }
 
 const fetchDefaultClusterData = (adminUser) => {
+    console.log ('clone repo from', clusterMRepo)
     const spinner = new Spinner ();
     spinner.setSpinnerTitle ('Base repository');
     spinner.start ();

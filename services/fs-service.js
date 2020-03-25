@@ -34,10 +34,8 @@ module.exports.createClusterFolder = (oid, cluster, user) => {
 
         fs.ensureDir (dir_path).then (() => {
             if (gitUrl) {
-                fs.exists (dir_path + '/.git', (exists) => {
-                    if (exists) {
-                        resolve ();
-                    } else {
+                fs.remove (dir_path + '/.git')
+                    .then (() => {
                         git.clone ({
                             fs, http, dir,
                             url: gitUrl,
@@ -58,7 +56,7 @@ module.exports.createClusterFolder = (oid, cluster, user) => {
                                     if (it.indexOf ('.') > 0)
                                         hasFiles = true;
                                 });
-
+    
                                 if (hasFiles) {
                                     resolve ({ success: true, message: 'The repository you specified appears to be not empty.' });
                                 } else {
@@ -67,12 +65,11 @@ module.exports.createClusterFolder = (oid, cluster, user) => {
                                     })
                                 }
                             });
-                        })
-                        .catch ((error) => {
+                        }).catch ((error) => {
                             reject (error);
                         })
-                    }
-                })
+                    })
+                    .catch (reject);
             } else 
                 reject ({ message: 'Invalid git parameters' });
         }).catch (err => reject (err));
