@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import NavbarButton from '../NavbarButton/NavbarButton';
+import { STRING } from '../../libs/js/utils';
 import './Sidebar.css'
 
 
@@ -43,7 +44,7 @@ const Sidebar = (props) => {
 
                 {user && user.level === 0 && 
                     (<NavLink exact activeClassName="active" to="/admin/users">
-                        <NavbarButton icon="cog" clickHandler={clickHandler} action="admin"/>
+                        <NavbarButton icon="cog"/>
                     </NavLink>)}
                 <NavbarButton icon="user" clickHandler={clickHandler} action="user-profile" classes="no-hover"/>
             </div>
@@ -51,7 +52,9 @@ const Sidebar = (props) => {
     }, [ user, clickHandler ]);
 
     const labels_panel = useMemo (() => {
-        let org_links_lbls;
+        let org_links_lbls,
+            full_un     = user ? (user.firstName + ' ' + user.lastName) : 'User Profile',
+            user_name   = STRING.tiny (full_un, 17);
         
         if (organization) {
             org_links_lbls = (
@@ -78,63 +81,42 @@ const Sidebar = (props) => {
                         (<NavLink className="link-label lbl animated fadeIn d-1" exact activeClassName="active" to="/admin/users">
                             Admin Panel
                         </NavLink>)}
-                    <div className="link-label profile-link no-hover lbl animated fadeIn d-1">
-                        {user ? user.username : 'User Profile'}
-                        <i className="far fa-power-off logout" onClick={clickHandler.bind (this, 'logout')}></i>
+                    <div className="link-label profile-link no-hover lbl animated fadeIn d-1" 
+                        onClick={e => { return (user ? clickHandler ('user-profile', e) : null) }} title={full_un}>
+                        {user_name}
+                        <i className="far fa-power-off logout" onClick={e => clickHandler ('logout', e)}></i>
                     </div>
                 </div>
             </div>
         )
     }, [ organization, user, clickHandler ])
 
-    // const renderer = useMemo (() => {
-    //     let sidebar_clss = 'Sidebar',
-    //         busy_layer;
+    const renderer = useMemo (() => {
+        let sidebar_clss = 'Sidebar',
+            busy_layer;
 
-    //     if (busy) {
-    //         sidebar_clss += ' busy';
-    //         busy_layer = (
-    //             <div className="maintenance-layer"></div>
-    //         );
-    //     }
+        if (busy) {
+            sidebar_clss += ' busy';
+            busy_layer = (
+                <div className="maintenance-layer"></div>
+            );
+        }
 
-    //     if (background)
-    //         sidebar_clss += ' background';
+        if (background)
+            sidebar_clss += ' background';
 
-    //     return (
-    //         <div className={sidebar_clss}>
-    //             {top_links}
-    //             {bottom_links}
-    //             {labels_panel}
-    //             {busy_layer}
-    //         </div>
-    //     )    
-    // }, [ background, busy, top_links, bottom_links, labels_panel ]);
+        return (
+            <div className={sidebar_clss}>
+                {top_links}
+                {bottom_links}
+                {labels_panel}
+                {busy_layer}
+            </div>
+        )    
+    }, [ background, busy, top_links, bottom_links, labels_panel ]);
     
 
-    // return renderer;
-
-    let sidebar_clss = 'Sidebar',
-        busy_layer;
-
-    if (busy) {
-        sidebar_clss += ' busy';
-        busy_layer = (
-            <div className="maintenance-layer"></div>
-        );
-    }
-
-    if (background)
-        sidebar_clss += ' background';
-
-    return (
-        <div className={sidebar_clss}>
-            {top_links}
-            {bottom_links}
-            {labels_panel}
-            {busy_layer}
-        </div>
-    )
+    return renderer;
 }
 
 export default Sidebar;

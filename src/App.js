@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom';
+
+// import { Route, Redirect } from 'react-router-dom';
 
 import './App.css';
 
@@ -11,8 +13,9 @@ import AdminOrg from './containers/Admin/AdminOrg';
 import Confirm from './components/ModalPanel/Confirm';
 import Login from './containers/Login/Login';
 import SmartRoute from './components/ProtectedRoute/SmartRoute';
-// import ProtectedRoute from './components/ProtectedRoute/protected.route';
 import Layout from './Layout';
+
+// import Sidebar from './components/Sidebar/Sidebar';
 
 // import ErrorOverlay from './components/ErrorOverlay/ErrorOverlay';
 // import MaintenanceMode from './components/ErrorOverlay/MaintenanceMode';
@@ -126,8 +129,8 @@ class App extends Component {
 	sidebar_clickhandler = (action, ev) => {
 		console.log ('===>', 'sidebar_clickhandler', action);
 
-		if (action === 'logout')
-			this.app_logout ();
+		// if (action === 'logout')
+		// 	this.app_logout ();
 	}
 
 	render () {
@@ -152,6 +155,10 @@ class App extends Component {
 			side_props = {
                 background: this.state.background,
 				busy: this.state.sidebar_busy
+
+				// organization: this.state.organization,
+				// clickHandler: this.sidebar_clickhandler,
+				// user: this.state.user_nfo
 			};
 
 
@@ -166,6 +173,18 @@ class App extends Component {
 						<SmartRoute exact path="/" authenticated {...route_p} render={props =>
 							<Organizations {...basic_props} {...side_props} {...props} />
 						} />
+
+						{/* <Route exact path="/">
+							<Sidebar {...side_props} />
+							<Organizations {...basic_props} {...side_props} />
+						</Route>
+
+						<Route exact path="/organizations/:id/clusters">
+							<Sidebar {...side_props} />
+							<Clusters {...basic_props} {...side_props} />
+						</Route> */}
+
+
 						<SmartRoute exact path="/organizations/:id/clusters" authenticated {...route_p} render={props =>
 							<Clusters {...props} {...basic_props} {...side_props} />
 						} />

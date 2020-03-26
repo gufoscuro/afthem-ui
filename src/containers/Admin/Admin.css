@@ -51,13 +51,3 @@
 .search-item .txt {
     font-size: 12px;
 }
-
-.unauthorized-message {
-    padding: 20px;
-}
-.unauthorized-message .heading {
-    font-size: 20px;
-    line-height: 20px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}

@@ -2,7 +2,7 @@ var modelUtil = { };
 
 modelUtil.checkByModel = (model, data) => {
     return new Promise ((resolve, reject) => {
-        var result  = data,
+        var result  = Object.assign ({ }, data),
             outcome = true;
 
         for (var key in result) {
@@ -53,6 +53,15 @@ modelUtil.getDefaults = (model) => {
     }
 
     return result;
+}
+
+modelUtil.spreadExisting = (existing, target) => {
+    let clone = Object.assign ({ }, existing);
+    Object.keys (target).forEach (function (a) {
+        if (a in clone)
+            clone[a] = target[a];
+    });
+    return clone;
 }
 
 module.exports = modelUtil;

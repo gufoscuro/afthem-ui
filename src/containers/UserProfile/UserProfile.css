@@ -1,0 +1,58 @@
+.UserProfile .panel-content {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 2px;
+    padding: 50px;
+}
+
+.UserProfile .error-message {
+    color: #ff7675;
+    /* color: #fff; */
+    font-weight: 600;
+    /* padding: 3px 16px; */
+    /* margin: 0 -16px; */
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+}
+
+.UserProfile .icon {
+    /* height: 70px; */
+    text-align: center;
+    margin-bottom: 10px;
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+}
+.UserProfile .icon .disc {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    font-size: 20px;
+    line-height: 70px;
+    background-color: #fff;
+    border-radius: 5px;
+    background-color: #5b7688;
+    color: #fff;
+}
+.UserProfile .icon .name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 0 4px #7f99a9;
+}
+
+.UserProfile .panel-content .heading {
+    margin-bottom: 10px;
+}
+
+.UserProfile .panel-content .text {
+    color: #799cb1
+}
+
+.ModalPanel .UserProfile .panel-ctrls {
+    text-align: center;
+}
+
+.UserProfile .text-field-holder .text .textfield {
+    width: 100%
+}
+

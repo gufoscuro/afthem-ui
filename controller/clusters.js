@@ -31,7 +31,7 @@ module.exports.list = (req, res, opts) => {
             }).then (resolve).catch (reject);
         else
             reject ({
-                code: 401,
+                code: 400,
                 message: "organization id must be specified"
             })
     })

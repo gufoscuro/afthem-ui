@@ -12,7 +12,7 @@ const chalk         = require ('chalk');
 
 app.use (bodyParser.urlencoded ({ extended: false }));
 app.use (bodyParser.json ());
-app.use (cookieParser());
+app.use (cookieParser ());
 
 
 
@@ -62,7 +62,7 @@ const action_evaulator = (req, res) => {
                     }).catch ((e, t) => {
                         res.status ((e && e.code) ? e.code : 500).send (e);
                         if (!PROD)
-                            console.log ('\n\n', chalk.redBright (e));
+                            console.log ('\n\n', chalk.redBright ('==> Error'), e);
                     })
                 } else 
                     res.status (401).json (generic_error ('Unauthorized.')); 
