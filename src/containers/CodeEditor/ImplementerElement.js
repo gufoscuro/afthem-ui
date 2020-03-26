@@ -4,7 +4,7 @@ import _ from 'lodash/core';
 
 
 function ImplementersElement (props) {
-    const { data, change, click, $key } = props;
+    const { data, change, click, $key, pools } = props;
     const [ editing, setEditing ] = useState (false);
     const [ model, setModel ] = useState (data)
 
@@ -41,11 +41,16 @@ function ImplementersElement (props) {
     }, [ change, model, data, $key ]);
 
     const onValueChange = useCallback ((event) => {
-        const v = event.target.value;
+        let n = event.target.name,
+            v = event.target.value;
+
         setModel ((prevModel) => {
             let m = { ...prevModel };
+            if (n === 'thread_pool' && v === 'null') {
+                delete m.thread_pool;
+            } else
+                m[n] = v;
 
-            m.id = v;
             return m;
         });
     }, [ ]);
@@ -72,8 +77,19 @@ function ImplementersElement (props) {
         renderer = (
             <div className="editor-fields">  
                 <div className="editor-component-field">
-                    <span className="lbl">ID <i className="sep far fa-long-arrow-right"></i></span>
-                    <input type="text" name="id" value={model.id} onChange={onValueChange}/>
+                    <div className="lbl">ID <i className="sep far fa-long-arrow-right"></i></div>
+                    <div className="indent-1">
+                        <input type="text" name="id" value={model.id} onChange={onValueChange}/>
+                    </div>
+                </div>
+                <div className="editor-component-field">
+                    <div className="lbl">thread_pool <i className="sep far fa-long-arrow-right"></i></div>
+                    <div className="indent-1">
+                        <select name="thread_pool" value={model.thread_pool ? model.thread_pool : 'null'} onChange={onValueChange}>
+                            <option value="null">(not set)</option>
+                            {pools.map ((o, i) => <option key={i}>{o}</option>)}
+                        </select>
+                    </div>
                 </div>
                 <div className="e-ctrls">
                     <div className="thin-button" onClick={cancelChanges}>Cancel</div>

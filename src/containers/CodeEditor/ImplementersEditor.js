@@ -3,6 +3,8 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ImplementerElement from './ImplementerElement';
 import ThreadpoolElement from './ThreadpoolElement';
 import ActorsCatalog from './ActorsCatalog';
+import ModalPanel from '../../components/ModalPanel/ModalPanel';
+import PopupMessage from '../../components/ModalPanel/PopupMessage';
 import FadeinFX from '../../hoc/FadeinFX';
 import './VisualEditor.css';
 
@@ -11,6 +13,7 @@ function ImplementersEditor (props) {
     const { axiosInstance, data, refreshHook, update } = props;
     const [ implementers, setImplementers] = useState (data ? data.implementers : null);
     const [ thread_pools, setThreadPools ] = useState (data ? data.thread_pools : null);
+    const [ modalFlow, setModalFlow ] = useState (null);
     const [ addFlow, setAddFlow ] = useState (false);
     
 
@@ -24,6 +27,15 @@ function ImplementersEditor (props) {
             thread_pools: thread_pools
         });
     }, [ implementers, thread_pools, update ]);
+
+    const inusePools = useMemo (() => {
+        return implementers
+            .filter (it => it.thread_pool !== undefined)
+            .reduce ((result, item, index, array) => {
+                result[item.thread_pool] = item.thread_pool;
+                return result;
+            }, { });
+    }, [ implementers ]);
 
     const refreshEditor = useCallback ((data) => {
         setImplementers (data.implementers);
@@ -49,10 +61,18 @@ function ImplementersEditor (props) {
     }, [ implementers ]);
 
     const removeThreadpool = useCallback ((key) => {
-        let a = { ...thread_pools };
-        delete a[key];
-        setThreadPools (a);
-    }, [ thread_pools ]);
+        if (inusePools[key] !== undefined) {
+            setModalFlow ({
+                heading: 'Operation not allowed',
+                text: 'This thread pool is currently in use, therefore can\'t be removed'
+            })
+        } else
+            setThreadPools (prevPools => {
+                let a = { ...prevPools };
+                delete a[key];
+                return a;
+            });
+    }, [ thread_pools, inusePools ]);
 
     const hideCatalog = useCallback (() => {
         setAddFlow (false)
@@ -96,7 +116,7 @@ function ImplementersEditor (props) {
                 i[status.index] = status.data;
 
             setImplementers (i);
-            console.log ('edit_element', i);
+            // console.log ('edit_element', i);
         }
 
         else if (status.type === 'threadpools') {
@@ -112,7 +132,13 @@ function ImplementersEditor (props) {
 
 
     const implementers_render = useMemo (() => {
-        return implementers ? implementers.map ((o, i) => <ImplementerElement key={i} data={o} {...{ $key: i, click: click_element, change: edit_element }} />) : null
+        const imp_props = {
+            click: click_element,
+            change: edit_element,
+            pools: Object.keys (thread_pools)
+        }
+        return implementers ? implementers.map ((o, i) => 
+            <ImplementerElement key={i} data={o} $key={i} {...imp_props} />) : null
     }, [ implementers, click_element, edit_element ]);
 
     const threadpool_render = useMemo (() => {
@@ -123,7 +149,22 @@ function ImplementersEditor (props) {
 
     const addflow_render = useMemo (() => {
         return addFlow ? (<ActorsCatalog axiosInstance={axiosInstance} add={addImplementer} hide={hideCatalog} />) : null;
-    }, [ addFlow, addImplementer, hideCatalog, axiosInstance ])
+    }, [ addFlow, addImplementer, hideCatalog, axiosInstance ]);
+
+    const modalflow_render = useMemo (() => {
+        let modal_props = modalFlow ? {
+            ...modalFlow,
+            ...{
+                clickHandler: () => setModalFlow (null)
+            }
+        } : null;
+
+        return modalFlow ? (
+            <ModalPanel active={true}>
+                <PopupMessage {...modal_props} />
+            </ModalPanel>
+        ) : null;
+    }, [ modalFlow ])
 
 
     return (
@@ -146,6 +187,7 @@ function ImplementersEditor (props) {
                     <div className="editor-add-component editor-item" onClick={addTP}>Add Thread Pool</div>
                 </FadeinFX>
             </div>
+            {modalflow_render}
         </div>
     );
 }

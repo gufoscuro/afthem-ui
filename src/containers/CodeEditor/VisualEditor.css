@@ -38,6 +38,7 @@
 }
 .editor-component.editing {
     background-color: #cfdde6;
+    margin: 25px 0;
 }
 .editor-component .hover {
     position: absolute;

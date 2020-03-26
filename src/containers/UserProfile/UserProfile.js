@@ -32,7 +32,7 @@ const UserProfile = (props) => {
     const saveProfile = useCallback (() => {
         let data = { ...model };
         ModelUtil.checkByModel (model_schema, data).then ((result) => {
-            console.log ('validation', result, data);
+            // console.log ('validation', result, data);
             if (result.valid) {
                 setDisabled (true);
                 setError (null);
