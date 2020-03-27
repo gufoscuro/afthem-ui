@@ -9,24 +9,29 @@ import _ from 'lodash/core';
 
 
 function FlowElement (props) {
-    const { $key, data, change, definedActors, actorsSchema } = props;
+    const { $key, $new, data, change, definedActors, actorsSchema } = props;
     const [ editing, setEditing ] = useState (false);
     const [ model, setModel ] = useState (props.data)
-    // const [ config, setConfig ] = useState (null);
+    const [ brandNew, setBrandNew ] = useState (false);
     const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
     
 
     // console.log ('defined actors', definedActors)
     useEffect (() => {
+        console.log ('create flow', data.$data, data)
         if (data.$editing) {
             let m = {...model};
             
             delete m.$editing;
             delete m.$data;
+            delete m.$new;
 
-            
-            // setConfig (data.$data);
+            if (data.$new)
+                setBrandNew (true);
+                
 
+            if (data.$data.typeid !== "proxy/send_back" && data.$data.typeid.indexOf ('sidecar/') === -1)
+                m.next = definedActors && definedActors.length ? definedActors[0] : '';
             if (data.$data.sidecars)
                 m.sidecars = { };
             if (data.$data.config) {
@@ -51,7 +56,7 @@ function FlowElement (props) {
             });
             setEditing (true);
         }
-    }, [])
+    }, []);
 
     useEffect (() =>  {
         if (editing === false && _.isEqual (data, model) === false) {

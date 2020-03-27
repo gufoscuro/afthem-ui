@@ -54,7 +54,8 @@ function FlowsEditor (props) {
     const addItem = useCallback ((item) => {
         setModel ((m) => {
             let t = { ...m };
-
+            
+            // console.log ('add item', item)
             if (t[item.typeid] === undefined)
                 t[item.typeid] = {
                     $editing: true,
