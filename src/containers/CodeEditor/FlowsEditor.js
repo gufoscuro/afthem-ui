@@ -55,7 +55,6 @@ function FlowsEditor (props) {
         setModel ((m) => {
             let t = { ...m };
             
-            // console.log ('add item', item)
             if (t[item.typeid] === undefined)
                 t[item.typeid] = {
                     $editing: true,

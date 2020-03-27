@@ -16,7 +16,7 @@ function FlowElement (props) {
     const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
     
 
-    // console.log ('defined actors', definedActors)
+    // console.log ('FlowElement', data)
     useEffect (() => {
         if (data.$editing) {
             let m = {...model};
@@ -40,7 +40,7 @@ function FlowElement (props) {
                         ty = it.type,
                         vl = '';
 
-                    if (ty === 'list')
+                    if (ty === 'list' || ty.indexOf ('list[') !== -1)
                         vl = [];
 
                     m.config[k] = vl;

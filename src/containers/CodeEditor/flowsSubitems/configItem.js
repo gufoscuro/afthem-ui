@@ -101,6 +101,7 @@ function ConfigItem (props) {
                         };
 
                     
+                    
                     if (cfg && cfg.type === 'list[ve]')
                         single_renderers.push (<ListVEConfig key={j} {...prp} />);
                     else if (cfg && cfg.type === 'list[nve]')
@@ -110,7 +111,7 @@ function ConfigItem (props) {
                     else if (cfg && (cfg.type === 'list[string]' || cfg.type === 'list[int]'))
                         single_renderers.push (<ListConfig key={j} {...prp} />);
                     else {
-                        console.log ('config', cfg, dat);
+                        // console.log ('config', cfg, dat);
                         single_renderers.push (
                             <div key={j}>
                                 <div className="lbl indent-2">{config_key}</div>
