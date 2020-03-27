@@ -6,13 +6,19 @@ import _ from 'lodash/core';
 function BackendElement (props) {
     const { $key, data, change, click, flows } = props;
     const [ editing, setEditing ] = useState (false);
-    const [ model, setModel ] = useState (props.data)
+    const [ model, setModel ] = useState (data);
+    const [ brandNew, setBrandNew ] = useState (false);
     
 
     const onMount = useCallback (() => {
         if (data.$editing) {
             let m = {...model};
             
+            if (data.$new) {
+                delete m.$new;
+                setBrandNew (true)
+            }
+
             delete m.$editing;
             setModel (m);
             change ($key, m);
@@ -52,8 +58,10 @@ function BackendElement (props) {
         if (true) { // some sort of validation goes here I suppose ...
             change ($key, { ...model });
             setEditing (false);
+            if (brandNew)
+                setBrandNew (false);
         }
-    }, [ $key, change, model ])
+    }, [ $key, change, model, brandNew ])
     
     
     let renderer = useMemo (() => {
@@ -77,7 +85,7 @@ function BackendElement (props) {
                         <input type="text" name="upstream" value={model.upstream || ''} onChange={onValueChange}/>
                     </div>
                     <div className="e-ctrls">
-                        <div className="thin-button" onClick={cancelChanges}>Cancel</div>
+                        {brandNew === false && <div className="thin-button" onClick={cancelChanges}>Cancel</div>}
                         <div className="thin-button" onClick={confirmChanges}>Confirm</div>
                     </div>
                 </>
@@ -103,7 +111,7 @@ function BackendElement (props) {
                 {rrr}
             </div>
         );
-    }, [ model, editing, click, onValueChange, cancelChanges, confirmChanges, $key, flows ]);
+    }, [ model, editing, click, onValueChange, cancelChanges, confirmChanges, $key, flows, brandNew ]);
 
     return renderer;
 }

@@ -44,13 +44,14 @@ function BackendsEditor (props) {
             t.push ({
                 prefix: '[^/]',
                 upstream: '',
-                flow_id: '',
-                $editing: true
+                flow_id: flowsList.length ? flowsList[0] : '',
+                $editing: true,
+                $new: true
             });
 
             return t;
         });
-    }, []);
+    }, [ flowsList ]);
 
     const click_element = useCallback ((status) => {
         console.log ('click', status);
