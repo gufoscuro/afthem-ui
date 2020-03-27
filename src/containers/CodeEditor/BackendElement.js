@@ -4,7 +4,7 @@ import _ from 'lodash/core';
 
 
 function BackendElement (props) {
-    const { $key, data, change, click } = props;
+    const { $key, data, change, click, flows } = props;
     const [ editing, setEditing ] = useState (false);
     const [ model, setModel ] = useState (props.data)
     
@@ -39,7 +39,7 @@ function BackendElement (props) {
                 let m = { ...prevModel };
                 m[n] = v;
                 return m;
-            }); // need to check id is unique
+            });
         }
     }, []);
 
@@ -67,12 +67,14 @@ function BackendElement (props) {
                         <input type="text" name="prefix" value={model.prefix} onChange={onValueChange}/>
                     </div>
                     <div className="editor-component-field">
-                        <span className="lbl">upstream <i className="sep far fa-long-arrow-right"></i></span>
-                        <input type="text" name="upstream" value={model.upstream} onChange={onValueChange}/>
+                        <span className="lbl">flow_id <i className="sep far fa-long-arrow-right"></i></span>
+                        <select name="flow_id" value={model.flow_id} onChange={onValueChange}>
+                            {flows.map ((f, i) => <option key={i}>{f}</option>)}
+                        </select>
                     </div>
                     <div className="editor-component-field">
-                        <span className="lbl">flow_id <i className="sep far fa-long-arrow-right"></i></span>
-                        <input type="text" name="flow_id" value={model.flow_id} onChange={onValueChange}/>
+                        <span className="lbl">upstream <i className="sep far fa-long-arrow-right"></i></span>
+                        <input type="text" name="upstream" value={model.upstream || ''} onChange={onValueChange}/>
                     </div>
                     <div className="e-ctrls">
                         <div className="thin-button" onClick={cancelChanges}>Cancel</div>
@@ -84,8 +86,8 @@ function BackendElement (props) {
             rrr = (
                 <>
                     <div className="lbl">prefix: {model.prefix}</div>
-                    <div className="txt">upstream: {model.upstream}</div>
                     <div className="txt">flow_id: {model.flow_id}</div>
+                    <div className="txt">upstream: {model.upstream || '(not set)'}</div>
                     <div className="hover">
                         <div className="ctrls">
                             <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
@@ -101,7 +103,7 @@ function BackendElement (props) {
                 {rrr}
             </div>
         );
-    }, [ model, editing, click, onValueChange, cancelChanges, confirmChanges, $key ]);
+    }, [ model, editing, click, onValueChange, cancelChanges, confirmChanges, $key, flows ]);
 
     return renderer;
 }

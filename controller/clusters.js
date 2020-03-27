@@ -259,6 +259,20 @@ module.exports.createFlow = (req, res, opts) => {
     })
 }
 
+module.exports.listFlows = (req, res, opts) => {
+    return new Promise ((resolve, reject) => {
+        var cid         = req.body.cid || req.query.cid,
+            oid         = req.body.oid || req.query.oid,
+            dir_path    = c_base_path + oid + '/' + cid + '/flows/';
+
+        read_dir_routine (dir_path).catch (reject).then (result => {
+            resolve (
+                result.files.filter (it => it.name.indexOf ('.yml') !== -1).map (it => it.name.substring (0, it.name.indexOf ('.yml')))
+            )
+        })
+    })
+}
+
 module.exports.commit = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
         var cid = req.body.cid,

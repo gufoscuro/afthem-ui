@@ -7,8 +7,9 @@ import './VisualEditor.css';
 
 
 function BackendsEditor (props) {
-    const { update, refreshHook } = props;
+    const { update, refreshHook, axiosInstance, oid, cid } = props;
     const [ model, setModel ] = useState (props.data && props.data.backends ? props.data.backends : []);
+    const [ flowsList, setFlowsList ] = useState ([]);
 
 
     
@@ -20,6 +21,8 @@ function BackendsEditor (props) {
 
     useEffect (() => {
         refreshHook (refreshEditor);
+        axiosInstance.post ('/api/clusters/listFlows', { oid: oid, cid: cid })
+            .then (result => setFlowsList (result.data));
     }, []);
 
     const refreshEditor = useCallback ((data) => {
@@ -68,12 +71,13 @@ function BackendsEditor (props) {
     const model_renderer = useMemo (() => {
         const backendsitems_props = {
             click: click_element,
-            change: edit_element
+            change: edit_element,
+            flows: flowsList
         }
         return model ? model.map ((it, i) => {
             return <BackendElement key={i} data={it} {...{ $key: i, ...backendsitems_props  }}  />
         }) : null;
-    }, [ model, click_element, edit_element ]);
+    }, [ model, click_element, edit_element, flowsList ]);
 
 
     return (
