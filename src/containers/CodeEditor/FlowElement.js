@@ -18,7 +18,6 @@ function FlowElement (props) {
 
     // console.log ('defined actors', definedActors)
     useEffect (() => {
-        console.log ('create flow', data.$data, data)
         if (data.$editing) {
             let m = {...model};
             
