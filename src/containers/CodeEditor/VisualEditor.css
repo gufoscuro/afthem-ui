@@ -35,10 +35,22 @@
     border-radius: 3px;
     -webkit-animation-duration: .2s;
     animation-duration: .2s;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.editor-component:hover {
+    background-color: #cedde6;
 }
 .editor-component.editing {
     background-color: #cfdde6;
-    margin: 25px 0;
+    margin: 20px 0;
+    -webkit-animation-name: softZoomIn;
+	animation-name: softZoomIn;
 }
 .editor-component .hover {
     position: absolute;
@@ -47,7 +59,7 @@
     top: 0;
     left: 0;
     z-index: 2;
-    background-color: rgba(236, 242, 246, 0.5);
+    /* background-color: rgba(236, 242, 246, 0.5); */
     display: none;
 }
 .editor-component:hover .hover {

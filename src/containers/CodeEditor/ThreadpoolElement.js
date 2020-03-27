@@ -4,8 +4,7 @@ import _ from 'lodash/core';
 
 
 function ThreadpoolElement (props) {
-    const { data, $key, change, click } = props;
-    const [ editing, setEditing ] = useState (false);
+    const { data, $key, change, click, editing, setEditing } = props;
     const [ model, setModel ] = useState (props.data);
 
 
@@ -30,7 +29,7 @@ function ThreadpoolElement (props) {
                 type: 'threadpools',
                 data: m
             });
-            setEditing (true);
+            setEditing ($key, true);
         }
     }, [ data, change, model, $key ]);
 
@@ -45,7 +44,7 @@ function ThreadpoolElement (props) {
     }, [ model ]);
 
     const cancelChanges = useCallback (() => {
-        setEditing (false);
+        setEditing ($key, false);
         setModel (data);
     }, [ data ])
 
@@ -57,7 +56,7 @@ function ThreadpoolElement (props) {
                 type: 'threadpools',
                 data: { ...model }
             });
-            setEditing (false);
+            setEditing ($key, false);
         }
     }, [ model, change, $key ])
 
@@ -96,7 +95,7 @@ function ThreadpoolElement (props) {
     
                     <div className="hover">
                         <div className="ctrls">
-                            <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
+                            <div className="thin-button" onClick={() => { setEditing ($key, true) }}>Edit</div>
                             {$key === 'default' ? null : (<div className="thin-button" onClick={click.bind (this, { action: 'remove-threadpool', id: $key })}>Remove</div>)}
                         </div>
                     </div>
@@ -105,9 +104,9 @@ function ThreadpoolElement (props) {
         }
 
         return (
-            <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>{r}</div>
+            <div className={"editor-component editor-item" + (editing ? ' editing' : '')} onClick={e => click ({ key: $key, type: 'tp', action: 'item-click' }, e)}>{r}</div>
         )
-    }, [ editing, click, data, model, $key, onValueChange, confirmChanges, cancelChanges ])
+    }, [ editing, click, data, model, $key, onValueChange, confirmChanges, cancelChanges, setEditing ])
     
 
     return renderer;

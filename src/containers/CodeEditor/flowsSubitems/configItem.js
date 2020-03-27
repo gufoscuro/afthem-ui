@@ -13,7 +13,7 @@ import 'codemirror/mode/yaml/yaml';
 
 
 function ConfigItem (props) {
-    const { value, onUpdate, editing, elementSchema } = props;
+    const { flowElemId, value, onUpdate, editing, elementSchema } = props;
     let timer = null
 
     const onCMChange = useCallback ((data) => {
@@ -29,7 +29,7 @@ function ConfigItem (props) {
 
             }
             if (parsed) {
-                console.log ('parsed', parsed)
+                // console.log ('parsed', parsed)
                 onUpdate ('config', parsed);
             }
             else
@@ -93,6 +93,7 @@ function ConfigItem (props) {
                     let cfg = cfg_schema[config_key],
                         dat = value[config_key],
                         prp = {
+                            flowElemId: flowElemId,
                             config: cfg,
                             name: config_key,
                             value: dat,

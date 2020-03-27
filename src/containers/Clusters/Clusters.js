@@ -169,7 +169,6 @@ class Clusters extends Component {
             add_cluster,
             modal_flow,
             basic_props = {
-                organization: this.props.organization,
                 clickHandler: this.click_handler
             };
 

@@ -4,9 +4,10 @@ import _ from 'lodash/core';
 
 
 function ImplementersElement (props) {
-    const { data, change, click, $key, pools } = props;
-    const [ editing, setEditing ] = useState (false);
+    const { data, change, click, $key, pools, editing, setEditing } = props;
     const [ model, setModel ] = useState (data)
+
+    // console.log ('implementer', editing)
 
     let class_match     = 'com.apifortress.afthem.',
         class_string    = props.data.class.indexOf (class_match) !== -1 ? 
@@ -36,7 +37,7 @@ function ImplementersElement (props) {
                 type: 'implementers',
                 data: m
             });
-            setEditing (true);
+            setEditing ($key, true);
         }
     }, [ change, model, data, $key ]);
 
@@ -68,7 +69,7 @@ function ImplementersElement (props) {
                 type: 'implementers',
                 data: { ...model }
             });
-            setEditing (false);
+            setEditing ($key, false);
         }
     }, [ $key, change, model ])
 
@@ -107,7 +108,7 @@ function ImplementersElement (props) {
 
                 <div className="hover">
                     <div className="ctrls">
-                        <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
+                        <div className="thin-button" onClick={() => { setEditing ($key, true) }}>Edit</div>
                         <div className="thin-button" onClick={click.bind (this, { action: 'remove-implementer', id: $key })}>Remove</div>
                     </div>
                 </div>
@@ -116,7 +117,7 @@ function ImplementersElement (props) {
     }
 
     return (
-        <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>
+        <div className={"editor-component editor-item" + (editing ? ' editing' : '')} onClick={e => click ({ key: $key, action: 'item-click' }, e)}>
             {renderer}
         </div>
     );

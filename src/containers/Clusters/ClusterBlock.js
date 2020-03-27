@@ -32,7 +32,7 @@ const clusterBlock = (props) => {
                         </button>
                         <Link onClick={props.clickHandler.bind (this, { action: 'select-cluster', itemId: props.id })}
                             className="circle-button" 
-                            to={"/organizations/" + props.organization.id + "/clusters/" + props.id + "/implementers"}>
+                            to={"/organizations/" + props.OrganizationId + "/clusters/" + props.id + "/implementers"}>
                             <i className="far fa-arrow-right"></i>
                         </Link>
                     </div>

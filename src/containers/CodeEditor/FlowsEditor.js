@@ -12,8 +12,9 @@ function FlowsEditor (props) {
     const [ model, setModel ] = useState (props.data);
     const [ addFlow, setAddFlow ] = useState (false);
     const [ implementersIds, setImplementersIds ] = useState (null);
-    // const [ actorsMap, setActorsMap ] = useState (null);
     const [ definedActors, setDefinedActors ] = useState ([]);
+    const [ editingElement, setEditingElement ] = useState (null);
+    const [ latestClick, setLatestClick ] = useState (0);
     
     
     useEffect (() => {
@@ -27,7 +28,11 @@ function FlowsEditor (props) {
 
     const refreshEditor = useCallback ((data) => {
         setModel (data)
-    }, [])
+    }, []);
+
+    const setAsEditing = useCallback ((key, bool) => {
+        setEditingElement (bool ? key : null)
+    }, []);
 
     const onMount = useCallback (() => {
         setImplementersIds (Object.keys (actorsSchema).map (it => actorsSchema[it]))
@@ -71,13 +76,20 @@ function FlowsEditor (props) {
         setAddFlow (false);
     }, [ ]);
 
-    const click_element = useCallback ((status) => {
-        console.log ('click', status);
+    const click_element = useCallback ((status, event) => {
+        // console.log ('click', status);
 
-        if (status.action === 'remove')
+        if (status.action === 'item-click') {
+            let diff = event.timeStamp - latestClick;
+            setLatestClick (event.timeStamp);
+            if (diff < 250)
+                setAsEditing (status.key, true);
+        }
+        
+        else if (status.action === 'remove')
             removeItem (status.id)
 
-    }, [ removeItem ]);
+    }, [ removeItem, latestClick ]);
 
     const edit_element = useCallback ((status) => {
         setModel (prevModel => {
@@ -91,13 +103,14 @@ function FlowsEditor (props) {
         const flowitems_props = {
             click: click_element,
             change: edit_element,
+            setEditing: setAsEditing,
             definedActors: definedActors,
             actorsSchema: actorsSchema
         }
         return model ? Object.keys(model).map ((key, i) => {
-            return <FlowElement key={i} data={model[key]} {...{ $key: key, ...flowitems_props  }}  />
+            return <FlowElement key={i} data={model[key]} $key={key} editing={editingElement === key} {...flowitems_props}  />
         }) : null;
-    }, [ model, definedActors, actorsSchema, click_element, edit_element ]);
+    }, [ model, definedActors, actorsSchema, click_element, edit_element, editingElement, setAsEditing ]);
 
     const addflow_render = useMemo (() => {
         return addFlow ? (<ImplementersCatalog data={implementersIds} add={addItem} hide={hideCatalog} />) : null;

@@ -14,7 +14,7 @@ function NextItem (props) {
                     {/* <select name="next" onChange={props.onChange} defaultValue={props.value}>
                         {next_items.map (opt => <option key={'opt_' + opt} value={opt}>{opt}</option>)}
                     </select> */}
-                    <ActorSelector list={next_items} name="next" value={props.value} change={props.onChange} />
+                    <ActorSelector self={props.flowElemId} list={next_items} name="next" value={props.value} change={props.onChange} />
                 </div>
             </div>
         );

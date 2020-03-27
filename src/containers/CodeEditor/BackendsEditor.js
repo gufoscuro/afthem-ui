@@ -10,6 +10,8 @@ function BackendsEditor (props) {
     const { update, refreshHook, axiosInstance, oid, cid } = props;
     const [ model, setModel ] = useState (props.data && props.data.backends ? props.data.backends : []);
     const [ flowsList, setFlowsList ] = useState ([]);
+    const [ editingElement, setEditingElement ] = useState (null);
+    const [ latestClick, setLatestClick ] = useState (0);
 
 
     
@@ -28,6 +30,10 @@ function BackendsEditor (props) {
     const refreshEditor = useCallback ((data) => {
         // console.log ('refresh', data)
         setModel (data.backends)
+    }, []);
+
+    const setAsEditing = useCallback ((key, bool) => {
+        setEditingElement (bool ? key : null)
     }, []);
 
     const removeItem = useCallback ((index) => {
@@ -53,13 +59,20 @@ function BackendsEditor (props) {
         });
     }, [ flowsList ]);
 
-    const click_element = useCallback ((status) => {
+    const click_element = useCallback ((status, event) => {
         console.log ('click', status);
 
-        if (status.action === 'remove')
+        if (status.action === 'item-click') {
+            let diff = event.timeStamp - latestClick;
+            setLatestClick (event.timeStamp);
+            if (diff < 250)
+                setAsEditing (status.key, true);
+        }
+        
+        else if (status.action === 'remove')
             removeItem (status.id)
 
-    }, [ removeItem ]);
+    }, [ removeItem, latestClick ]);
 
     const edit_element = useCallback ((index, data) => {
         setModel (prevModel => {
@@ -73,12 +86,13 @@ function BackendsEditor (props) {
         const backendsitems_props = {
             click: click_element,
             change: edit_element,
-            flows: flowsList
+            flows: flowsList,
+            setEditing: setAsEditing
         }
         return model ? model.map ((it, i) => {
-            return <BackendElement key={i} data={it} {...{ $key: i, ...backendsitems_props  }}  />
+            return <BackendElement key={i} data={it} $key={i} editing={editingElement === i} {...backendsitems_props} />
         }) : null;
-    }, [ model, click_element, edit_element, flowsList ]);
+    }, [ model, click_element, edit_element, flowsList, editingElement, setAsEditing ]);
 
 
     return (

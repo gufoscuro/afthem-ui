@@ -46,7 +46,7 @@ const Sidebar = (props) => {
                     (<NavLink exact activeClassName="active" to="/admin/users">
                         <NavbarButton icon="cog"/>
                     </NavLink>)}
-                <NavbarButton icon="user" clickHandler={clickHandler} action="user-profile" classes="no-hover"/>
+                <NavbarButton icon="user" clickHandler={clickHandler} action="user-profile"/>
             </div>
         )
     }, [ user, clickHandler ]);
@@ -81,7 +81,7 @@ const Sidebar = (props) => {
                         (<NavLink className="link-label lbl animated fadeIn d-1" exact activeClassName="active" to="/admin/users">
                             Admin Panel
                         </NavLink>)}
-                    <div className="link-label profile-link no-hover lbl animated fadeIn d-1" 
+                    <div className="link-label profile-link lbl animated fadeIn d-1" 
                         onClick={e => { return (user ? clickHandler ('user-profile', e) : null) }} title={full_un}>
                         {user_name}
                         <i className="far fa-power-off logout" onClick={e => clickHandler ('logout', e)}></i>

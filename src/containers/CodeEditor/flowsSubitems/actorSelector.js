@@ -2,7 +2,7 @@ import React from 'react';
 
 
 function ActorSelector (props) {
-    const { name, value, list, change } = props;
+    const { name, value, list, change, self } = props;
     let base_opt;
 
     // console.log ('ActorSelector', list, value)
@@ -17,7 +17,7 @@ function ActorSelector (props) {
     return (
         <select name={name} onChange={change} value={value}>
             {base_opt}
-            {list.map (opt => <option key={name + '_opt_' + opt} value={opt}>{opt}</option>)}
+            {list.filter (opt => opt !== self).map (opt => <option key={name + '_opt_' + opt} value={opt}>{opt}</option>)}
         </select>
     );
 }

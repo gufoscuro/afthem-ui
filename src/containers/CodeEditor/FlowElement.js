@@ -9,8 +9,7 @@ import _ from 'lodash/core';
 
 
 function FlowElement (props) {
-    const { $key, $new, data, change, definedActors, actorsSchema } = props;
-    const [ editing, setEditing ] = useState (false);
+    const { $key, $new, data, click, change, definedActors, actorsSchema, editing, setEditing } = props;
     const [ model, setModel ] = useState (props.data)
     const [ brandNew, setBrandNew ] = useState (false);
     const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
@@ -25,7 +24,7 @@ function FlowElement (props) {
             delete m.$data;
             delete m.$new;
 
-            if (data.$new)
+            if ($new)
                 setBrandNew (true);
                 
 
@@ -53,7 +52,7 @@ function FlowElement (props) {
                 type: 'flows',
                 data: m
             });
-            setEditing (true);
+            setEditing ($key, true);
         }
     }, []);
 
@@ -85,7 +84,7 @@ function FlowElement (props) {
     }, []);
 
     const cancelChanges = useCallback (() => {
-        setEditing (false);
+        setEditing ($key, false);
         setModel (data);
     }, [ data ])
 
@@ -96,7 +95,7 @@ function FlowElement (props) {
                 type: 'FlowElement',
                 data: { ...model }
             });
-            setEditing (false);
+            setEditing ($key, false);
         }
     }, [ $key, change, model ])
     
@@ -104,6 +103,7 @@ function FlowElement (props) {
     let renderer = useMemo (() => {
         let fields = [],
             field_props = {
+                flowElemId: $key,
                 definedActors: definedActors,
                 elementSchema: elementSchema,
                 onChange: onValueChange,
@@ -140,8 +140,8 @@ function FlowElement (props) {
         ctrls = (
             <div className="hover">
                 <div className="ctrls">
-                    <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
-                    <div className="thin-button" onClick={props.click.bind (this, { action: 'remove', id: props.$key })}>Remove</div>
+                    <div className="thin-button" onClick={() => { setEditing ($key, true) }}>Edit</div>
+                    <div className="thin-button" onClick={click.bind (this, { action: 'remove', id: $key })}>Remove</div>
                 </div>
             </div>
         )
@@ -149,8 +149,9 @@ function FlowElement (props) {
     
 
     return (
-        <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>
-            <div className="lbl">{props.$key}</div>
+        <div className={"editor-component editor-item" + (editing ? ' editing' : '')} 
+            onClick={e => click ({ key: $key, action: 'item-click' }, e)}>
+            <div className="lbl">{$key}</div>
             {renderer}
             {ctrls}
         </div>

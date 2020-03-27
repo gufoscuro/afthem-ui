@@ -4,8 +4,7 @@ import _ from 'lodash/core';
 
 
 function BackendElement (props) {
-    const { $key, data, change, click, flows } = props;
-    const [ editing, setEditing ] = useState (false);
+    const { $key, data, change, click, flows, editing, setEditing } = props;
     const [ model, setModel ] = useState (data);
     const [ brandNew, setBrandNew ] = useState (false);
     
@@ -22,7 +21,7 @@ function BackendElement (props) {
             delete m.$editing;
             setModel (m);
             change ($key, m);
-            setEditing (true);
+            setEditing ($key, true);
         }
     }, [ data, change, model, $key ]);
 
@@ -50,14 +49,14 @@ function BackendElement (props) {
     }, []);
 
     const cancelChanges = useCallback (() => {
-        setEditing (false);
+        setEditing ($key, false);
         setModel (data);
     }, [ data ])
 
     const confirmChanges = useCallback (() => {
         if (true) { // some sort of validation goes here I suppose ...
             change ($key, { ...model });
-            setEditing (false);
+            setEditing ($key, false);
             if (brandNew)
                 setBrandNew (false);
         }
@@ -98,7 +97,7 @@ function BackendElement (props) {
                     <div className="txt">upstream: {model.upstream || '(not set)'}</div>
                     <div className="hover">
                         <div className="ctrls">
-                            <div className="thin-button" onClick={() => { setEditing (true) }}>Edit</div>
+                            <div className="thin-button" onClick={() => { setEditing ($key, true) }}>Edit</div>
                             <div className="thin-button" onClick={click.bind (this, { action: 'remove', id: $key })}>Remove</div>
                         </div>
                     </div>
@@ -107,7 +106,8 @@ function BackendElement (props) {
         }
 
         return (
-            <div className={"editor-component editor-item" + (editing ? ' editing' : '')}>
+            <div className={"editor-component editor-item" + (editing ? ' editing' : '')} 
+                onClick={e => click ({ key: $key, action: 'item-click' }, e)}>
                 {rrr}
             </div>
         );

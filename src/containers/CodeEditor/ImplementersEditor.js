@@ -7,6 +7,7 @@ import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import PopupMessage from '../../components/ModalPanel/PopupMessage';
 import FadeinFX from '../../hoc/FadeinFX';
 import './VisualEditor.css';
+import { statSync } from 'fs';
 
 
 function ImplementersEditor (props) {
@@ -15,6 +16,9 @@ function ImplementersEditor (props) {
     const [ thread_pools, setThreadPools ] = useState (data ? data.thread_pools : null);
     const [ modalFlow, setModalFlow ] = useState (null);
     const [ addFlow, setAddFlow ] = useState (false);
+    const [ editingElement, setEditingElement ] = useState (null);
+    const [ editingTP, setEditingTP ] = useState (null);
+    const [ latestClick, setLatestClick ] = useState (0);
     
 
     useEffect (() => {
@@ -97,17 +101,36 @@ function ImplementersEditor (props) {
         setThreadPools (t);
     }, [ thread_pools ]);
 
-    const click_element = useCallback ((status) => {
-        console.log ('click', status);
+    const setAsEditing = useCallback ((key, bool) => {
+        setEditingElement (bool ? key : null)
+    }, []);
 
-        if (status.action === 'remove-implementer') {
+    const setAsEditingTP = useCallback ((key, bool) => {
+        setEditingTP (bool ? key : null)
+    }, []);
+
+    const click_element = useCallback ((status, event) => {
+        // console.log ('click', status);
+
+        if (status.action === 'item-click') {
+            let diff = event.timeStamp - latestClick;
+            setLatestClick (event.timeStamp);
+            if (diff < 250) {
+                if (status.type === 'tp')
+                    setAsEditingTP (status.key, true);
+                else
+                    setAsEditing (status.key, true);
+            }
+        }
+
+        else if (status.action === 'remove-implementer') {
             removeImplenenter (status.id);
         }
 
         else if (status.action === 'remove-threadpool') {
             removeThreadpool (status.id);
         }
-    }, [ removeImplenenter, removeThreadpool ]);
+    }, [ removeImplenenter, removeThreadpool, latestClick ]);
 
     const edit_element = useCallback ((status) => {
         if (status.type === 'implementers') {
@@ -135,17 +158,23 @@ function ImplementersEditor (props) {
         const imp_props = {
             click: click_element,
             change: edit_element,
+            setEditing: setAsEditing,
             pools: Object.keys (thread_pools)
         }
         return implementers ? implementers.map ((o, i) => 
-            <ImplementerElement key={i} data={o} $key={i} {...imp_props} />) : null
-    }, [ implementers, click_element, edit_element ]);
+            <ImplementerElement key={i} data={o} $key={i} editing={editingElement === i} {...imp_props} />) : null
+    }, [ implementers, click_element, edit_element, editingElement, setAsEditing ]);
 
     const threadpool_render = useMemo (() => {
+        const tp_props = {
+            click: click_element,
+            change: edit_element,
+            setEditing: setAsEditingTP
+        }
         return thread_pools ? Object.keys(thread_pools).map ((key, i) => {
-            return <ThreadpoolElement key={i} data={thread_pools[key]} {...{ $key: key, click: click_element, change: edit_element }}  />
+            return <ThreadpoolElement key={i} data={thread_pools[key]} $key={key} editing={editingTP === key} {...tp_props}  />
         }) : null
-    }, [ thread_pools, click_element, edit_element ]);
+    }, [ thread_pools, click_element, edit_element, editingTP, setAsEditingTP ]);
 
     const addflow_render = useMemo (() => {
         return addFlow ? (<ActorsCatalog axiosInstance={axiosInstance} add={addImplementer} hide={hideCatalog} />) : null;
