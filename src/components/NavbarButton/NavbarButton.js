@@ -4,30 +4,39 @@ import './NavbarButton.css'
 
 
 const navbarButton = (props) => {
-    let clsses = [],
-        badge;
+    let {
+            action, 
+            active, 
+            disabled, 
+            classes, 
+            badge, 
+            icon, 
+            clickHandler 
+        } = props,
+        clsses = [], 
+        badge_renderer;
 
-    if (props.badge) {
+    if (badge) {
         clsses.push ('with-badge');
-        badge = (
-            <div className="badge-count animated zoomIn">{props.badge}</div>
+        badge_renderer = (
+            <div className="badge-count animated zoomIn">{badge}</div>
         );
     }
 
-    if (props.clsses)
-        clsses.push (props.clsses);
+    if (classes)
+        clsses.push (classes);
 
 
-    if (props.disabled)
+    if (disabled)
         clsses.push ('disabled');
-    if (props.active)
+    if (active)
         clsses.push ('active');
 
     return (
         <div 
-            className={"navbar-button " + props.classes + ' ' + clsses.join (' ')} 
-            onClick={event => props.clickHandler (props.action, event)}>
-            <i className={"far fa-" + props.icon}></i> {badge}
+            className={"navbar-button " + ' ' + clsses.join (' ')} 
+            onClick={event => { if (disabled === false && clickHandler !== undefined) clickHandler (action, event) }}>
+            <i className={"far fa-" + icon}></i> {badge_renderer}
         </div>
     );
 }

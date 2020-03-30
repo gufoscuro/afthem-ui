@@ -7,7 +7,6 @@ import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import PopupMessage from '../../components/ModalPanel/PopupMessage';
 import FadeinFX from '../../hoc/FadeinFX';
 import './VisualEditor.css';
-import { statSync } from 'fs';
 
 
 function ImplementersEditor (props) {
@@ -52,10 +51,10 @@ function ImplementersEditor (props) {
 
     const addImplementer = useCallback ((item) => {
         let a = [...implementers]
-        a.push ({...item, ...{ $editing: true }});
+        a.push ({...item, ...{ $editing: true, $new: true }});
         setImplementers (a);
         setAddFlow (false);
-        setTimeout (() => { window.scrollTo (0, 10000) }, 20)
+        setTimeout (() => { window.scrollTo (0, 10000) }, 20);
     }, [ implementers ]);
 
     const removeImplenenter = useCallback ((index) => {
@@ -97,7 +96,7 @@ function ImplementersEditor (props) {
             k = 'threadpool_' + c;
             c++;
         }
-        t[k] = {...o, ...{ $editing: true }};
+        t[k] = {...o, ...{ $editing: true, $new: true }};
         setThreadPools (t);
     }, [ thread_pools ]);
 

@@ -14,6 +14,7 @@ import Confirm from './components/ModalPanel/Confirm';
 import Login from './containers/Login/Login';
 import SmartRoute from './components/ProtectedRoute/SmartRoute';
 import Layout from './Layout';
+import TestList from './containers/TestList/TestList';
 
 // import Sidebar from './components/Sidebar/Sidebar';
 
@@ -174,16 +175,6 @@ class App extends Component {
 							<Organizations {...basic_props} {...side_props} {...props} />
 						} />
 
-						{/* <Route exact path="/">
-							<Sidebar {...side_props} />
-							<Organizations {...basic_props} {...side_props} />
-						</Route>
-
-						<Route exact path="/organizations/:id/clusters">
-							<Sidebar {...side_props} />
-							<Clusters {...basic_props} {...side_props} />
-						</Route> */}
-
 
 						<SmartRoute exact path="/organizations/:id/clusters" authenticated {...route_p} render={props =>
 							<Clusters {...props} {...basic_props} {...side_props} />
@@ -199,11 +190,12 @@ class App extends Component {
 						<SmartRoute exact path="/admin/organization/:oid/:subview" authenticated {...route_p} render={props =>
 							<AdminOrg {...props} {...basic_props} {...side_props} />
 						} />
-						
 
-						{/* <Route exact path="/dnd">
-							<DnD />
-						</Route> */}
+
+
+						{/* <SmartRoute exact path="/test" {...route_p}>
+							<TestList />
+						</SmartRoute> */}
 
 						<Confirm active={this.state.confirm} />
 					</Layout>

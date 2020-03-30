@@ -6,6 +6,7 @@ import _ from 'lodash/core';
 function ThreadpoolElement (props) {
     const { data, $key, change, click, editing, setEditing } = props;
     const [ model, setModel ] = useState (props.data);
+    const [ brandNew, setBrandNew ] = useState (false);
 
 
     useEffect (() => {
@@ -22,6 +23,10 @@ function ThreadpoolElement (props) {
         if (data.$editing) {
             let m = {...model};
             delete m.$editing;
+            delete m.$new;
+
+            if (data.$new)
+                setBrandNew (true);
 
             setModel (m);
             change ({
@@ -30,6 +35,7 @@ function ThreadpoolElement (props) {
                 data: m
             });
             setEditing ($key, true);
+
         }
     }, [ data, change, model, $key ]);
 
@@ -57,8 +63,10 @@ function ThreadpoolElement (props) {
                 data: { ...model }
             });
             setEditing ($key, false);
+            if (brandNew)
+                setBrandNew (false);
         }
-    }, [ model, change, $key ])
+    }, [ model, change, $key, brandNew ])
 
 
     const renderer = useMemo (() => {
@@ -80,7 +88,7 @@ function ThreadpoolElement (props) {
                     </div>
                     
                     <div className="e-ctrls">
-                        <div className="thin-button" onClick={cancelChanges}>Cancel</div>
+                        {brandNew === false && <div className="thin-button" onClick={cancelChanges}>Cancel</div>}
                         <div className="thin-button" onClick={confirmChanges}>Confirm</div>
                     </div>
                 </>
@@ -106,7 +114,7 @@ function ThreadpoolElement (props) {
         return (
             <div className={"editor-component editor-item" + (editing ? ' editing' : '')} onClick={e => click ({ key: $key, type: 'tp', action: 'item-click' }, e)}>{r}</div>
         )
-    }, [ editing, click, data, model, $key, onValueChange, confirmChanges, cancelChanges, setEditing ])
+    }, [ editing, click, data, model, $key, onValueChange, confirmChanges, cancelChanges, setEditing, brandNew ])
     
 
     return renderer;

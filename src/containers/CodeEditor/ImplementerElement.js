@@ -5,7 +5,8 @@ import _ from 'lodash/core';
 
 function ImplementersElement (props) {
     const { data, change, click, $key, pools, editing, setEditing } = props;
-    const [ model, setModel ] = useState (data)
+    const [ model, setModel ] = useState (data);
+    const [ brandNew, setBrandNew ] = useState (false);
 
     // console.log ('implementer', editing)
 
@@ -30,6 +31,10 @@ function ImplementersElement (props) {
         if (data.$editing) {
             let m = {...model};
             delete m.$editing;
+            delete m.$new;
+
+            if (data.$new)
+                setBrandNew (true);
 
             setModel (m);
             change ({
@@ -70,8 +75,10 @@ function ImplementersElement (props) {
                 data: { ...model }
             });
             setEditing ($key, false);
+            if (brandNew)
+                setBrandNew (false);
         }
-    }, [ $key, change, model ])
+    }, [ $key, change, model, brandNew ])
 
 
     if (editing) {
@@ -93,7 +100,7 @@ function ImplementersElement (props) {
                     </div>
                 </div>
                 <div className="e-ctrls">
-                    <div className="thin-button" onClick={cancelChanges}>Cancel</div>
+                    {brandNew === false && <div className="thin-button" onClick={cancelChanges}>Cancel</div>}
                     <div className="thin-button" onClick={confirmChanges}>Confirm</div>
                 </div>
             </div>

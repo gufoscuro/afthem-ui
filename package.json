@@ -17,6 +17,7 @@
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "fibers": "^4.0.2",
+    "framer-motion": "^1.10.2",
     "fs": "0.0.1-security",
     "fs-extra": "^8.1.0",
     "handlebars": "^4.7.2",

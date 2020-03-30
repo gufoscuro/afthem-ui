@@ -9,7 +9,7 @@ import _ from 'lodash/core';
 
 
 function FlowElement (props) {
-    const { $key, $new, data, click, change, definedActors, actorsSchema, editing, setEditing } = props;
+    const { $key, data, click, change, definedActors, actorsSchema, editing, setEditing } = props;
     const [ model, setModel ] = useState (props.data)
     const [ brandNew, setBrandNew ] = useState (false);
     const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
@@ -24,7 +24,7 @@ function FlowElement (props) {
             delete m.$data;
             delete m.$new;
 
-            if ($new)
+            if (data.$new)
                 setBrandNew (true);
                 
 
@@ -96,8 +96,10 @@ function FlowElement (props) {
                 data: { ...model }
             });
             setEditing ($key, false);
+            if (brandNew)
+                setBrandNew (false);
         }
-    }, [ $key, change, model ])
+    }, [ $key, change, model, brandNew ])
     
     
     let renderer = useMemo (() => {
@@ -132,7 +134,7 @@ function FlowElement (props) {
     if (editing) {
         ctrls = (
             <div className="e-ctrls">
-                <div className="thin-button" onClick={cancelChanges}>Cancel</div>
+                {brandNew === false && <div className="thin-button" onClick={cancelChanges}>Cancel</div>}
                 <div className="thin-button" onClick={confirmChanges}>Confirm</div>
             </div>
         )

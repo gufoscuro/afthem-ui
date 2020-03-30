@@ -63,11 +63,11 @@ function FlowsEditor (props) {
             if (t[item.typeid] === undefined)
                 t[item.typeid] = {
                     $editing: true,
-                    $data: item
+                    $data: item,
+                    $new: true
                 };
             else {
-                console.log ('existing')
-                // t[item.typeid]['$editing'] = true;
+                setEditingElement (item.typeid, true);
             }
 
             return t;
