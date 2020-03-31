@@ -9,19 +9,23 @@ function NextItem (props) {
     if (props.editing) {
         return (
             <div className="editor-component-field">
-                <div className="lbl indent-1">next <i className="sep far fa-long-arrow-right"></i></div>
-                <div className="indent-2">
-                    {/* <select name="next" onChange={props.onChange} defaultValue={props.value}>
-                        {next_items.map (opt => <option key={'opt_' + opt} value={opt}>{opt}</option>)}
-                    </select> */}
-                    <ActorSelector self={props.flowElemId} list={next_items} name="next" value={props.value} change={props.onChange} />
+                <div className="keyval indent-1">
+                    <div className="keyval-key">
+                        next <i className="sep far fa-long-arrow-right"></i>
+                    </div>
+                    <div className="indent-1">
+                        <ActorSelector self={props.flowElemId} list={next_items} name="next" value={props.value} change={props.onChange} />
+                    </div>
                 </div>
             </div>
         );
     } else {
         return (
-            <div className="keyval indent-1">next <i className="far fa-long-arrow-right"></i>
-                <div className="keyval indent-1">{props.value}</div>
+            <div className="keyval indent-1">
+                <div className="keyval-key">
+                    next <i className="far fa-long-arrow-right"></i>
+                </div>
+                <div className="keyval-val indent-1">{props.value}</div>
             </div>
         );
     }

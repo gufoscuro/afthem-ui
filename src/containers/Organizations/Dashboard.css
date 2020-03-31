@@ -152,7 +152,8 @@
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background-color: #95d1ff;
+    /* background-color: #95d1ff; */
+    background-color: #4fd48a;
     /* color: #fff; */
     /* border-radius: 50%; */
     font-size: 16px;

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
 import FlowElement from './FlowElement';
 import ImplementersCatalog from './ImplementersCatalog';
+import useBodyClass from '../../components/GlobalHooks/UseBodyClass';
 import FadeinFX from '../../hoc/FadeinFX';
 
 import './VisualEditor.css';
@@ -17,6 +18,8 @@ function FlowsEditor (props) {
     const [ latestClick, setLatestClick ] = useState (0);
     
     
+    useBodyClass (editingElement ? 'editor-editing' : []);
+
     useEffect (() => {
         update (model);
         setDefinedActors (Object.keys (model));
@@ -31,7 +34,7 @@ function FlowsEditor (props) {
     }, []);
 
     const setAsEditing = useCallback ((key, bool) => {
-        setEditingElement (bool ? key : null)
+        setEditingElement (bool ? key : null);
     }, []);
 
     const onMount = useCallback (() => {

@@ -20,5 +20,6 @@
 }
 
 .cluster-control:hover {
-    background-color: #f4f8fb;
+    /* background-color: #f4f8fb; */
+    background-color: #ecf4f7;
 }

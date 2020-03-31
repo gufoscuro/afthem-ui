@@ -153,7 +153,7 @@ function FlowElement (props) {
     return (
         <div className={"editor-component editor-item" + (editing ? ' editing' : '')} 
             onClick={e => click ({ key: $key, action: 'item-click' }, e)}>
-            <div className="lbl">{$key}</div>
+            <div className="lbl id">{$key}</div>
             {renderer}
             {ctrls}
         </div>

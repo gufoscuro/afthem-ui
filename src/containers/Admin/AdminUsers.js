@@ -124,7 +124,7 @@ function AdminUsers (props) {
                     </div>
                     {users.map ((it, index) => {
                         return (
-                            <div key={it.id} className="generic-item">
+                            <div key={it.id} className="generic-item" onClick={() => addUser (it.id)}>
                                 <div className="lbl gap">Username: {it.username}</div>
                                 <div className="txt">Full name: {it.firstName} {it.lastName}</div>
                                 <div className="txt">Enabled: {it.enabled ? 'yes' : 'no'}</div>
@@ -132,8 +132,8 @@ function AdminUsers (props) {
 
                                 <div className="hover">
                                     <div className="ctrls">
-                                        <div className="thin-button" onClick={() => addUser (it.id)}>Edit</div>
-                                        <div className="thin-button" onClick={() => askRemoveUser (it.id)}>Remove</div>
+                                        <div className="thin-button" onClick={e => { e.stopPropagation(); addUser (it.id); }}>Edit</div>
+                                        <div className="thin-button" onClick={e => { e.stopPropagation(); askRemoveUser (it.id); }}>Remove</div>
                                     </div>
                                 </div>
                             </div>

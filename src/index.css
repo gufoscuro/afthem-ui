@@ -11,6 +11,7 @@ body {
   background-color: #ecf2f6;
   color: #526e77;
   font-size: 14px;
+  transition: background-color .25s ease-in-out;
 }
 
 code {

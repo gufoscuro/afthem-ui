@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
 import BackendElement from './BackendElement';
+import useBodyClass from '../../components/GlobalHooks/UseBodyClass';
 import FadeinFX from '../../hoc/FadeinFX';
 
 import './VisualEditor.css';
@@ -14,6 +15,7 @@ function BackendsEditor (props) {
     const [ latestClick, setLatestClick ] = useState (0);
 
 
+    useBodyClass (editingElement ? 'editor-editing' : []);
     
     useEffect (() => {
         update ({
@@ -57,6 +59,7 @@ function BackendsEditor (props) {
 
             return t;
         });
+        setTimeout (() => { window.scrollTo (0, 10000) }, 50)
     }, [ flowsList ]);
 
     const click_element = useCallback ((status, event) => {
@@ -100,9 +103,9 @@ function BackendsEditor (props) {
             <div className="backends">
                 <FadeinFX delay={2}>
                     {model_renderer}
-                    <div className="editor-add-component editor-item" onClick={addItem}>
+                    {editingElement === null && <div className="editor-add-component editor-item" onClick={addItem}>
                         Add backend
-                    </div>
+                    </div>}
                 </FadeinFX>
             </div>
         </div>

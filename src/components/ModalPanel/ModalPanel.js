@@ -53,7 +53,7 @@ class ModalPanel extends Component {
         return (
             <div className={"ModalOverlay animated " + clsses.join (" ")}>
                 <div className="ModalPanel">
-                    <div className="fx animated softZoomInUp">
+                    <div className="fx animated softZoomIn">
                         {/* <div className="panel-triggers">
                             {close_trigger}
                         </div>

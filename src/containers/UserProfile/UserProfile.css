@@ -30,14 +30,15 @@
     line-height: 70px;
     background-color: #fff;
     border-radius: 5px;
-    background-color: #5b7688;
+    /* background-color: #5b7688; */
+    background-color: #4fd48a;
     color: #fff;
 }
 .UserProfile .icon .name {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 600;
     color: #fff;
-    text-shadow: 0 0 4px #7f99a9;
+    /* text-shadow: 0 0 4px #7f99a9; */
 }
 
 .UserProfile .panel-content .heading {

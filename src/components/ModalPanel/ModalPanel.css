@@ -12,6 +12,11 @@
     -webkit-animation-duration: .2s;
     animation-duration: .2s;
 }
+.App.locked .ModalOverlay {
+    /* background-color: rgba(65, 87, 101, 0.8); */
+    background-color: rgba(66, 92, 109, 0.8);;
+}
+
 .ModalOverlay.active {
     display: block;
 }

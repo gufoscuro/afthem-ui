@@ -108,7 +108,7 @@ function ImplementersElement (props) {
     } else {
         renderer = (
             <>
-                <div className="lbl">id: {data.id}</div>
+                <div className="lbl id">id: {data.id}</div>
                 <div className="txt">class: {class_string}</div>
                 <div className="txt">type: {data.type}</div>
                 {data.thread_pool ? (<div className="txt">thread_pool: {data.thread_pool}</div>) : ''}

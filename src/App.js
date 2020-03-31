@@ -14,7 +14,7 @@ import Confirm from './components/ModalPanel/Confirm';
 import Login from './containers/Login/Login';
 import SmartRoute from './components/ProtectedRoute/SmartRoute';
 import Layout from './Layout';
-import TestList from './containers/TestList/TestList';
+// import TestList from './containers/TestList/TestList';
 
 // import Sidebar from './components/Sidebar/Sidebar';
 
@@ -165,7 +165,7 @@ class App extends Component {
 
 		return (
 			<Router>
-				<div className="App">
+				<div className={"App" + (this.state.sidebar_busy ? ' locked' : '')}>
 					<Layout {...basic_props} {...side_props}>
 						<SmartRoute exact path="/login" {...route_p} render={props =>
 							<Login {...basic_props} {...side_props} {...props} />

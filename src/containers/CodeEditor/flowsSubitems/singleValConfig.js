@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
+import SmartSelector from '../SmartSelector';
 
 function SingleValConfig (props) {
     const { name, value, change, type } = props;
@@ -24,18 +25,21 @@ function SingleValConfig (props) {
 
         if (type === 'boolean')
             inpt = (
+                // <SmartSelector type="boolean" name={name} value={value} change={(n, v) => onValueChange (v)} label={name} />
                 <select name={name} value={value} onChange={hndl}>
                     <option>true</option>
                     <option>false</option>
                 </select>
             );
         else
-            inpt = (<input type="text" name={name} value={value} placeholder={name} onChange={hndl} />);
+            inpt = (
+                <input type="text" name={name} value={value} placeholder={name} onChange={hndl} />
+            );
 
         return (
-            <div className="keyval indent-2">
-                <div className="lbl">{name}</div>
-                <div className="indent-1">{inpt}</div>
+            <div className="keyval indent-1">
+                <div className="keyval-key">{name}</div>
+                <div className="indent-1 editor-component-field">{inpt}</div>
             </div>
         )
     }, [ name, value, type, onValueChange ]);

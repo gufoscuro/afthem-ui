@@ -27,6 +27,7 @@
     animation-delay: .2s;
 }
 .CodeEditor .Instruments .instruments-holder {
+    line-height: 40px;
     /* padding: 0 7px */
 }
 .CodeEditor .Instruments .btn-holder {
@@ -54,6 +55,8 @@
 
 .CodeMirror {
     height: auto;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
 }
 
 .CodeMirror-activeline-background {
@@ -66,3 +69,4 @@
 .CodeMirror-crosshair { cursor: crosshair; }
 .CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {background: #d7d4f0;}
 .CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: #d7d4f0; }
+

@@ -11,7 +11,7 @@ const dialog = (props) => {
                 <div className="heading">{props.heading}</div>
                 <div className="text">{props.text}</div>
             </div>
-            <div className="panel-ctrls animated slideInDown">
+            <div className="panel-ctrls animated softFadeInUp">
                 <button className="btn btn-danger btn-sm" onClick={props.clickHandler.bind (this, false)}>Cancel</button>
                 <button className="btn btn-primary btn-sm" onClick={props.clickHandler.bind (this, true)}>Confirm</button>
             </div>

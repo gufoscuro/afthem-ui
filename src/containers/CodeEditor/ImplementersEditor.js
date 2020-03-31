@@ -3,6 +3,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ImplementerElement from './ImplementerElement';
 import ThreadpoolElement from './ThreadpoolElement';
 import ActorsCatalog from './ActorsCatalog';
+import useBodyClass from '../../components/GlobalHooks/UseBodyClass';
 import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import PopupMessage from '../../components/ModalPanel/PopupMessage';
 import FadeinFX from '../../hoc/FadeinFX';
@@ -19,6 +20,8 @@ function ImplementersEditor (props) {
     const [ editingTP, setEditingTP ] = useState (null);
     const [ latestClick, setLatestClick ] = useState (0);
     
+
+    useBodyClass ((editingElement || editingTP) ? 'editor-editing' : []);
 
     useEffect (() => {
         onMount ();

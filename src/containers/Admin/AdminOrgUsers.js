@@ -130,7 +130,7 @@ function OrgUsersEditor (props) {
 
                                         <div className="hover">
                                             <div className="ctrls">
-                                                <div className="thin-button" onClick={() => askRemoveMembership (it.id)}>Remove Membership</div>
+                                                <div className="thin-button" onClick={e => askRemoveMembership (it.id)}>Remove Membership</div>
                                             </div>
                                         </div>
                                     </div>

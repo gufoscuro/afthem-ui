@@ -33,7 +33,7 @@ const Sidebar = (props) => {
                 {org_links}
             </>
         )
-    }, [ organization, clickHandler ])
+    }, [ organization, clickHandler ]);
 
     const bottom_links = useMemo (() => {
         return (
@@ -89,7 +89,7 @@ const Sidebar = (props) => {
                 </div>
             </div>
         )
-    }, [ organization, user, clickHandler ])
+    }, [ organization, user, clickHandler ]);
 
     const renderer = useMemo (() => {
         let sidebar_clss = 'Sidebar',

@@ -74,6 +74,7 @@ function ThreadpoolElement (props) {
         if (editing) {
             r = (
                 <>
+                    <div className="lbl id">{$key}</div>
                     <div className="editor-component-field">
                         <span className="lbl">min <i className="sep far fa-long-arrow-right"></i></span>
                         <input type="text" name="min" value={model.min} pattern="[0-9]*" onChange={onValueChange}/>
@@ -96,7 +97,7 @@ function ThreadpoolElement (props) {
         } else {
             r = (
                 <>
-                    <div className="lbl">{$key}</div>
+                    <div className="lbl id">{$key}</div>
                     <div className="keyval indent-1">min <i className="far fa-long-arrow-right"></i> {data.min}</div>
                     <div className="keyval indent-1">max <i className="far fa-long-arrow-right"></i> {data.max}</div>
                     <div className="keyval indent-1">factor <i className="far fa-long-arrow-right"></i> {data.factor}</div>

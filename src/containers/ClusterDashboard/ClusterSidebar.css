@@ -110,7 +110,8 @@
     height: 70px;
     line-height: 70px;
     text-align: center;
-    background-color: #95d1ff;
+    /* background-color: #95d1ff; */
+    background-color: #4fd48a;
     color: #fff;
     font-size: 24px;
     /* border-radius: 50%; */

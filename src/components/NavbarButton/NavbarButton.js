@@ -35,7 +35,7 @@ const navbarButton = (props) => {
     return (
         <div 
             className={"navbar-button " + ' ' + clsses.join (' ')} 
-            onClick={event => { if (disabled === false && clickHandler !== undefined) clickHandler (action, event) }}>
+            onClick={event => { if (disabled !== true && clickHandler !== undefined) clickHandler (action, event) }}>
             <i className={"far fa-" + icon}></i> {badge_renderer}
         </div>
     );

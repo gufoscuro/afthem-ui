@@ -27,6 +27,7 @@
 }
 .instruments-tab.active {
     background-color: #4f9bd4;
+    /* background-color: #3ac779; */
     color: #fff;
 }
 .instruments-tab.disabled {

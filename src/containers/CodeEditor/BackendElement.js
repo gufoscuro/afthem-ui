@@ -92,7 +92,7 @@ function BackendElement (props) {
         } else {
             rrr = (
                 <>
-                    <div className="lbl">prefix: {model.prefix}</div>
+                    <div className="lbl id">prefix: {model.prefix}</div>
                     <div className="txt">flow_id: {model.flow_id}</div>
                     <div className="txt">upstream: {model.upstream || '(not set)'}</div>
                     <div className="hover">

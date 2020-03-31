@@ -126,7 +126,7 @@ function AdminOrganizations (props) {
                     </div>
                     {organizations.map ((it) => {
                         return (
-                            <div key={it.id} className="generic-item">
+                            <div key={it.id} className="generic-item" onClick={e => addOrg (it.id)}>
                                 <div className="lbl gap">{it.name}</div>
                                 <div className="txt">Description: {it.description}</div>
                                 <div className="txt">Timezone: {it.timezone}</div>
@@ -135,8 +135,8 @@ function AdminOrganizations (props) {
                                 <div className="hover">
                                     <div className="ctrls">
                                         <NavLink className="thin-button" to={"/admin/organization/" + it.id + "/users"}>Manage</NavLink>
-                                        <div className="thin-button" onClick={() => addOrg (it.id)}>Edit</div>
-                                        <div className="thin-button" onClick={() => askRemoveOrg (it.id)}>Remove</div>
+                                        <div className="thin-button" onClick={e => { e.stopPropagation (); addOrg (it.id) }}>Edit</div>
+                                        <div className="thin-button" onClick={e => { e.stopPropagation (); askRemoveOrg (it.id) }}>Remove</div>
                                     </div>
                                 </div>
                             </div>

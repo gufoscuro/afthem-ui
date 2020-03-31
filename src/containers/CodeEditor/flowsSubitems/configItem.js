@@ -67,14 +67,11 @@ function ConfigItem (props) {
     const onSingleFieldChange = useCallback ((key, val) => {
         let configs = { ...value };
 
-        // console.log ('onSingleFieldChange', key, val)
-
         configs[key] = val;
         onUpdate ('config', configs);
     }, [ value, onUpdate ]);
 
 
-    
     const renderer = useMemo (() => {
         let single_renderers = [],
             cfg_schema = elementSchema ? elementSchema.config : null;
@@ -133,29 +130,36 @@ function ConfigItem (props) {
                 )
             }
             return (
-                <>
-                    <span className="lbl indent-1">config <i className="sep far fa-long-arrow-right"></i></span>
+                <div className="keyval indent-1">
+                    <div className="keyval-key">
+                        config <i className="sep far fa-long-arrow-right"></i>
+                    </div>
                     {single_renderers}
-                </>
+                </div>
             );
         } else {
             return (
                 <>
-                    <div className="keyval indent-1">config <i className="sep far fa-long-arrow-right"></i></div>
-                    {Object.keys(value).map ((it, ii) => {
-                        let it_val = value[it];
-                        return (
-                            <div key={ii} className="keyval indent-2">
-                                <div>{it}</div>
-                                <div className="indent-1">{typeof (it_val) === 'string' ? it_val : STRING.tiny (JSON.stringify (it_val))}</div>
-                            </div>
-                        )
-                    })}
+                    <div className="keyval indent-1">
+                        <div className="keyval-key">
+                            config <i className="sep far fa-long-arrow-right"></i>
+                        </div>
+                        {Object.keys(value).map ((it, ii) => {
+                            let it_val = value[it];
+                            return (
+                                <div key={ii} className="keyval indent-1">
+                                    <div className="keyval-key level-2">{it}</div>
+                                    <div className="indent-1 keyval-val keyval-code">{typeof (it_val) === 'string' ? it_val : STRING.tiny (JSON.stringify (it_val))}</div>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </>
             );
         }
-    }, [ editing, value, onCMChange, onSingleFieldChange, onSingleCMChange, elementSchema ])
+    }, [ editing, value, onCMChange, onSingleFieldChange, onSingleCMChange, elementSchema ]);
 
+    
     return (
         <>
             {renderer}
