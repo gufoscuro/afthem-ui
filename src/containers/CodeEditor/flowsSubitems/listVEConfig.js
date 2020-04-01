@@ -21,7 +21,6 @@ function ListVEConfig (props) {
     }, [ model ]);
 
     const onValueChange = useCallback ((index, k, v) => {
-        console.log ('onValueChange', index, k, v)
         setModel (prevModel => {
             let a = [ ...prevModel ];
             a[index][k] = v;
@@ -85,6 +84,7 @@ function ListVEConfig (props) {
                                 key={it.id} 
                                 className="editor-component-sortable">
                                 <div className="editor-component-field no-space">
+                                    <div className="sortable-lbl">value</div>
                                     <input type="text" name="value" value={it.value} autoComplete="off" 
                                         placeholder="value"
                                         onChange={(e) => onValueChange (jj, 'value', e.target.value)} />
@@ -103,7 +103,7 @@ function ListVEConfig (props) {
                         );
                     })}
                 {/* </AnimatePresence> */}
-                    <div onClick={addVEItem.bind (this)} className="editor-add-subcomponent">+ item to {name}</div>
+                    <div onClick={addVEItem.bind (this)} className="editor-add-subcomponent pad-left">+ item to {name}</div>
                 </div>
             </div>
         )

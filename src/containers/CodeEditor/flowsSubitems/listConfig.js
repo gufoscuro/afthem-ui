@@ -102,6 +102,7 @@ function ListConfig (props) {
                         return (
                             <div key={name + '__' + jj} className="editor-component-sortable">
                                 <div className="editor-component-field">
+                                    <div className="sortable-lbl">value</div>
                                     <input type="text" name="value" value={it} 
                                         placeholder="value"
                                         onChange={(e) => onValueChange (jj, e.target.value)} />
@@ -115,7 +116,7 @@ function ListConfig (props) {
                         );
                     })}
                 </div>
-                <div onClick={addItem.bind (this)} className="editor-add-subcomponent">+ item to {name}</div>
+                <div onClick={addItem.bind (this)} className="editor-add-subcomponent pad-left">+ item to {name}</div>
             </div>
         )
     }, [ name, value, onValueChange, shiftPosition, removeItem, addItem ]);

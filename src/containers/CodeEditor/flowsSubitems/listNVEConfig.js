@@ -80,11 +80,13 @@ function ListNVEConfig (props) {
                         return (
                             <motion.div layoutTransition={spring} key={it.id} className="editor-component-sortable">
                                 <div className="editor-component-field">
+                                    <div className="sortable-lbl">name</div>
                                     <input type="text" name="name" value={it.name} autoComplete="off" 
                                         placeholder="name"
                                         onChange={(e) => onValueChange (jj, 'name', e.target.value)} />
                                 </div>
                                 <div className="editor-component-field no-space">
+                                    <div className="sortable-lbl">value</div>
                                     <input type="text" name="value" value={it.value} 
                                         placeholder="value"
                                         onChange={(e) => onValueChange (jj, 'value', e.target.value)} />
@@ -102,7 +104,7 @@ function ListNVEConfig (props) {
                             </motion.div>
                         );
                     })}
-                    <div onClick={addVEItem.bind (this)} className="editor-add-subcomponent">+ item to {name}</div>
+                    <div onClick={addVEItem.bind (this)} className="editor-add-subcomponent pad-left">+ item to {name}</div>
                 </div>
             </div>
         )

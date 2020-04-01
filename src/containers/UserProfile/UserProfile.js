@@ -66,7 +66,7 @@ const UserProfile = (props) => {
                 <div className="UserProfile">
                     <div className="icon animated fadeInUp d-2">
                         <div className="disc">
-                            <i className="fad fa-user"></i>
+                            <i className="fad fa-user-tie"></i>
                         </div>
                         <div className="name">{model.firstName} {model.lastName}</div>
                     </div>
