@@ -60,11 +60,12 @@ const action_evaulator = (req, res) => {
                     ctrls[opts.action](req, res, opts).then ((result) => {
                         res.json (result)
                     }).catch ((e, t) => {
-                        res.status ((e && e.code) ? e.code : 500).send (e);
+                        // console.log ('[Server.js] exception with code', ((e && e.code && typeof (e.code) === 'number') ? e.code : '--- no code'));
+                        res.status ((e && e.code && typeof (e.code) === 'number') ? e.code : 500).send (e);
                         if (!PROD)
                             console.log ('\n\n', chalk.redBright ('==> Error'), e);
                     })
-                } else 
+                } else
                     res.status (401).json (generic_error ('Unauthorized.')); 
             })
             

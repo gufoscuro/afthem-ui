@@ -13,6 +13,7 @@ import AdminOrg from './containers/Admin/AdminOrg';
 import Confirm from './components/ModalPanel/Confirm';
 import Login from './containers/Login/Login';
 import SmartRoute from './components/ProtectedRoute/SmartRoute';
+import Timeout from './components/ErrorOverlay/Timeout';
 import Layout from './Layout';
 // import TestList from './containers/TestList/TestList';
 
@@ -29,7 +30,8 @@ class App extends Component {
 	state = {
 		isUserAuthenticated: true,
         background: false,
-        confirm: false,
+		confirm: false,
+		timeout: false,
         organization: null,
 		cluster: null,
 		sidebar_busy: false,
@@ -44,15 +46,25 @@ class App extends Component {
 
 	constructor (props) {
 		super (props);
+		this.axiosInstance.defaults.timeout = 10000;
 		this.axiosInstance.interceptors.response.use ((response) => response, (error, n) => {
-			const { status } = error.response;
-			if (status === 401) {
+			if (error.response !== undefined) {
+				const { status } = error.response;
+				if (status === 401) {
+					this.setState ({
+						background: false,
+						isUserAuthenticated: false,
+						user_nfo: null
+					})
+				}
+			} else {
 				this.setState ({
 					background: false,
-					isUserAuthenticated: false,
-					user_nfo: null
-				});
+					timeout: true,
+					sidebar_busy: true
+				})
 			}
+
 			return Promise.reject (error);
 		});
 	}
@@ -198,6 +210,7 @@ class App extends Component {
 						</SmartRoute> */}
 
 						<Confirm active={this.state.confirm} />
+						{this.state.timeout && <Timeout/>}
 					</Layout>
 				</div>
 			</Router>
