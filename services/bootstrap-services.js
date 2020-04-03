@@ -60,7 +60,13 @@ const initDB = () => {
     return new Promise ((resolve, reject) => {
         userSqlz.count().then ((result) => {
             if (result === 0) {
-                init_script ().then (resolve).catch (reject)
+                init_script ().then (() => {
+                    userSqlz.findOne ({
+                        where: {
+                            level: 0
+                        }
+                    }).then (usr => resolve (usr));
+                }).catch (reject)
             } else {
                 userSqlz.findOne ({
                     where: {
