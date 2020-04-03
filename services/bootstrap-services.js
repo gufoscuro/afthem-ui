@@ -1,4 +1,5 @@
 const configParams  = require ('../config');
+const docsService   = require ('../services/docs-service');
 const fs            = require ('fs-extra');
 const path          = require ('path')
 const git           = require ('isomorphic-git')
@@ -109,9 +110,11 @@ const fetchDefaultClusterData = (adminUser) => {
                             spinner.setSpinnerTitle ('Base repository: ' + message)
                         }
                     }).then ((payload) => {
-                        spinner.stop ();
-                        console.log ('\n');
-                        resolve ({ success: true, message: 'Base repository successfully updated.' });
+                        docsService.createDocsCache().then (r => {
+                            spinner.stop ();
+                            console.log ('\n');
+                            resolve ({ success: true, message: 'Base repository successfully updated, cache created.' })
+                        }).catch (reject);
                     })
                     .catch ((error) => {
                         spinner.stop ();
@@ -134,9 +137,11 @@ const fetchDefaultClusterData = (adminUser) => {
                             spinner.setSpinnerTitle ('Base repository: ' + message)
                         }
                     }).then ((payload) => {
-                        spinner.stop ();
-                        console.log ('\n');
-                        resolve ({ success: true, message: 'Base repository successfully cloned.' })
+                        docsService.createDocsCache().then (r => {
+                            spinner.stop ();
+                            console.log ('\n');
+                            resolve ({ success: true, message: 'Base repository successfully cloned, cache created.' })
+                        }).catch (reject);
                     }).catch ((error) => {
                         spinner.stop ();
                         reject ({ success: false, message: error.toString(), error: error })

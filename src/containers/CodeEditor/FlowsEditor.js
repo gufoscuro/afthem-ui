@@ -9,7 +9,7 @@ import './VisualEditor.css';
 
 
 function FlowsEditor (props) {
-    const { test, update, refreshHook, axiosInstance, oid, cid } = props;
+    const { update, refreshHook, axiosInstance, oid, cid } = props;
     const [ model, setModel ] = useState (props.data);
     const [ addFlow, setAddFlow ] = useState (false);
     const [ implementersIds, setImplementersIds ] = useState (null);

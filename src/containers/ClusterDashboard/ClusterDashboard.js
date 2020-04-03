@@ -27,7 +27,6 @@ class ClusterDashboard extends Component {
         editorActive: false,
 
         dialog: null,
-        actorsSchema: null,
         createFlow: false,
         commitChanges: false
     }
@@ -175,8 +174,7 @@ class ClusterDashboard extends Component {
             this.setState ({
                 editingId: id,
                 editingFile: response.data,
-                editorActive: true,
-                actorsSchema: null
+                editorActive: true
             });
 
             if (this.editorRef.current) {

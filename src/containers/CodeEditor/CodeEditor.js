@@ -39,8 +39,7 @@ class CodeEditor extends Component {
         visualViewActive: false,
         visualViewDisabled: false,
         visualMode: null,
-        visualCode: null,
-        actorsSchema: null
+        visualCode: null
     }
     untouched = ''
     refreshV_handler
@@ -149,7 +148,7 @@ class CodeEditor extends Component {
         return this.state.code !== this.untouched;
     }
 
-    open = (file, actorsSchema) => {
+    open = (file) => {
         // console.log ('open', file);
         let editor_mode     = 'yaml',
             veditor_guess   = this.guessEditorType (file.path),
@@ -180,8 +179,7 @@ class CodeEditor extends Component {
             codeViewActive: !visual_editor,
             visualViewActive: visual_editor,
             visualMode: veditor_guess.type,
-            visualCode: visualCode,
-            actorsSchema: actorsSchema
+            visualCode: visualCode
         }
 
 
@@ -248,8 +246,7 @@ class CodeEditor extends Component {
             data: this.state.visualCode,
             update: this.visualToCode,
             addHook: this.addImplementerHook,
-            refreshHook: this.editorRefreshHook,
-            test: this.state.actorsSchema
+            refreshHook: this.editorRefreshHook
         },
         instruments_props = {
             clickHandler: this.clickHandler
