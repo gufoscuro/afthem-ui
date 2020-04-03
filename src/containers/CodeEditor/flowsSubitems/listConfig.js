@@ -69,7 +69,7 @@ function ListConfig (props) {
                 <div className="indent-1 keyval-list">
                     {(model instanceof Array) && model.map ((it, jj) => {
                         return (
-                            <motion.div key={name + '__' + jj} layoutTransition={spring} className="editor-component-sortable">
+                            <motion.div key={it.id} layoutTransition={spring} className="editor-component-sortable">
                                 <div className="editor-component-field">
                                     <div className="sortable-lbl">value</div>
                                     <input type="text" name="value" value={it.value} 
