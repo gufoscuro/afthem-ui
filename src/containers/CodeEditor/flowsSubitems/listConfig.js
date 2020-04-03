@@ -9,15 +9,13 @@ function ListConfig (props) {
     const { name, value, change, type } = props;
     const [ model, setModel ] = useState (value.map ((it, j) => {
         return { ...{ id: j }, ...{ value: it }}
-    }))
-
+    }));
+    
     
     useEffect (() => {
-        let a = [ ...model ]
-        change (name, a.map (({ id, ...keep }) => {
-            return keep;
-        }))
-    }, [ model, name ]);
+        let a = [ ...model ];
+        change (name, a.map (it => it.value))
+    }, [ model ]);
 
     const onValueChange = useCallback ((index, val) => {
         setModel (prevModel => {
@@ -35,7 +33,7 @@ function ListConfig (props) {
 
     const addItem = useCallback (() => {
         setModel (prevModel => {
-            let a = [ ...value ],
+            let a = [ ...prevModel ],
                 n = type === 'list[int]' ? 0 : '';
             a.push ({
                 id: Math.random (),
@@ -57,53 +55,24 @@ function ListConfig (props) {
             return a;
         })
     }, [  ]);
-
-    // const onValueChange = useCallback ((index, val) => {
-    //     let a = [ ...value ],
-    //         v = val;
-
-    //     if (type === 'list[int]') {
-    //         let vv = val.replace(/\D/, '');
-    //         v = (vv !== '' ? parseInt (vv) : 0);
-    //     }
-            
-    //     a[index] = v;
-
-    //     change (name, a);
-    // }, [ name, value, change, type ]);
-
-    // const addItem = useCallback (() => {
-    //     let a = [ ...value ],
-    //         n = type === 'list[int]' ? 0 : '';
-
-    //     a.push (n);
-    //     change (name, a);
-    // }, [ name, value, type, change ]);
-
-    // const shiftPosition = useCallback ((old_pos, new_pos) => {
-    //     if (new_pos >= 0 && new_pos < value.length) {
-    //         let a = arrayMove (value, old_pos, new_pos);
-    //         change (name, a);
-    //     }
-    // }, [ name, value, change ]);
-
-    // const removeItem = useCallback ((index) => {
-    //     const a = [ ...value ];
-    //     a.splice (index, 1);
-    //     change (name, a);
-    // }, [ name, value, change ]);
+    
 
     const renderer = useMemo (() => {
+        const spring = {
+            type: "spring",
+            damping: 20,
+            stiffness: 300
+        };
         return (
             <div className="keyval indent-1">
                 <div className="keyval-key">{name}</div>
                 <div className="indent-1 keyval-list">
-                    {(value instanceof Array) && value.map ((it, jj) => {
+                    {(model instanceof Array) && model.map ((it, jj) => {
                         return (
-                            <div key={name + '__' + jj} className="editor-component-sortable">
+                            <motion.div key={name + '__' + jj} layoutTransition={spring} className="editor-component-sortable">
                                 <div className="editor-component-field">
                                     <div className="sortable-lbl">value</div>
-                                    <input type="text" name="value" value={it} 
+                                    <input type="text" name="value" value={it.value} 
                                         placeholder="value"
                                         onChange={(e) => onValueChange (jj, e.target.value)} />
                                 </div>
@@ -112,14 +81,14 @@ function ListConfig (props) {
                                     <SorterBtn position={jj} move={shiftPosition} max={value.length} type="down" />
                                     <DeleteBtn position={jj} remove={removeItem} />
                                 </div>
-                            </div>
+                            </motion.div>
                         );
                     })}
+                    <div onClick={addItem.bind (this)} className="editor-add-subcomponent pad-left">+ Add item</div>
                 </div>
-                <div onClick={addItem.bind (this)} className="editor-add-subcomponent pad-left">+ item to {name}</div>
             </div>
         )
-    }, [ name, value, onValueChange, shiftPosition, removeItem, addItem ]);
+    }, [ name, model, onValueChange, shiftPosition, removeItem, addItem ]);
 
 
     return renderer;

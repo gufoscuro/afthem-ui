@@ -68,7 +68,7 @@ exports.asMap = (force_parse) => {
         if (force_parse)
             actorsList().catch (reject).then (list => resolve (listToMap (list)));
         else {
-            fs.readFile (BASE_PATH + '/list_cache.json', { encoding: 'utf-8' })
+            fs.readFile (BASE_PATH + '/map_cache.json', { encoding: 'utf-8' })
                 .catch (reject)
                 .then (result => resolve (JSON.parse (result)));
         }
