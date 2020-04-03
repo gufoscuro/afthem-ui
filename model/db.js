@@ -1,8 +1,9 @@
-const dbhost    = process.env.DB_HOST || 'localhost'
-const dbname    = process.env.DB_NAME || 'afthem-dashboard'
-const dbuser    = process.env.DB_USER || 'afthem'
-const dbpassw   = process.env.DB_PASSWORD || 'foobar'
-const dbport    = process.env.DB_PORT || 8889
+const configParams  = require ('../config');
+const dbhost        = configParams.DB_HOST
+const dbname        = configParams.DB_NAME
+const dbuser        = configParams.DB_USER
+const dbpassw       = configParams.DB_PASSWORD
+const dbport        = configParams.DB_PORT
 
 
 const { Sequelize } = require ('sequelize');

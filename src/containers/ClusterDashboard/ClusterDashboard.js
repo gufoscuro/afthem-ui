@@ -143,49 +143,46 @@ class ClusterDashboard extends Component {
         })
     }
 
-    fetchActorsSchema = () => {
-        const match = this.props.match;
-        return new Promise ((resolve, reject) => {
-            if (this.state.actorsSchema === null) {
-                this.props.axiosInstance.post ('/api/clusters/getImplementers/', {
-                    id: match.params.id,
-                    cid: match.params.cid
-                }).then ((response) => {
-                    let ac_map = { };
-                    response.data.implementers.forEach ((it) => {
-                        let data    = response.data.actors[it.class];
-                        console.log ()
-                        if (data !== undefined) {
-                            ac_map[it.typeid] = { ...it, ...data };
-                        } else
-                            console.warn ('AfthemUI: Missing schema match:', it.typeid);
-                    });
+    // fetchActorsSchema = () => {
+    //     const match = this.props.match;
+    //     return new Promise ((resolve, reject) => {
+    //         if (this.state.actorsSchema === null) {
+    //             this.props.axiosInstance.post ('/api/clusters/getImplementers/', {
+    //                 id: match.params.id,
+    //                 cid: match.params.cid
+    //             }).then ((response) => {
+    //                 let ac_map = { };
+    //                 response.data.implementers.forEach ((it) => {
+    //                     let data    = response.data.actors[it.class];
+    //                     if (data !== undefined) {
+    //                         ac_map[it.typeid] = { ...it, ...data };
+    //                     } else
+    //                         console.warn ('AfthemUI: Missing schema match:', it.typeid);
+    //                 });
 
-                    resolve (ac_map);
-                })
-            } else
-                resolve (this.state.actorsSchema);
-        })
-    }
+    //                 resolve (ac_map);
+    //             })
+    //         } else
+    //             resolve (this.state.actorsSchema);
+    //     })
+    // }
 
     fetchFileData = (id) => {
         this.props.appBackground (true);
         this.props.axiosInstance.post ('/api/clusters/fileData/' + id).then ((response) => {
             // console.log (response.data);
             this.props.appBackground (false);
-            this.fetchActorsSchema().then ((schema) => {
-                this.setState ({
-                    editingId: id,
-                    editingFile: response.data,
-                    editorActive: true,
-                    actorsSchema: schema
-                })
+            this.setState ({
+                editingId: id,
+                editingFile: response.data,
+                editorActive: true,
+                actorsSchema: null
+            });
 
-                if (this.editorRef.current) {
-                    this.editorRef.current.open (response.data, schema);
-                    this.editorRef.current.refresh ();
-                }
-            })
+            if (this.editorRef.current) {
+                this.editorRef.current.open (response.data, { });
+                this.editorRef.current.refresh ();
+            }
         })
     }
 

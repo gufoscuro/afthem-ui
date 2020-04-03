@@ -1,5 +1,6 @@
-const PROD          = process.env.PROD || false;
-const PORT          = process.env.PORT || 3001;
+const configParams  = require ('./config');
+const PROD          = configParams.PROD;
+const PORT          = configParams.PORT;
 const express       = require ('express');
 const bodyParser    = require ('body-parser');
 const cookieParser  = require ('cookie-parser');

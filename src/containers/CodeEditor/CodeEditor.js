@@ -249,7 +249,7 @@ class CodeEditor extends Component {
             update: this.visualToCode,
             addHook: this.addImplementerHook,
             refreshHook: this.editorRefreshHook,
-            actorsSchema: this.state.actorsSchema
+            test: this.state.actorsSchema
         },
         instruments_props = {
             clickHandler: this.clickHandler

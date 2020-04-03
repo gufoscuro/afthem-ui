@@ -9,13 +9,14 @@ import './VisualEditor.css';
 
 
 function FlowsEditor (props) {
-    const { actorsSchema, update, refreshHook } = props;
+    const { test, update, refreshHook, axiosInstance, oid, cid } = props;
     const [ model, setModel ] = useState (props.data);
     const [ addFlow, setAddFlow ] = useState (false);
     const [ implementersIds, setImplementersIds ] = useState (null);
     const [ definedActors, setDefinedActors ] = useState ([]);
     const [ editingElement, setEditingElement ] = useState (null);
     const [ latestClick, setLatestClick ] = useState (0);
+    const [ actorsSchema, setActorsSchema ] = useState ({ });
     
     
     useBodyClass (editingElement ? 'editor-editing' : []);
@@ -24,6 +25,10 @@ function FlowsEditor (props) {
         update (model);
         setDefinedActors (Object.keys (model));
     }, [ model, update ]);
+
+    useEffect (() => {
+        setImplementersIds (Object.keys (actorsSchema).map (it => actorsSchema[it]))
+    }, [ actorsSchema ]);
 
     useEffect (() => {
         onMount ();
@@ -38,9 +43,14 @@ function FlowsEditor (props) {
     }, []);
 
     const onMount = useCallback (() => {
-        setImplementersIds (Object.keys (actorsSchema).map (it => actorsSchema[it]))
         refreshHook (refreshEditor);
-    }, [ refreshHook, refreshEditor, actorsSchema ]);
+        axiosInstance.post ('/api/clusters/getImplementers/', {
+            id: oid,
+            cid: cid
+        }).then ((result) => {
+            setActorsSchema (result.data);
+        })
+    }, [ refreshHook, refreshEditor, actorsSchema, oid, cid, axiosInstance ]);
 
     const removeItem = useCallback ((key) => {
         setModel (prevModel => {
@@ -107,11 +117,16 @@ function FlowsEditor (props) {
             click: click_element,
             change: edit_element,
             setEditing: setAsEditing,
-            definedActors: definedActors,
-            actorsSchema: actorsSchema
+            definedActors: definedActors
+            // actorsSchema: actorsSchema
         }
         return model ? Object.keys(model).map ((key, i) => {
-            return <FlowElement key={i} data={model[key]} $key={key} editing={editingElement === key} {...flowitems_props}  />
+            return <FlowElement key={i} 
+                data={model[key]} 
+                $key={key} 
+                editing={editingElement === key} 
+                elementSchema={actorsSchema[key] !== undefined ? actorsSchema[key] : null} 
+                {...flowitems_props}  />
         }) : null;
     }, [ model, definedActors, actorsSchema, click_element, edit_element, editingElement, setAsEditing ]);
 
@@ -127,10 +142,10 @@ function FlowsEditor (props) {
                     {model_renderer}
                     <div className="editor-add-component editor-item" onClick={showCatalog}>
                         Add actor
-                        {addflow_render}
                     </div>
                 </FadeinFX>
             </div>
+            {addflow_render}
         </div>
     );
 }

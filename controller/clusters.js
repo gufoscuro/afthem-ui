@@ -196,22 +196,23 @@ module.exports.getImplementers = (req, res, opts) => {
             filepath    = c_base_path + oid + '/' + cid + '/implementers.yml';
         
         read_file_routine (filepath).then ((result) => {
-            var json    = yamlUtils.toJSON (result.data),
-                result  = {
-                    implementers: [],
-                    actors: { }
-                };
+            var json    = yamlUtils.toJSON (result.data);
 
             if (json.implementers !== undefined) {
                 actorsCtrl.asMap().then ((actors_map) => {
-                    result.actors = actors_map;
-                    result.implementers = json.implementers.map ((it, i) => {
+                    let actors_schema = { };
+                    json.implementers.map ((it, i) => {
                         return {
                             typeid: it.typeid = it.type + '/' + it.id,
                             class: it.class
                         }
+                    }).forEach ((it) => {
+                        let data = actors_map[it.class];
+                        if (data !== undefined) {
+                            actors_schema[it.typeid] = { ...it, ...data };
+                        }
                     });
-                    resolve (result)
+                    resolve (actors_schema)
                 })
             } else
                 resolve (result);

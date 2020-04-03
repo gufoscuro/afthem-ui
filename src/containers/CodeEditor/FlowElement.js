@@ -9,10 +9,10 @@ import _ from 'lodash/core';
 
 
 function FlowElement (props) {
-    const { $key, data, click, change, definedActors, actorsSchema, editing, setEditing } = props;
+    const { $key, data, click, change, definedActors, elementSchema, editing, setEditing } = props;
     const [ model, setModel ] = useState (props.data)
     const [ brandNew, setBrandNew ] = useState (false);
-    const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
+    // const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
     
 
     // console.log ('FlowElement', data)

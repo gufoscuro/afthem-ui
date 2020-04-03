@@ -19,6 +19,7 @@ function ImplementersEditor (props) {
     const [ editingElement, setEditingElement ] = useState (null);
     const [ editingTP, setEditingTP ] = useState (null);
     const [ latestClick, setLatestClick ] = useState (0);
+    const [ actorsList, setActorsList ] = useState ([]);
     
 
     useBodyClass ((editingElement || editingTP) ? 'editor-editing' : []);
@@ -49,8 +50,11 @@ function ImplementersEditor (props) {
     }, []);
 
     const onMount = useCallback (() => {
-        refreshHook (refreshEditor)
-    }, [ refreshHook, refreshEditor ]);
+        refreshHook (refreshEditor);
+        axiosInstance.get ('/api/actors/list').then ((result) => {
+            setActorsList (result.data);
+        })
+    }, [ refreshHook, refreshEditor, axiosInstance ]);
 
     const addImplementer = useCallback ((item) => {
         let a = [...implementers]
@@ -85,7 +89,7 @@ function ImplementersEditor (props) {
     }, []);
 
     const showCatalog = useCallback (() => {
-        window.scrollTo (0, 1);
+        // window.scrollTo (0, 1);
         setAddFlow (true)
     }, []);
 
@@ -179,7 +183,7 @@ function ImplementersEditor (props) {
     }, [ thread_pools, click_element, edit_element, editingTP, setAsEditingTP ]);
 
     const addflow_render = useMemo (() => {
-        return addFlow ? (<ActorsCatalog axiosInstance={axiosInstance} add={addImplementer} hide={hideCatalog} />) : null;
+        return addFlow ? (<ActorsCatalog catalog={actorsList} add={addImplementer} hide={hideCatalog} />) : null;
     }, [ addFlow, addImplementer, hideCatalog, axiosInstance ]);
 
     const modalflow_render = useMemo (() => {
@@ -205,9 +209,7 @@ function ImplementersEditor (props) {
                     <div className="head">Actors</div>
                     {implementers_render}
                     <div className="editor-add-component editor-item" onClick={showCatalog}>
-                        Add Implementer
-                    
-                        {addflow_render}    
+                        Add Implementer    
                     </div>
                 </FadeinFX>
             </div>
@@ -219,6 +221,7 @@ function ImplementersEditor (props) {
                 </FadeinFX>
             </div>
             {modalflow_render}
+            {addflow_render}
         </div>
     );
 }

@@ -1,8 +1,12 @@
 .CodeEditor .ActorsCatalog {
-    position: absolute;
+    
+}
+
+.ActorsCatalog .fog {
+    position: fixed;
     width: 100%;
     height: 100%;
-    bottom: 0;
+    top: 0;
     left: 0;
     border-radius: 3px;
     /* height: 40px; */
@@ -11,33 +15,118 @@
     /* transform: translate(-50%, -50%); */
     /* background-color: rgba(121, 172, 199, 0.5); */
     /* background-color: rgba(236, 242, 246, 0.5); */
-    background-color: rgba(169, 191, 206, 0.5);
+    /* background-color: rgba(169, 191, 206, 0.5); */
+    background-color: rgba(140, 165, 181, 0.5);
     z-index: 4;
+
+    -webkit-animation-duration: .1s;
+    animation-duration: .1s;
     /* border-bottom: 1px solid #d5e2ea; */
     /* padding-left: 310px; */
 }
 
+.ActorsCatalog .sizer {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 158px;
+    z-index: 11;
+}
+
 .ActorsCatalog .inner {
     position: absolute;
-    width: 100%;
-    /* top: 50%; */
-    left: 0;
-    /* transform: translateY(-50%); */
+    width: 700px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
 }
 .ActorsCatalog .fx {
     background-color: #fff;
     border-radius: 3px;
-    -webkit-animation-duration: .3s;
-    animation-duration: .3s;
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
 }
-.ActorsCatalog .cat .head {
-    text-transform: uppercase;
+
+.ActorsCatalog .close-trigger {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 22px;
+    border-radius: 3px;
+}
+
+.ActorsCatalog .content .cols {
+    position: relative;
+}
+.ActorsCatalog .content .cols .no-results-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    line-height: 260px;
+    text-align: center;
+    font-weight: 600;
+}
+.ActorsCatalog .content .cols .modules {
+    float: left;
+    width: 240px;
+    height: 300px;
+    position: relative;
+    margin-right: 10px;
+}
+.ActorsCatalog .content .cols .items {
+    float: left;
+    width: 450px;
+    height: 300px;
+    position: relative;
+}
+.ActorsCatalog .content .cols .actors {
+    height: 300px;
+    position: relative;
+}
+
+.ActorsCatalog .search {
+    margin-bottom: 5px;
+}
+.ActorsCatalog .text-field-holder .text .textfield.search-field {
+    width: 100%;
+    padding: 7px 10px;
+    border-bottom-width: 2px;
+}
+
+.ActorsCatalog .heading {
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 700;
+    padding: 10px 10px 0 10px;
+    margin-bottom: 10px;
+}
+
+
+.ActorsCatalog .module .head {
+    text-transform: capitalize;
     cursor: default;
     padding: 4px 10px;
     margin: 0;
 }
-.ActorsCatalog .cat .head:hover {
+.ActorsCatalog .module .head:hover {
     background-color: #bbd5e2
+}
+.ActorsCatalog .type .head {
+    cursor: default;
+    margin: 0px 10px 5px 10px;
+    font-size: 15px;
+    text-transform: uppercase;
+    line-height: 28px;
+    color: #5fa5c5;
 }
 .ActorsCatalog .close-catalog {
     cursor: default;
@@ -47,17 +136,12 @@
     background-color: #ff7675;
     color: #fff;
 }
-.ActorsCatalog .cat .children {
-    display: none;
-}
-.ActorsCatalog .cat .children {
-    display: none;
-}
-.ActorsCatalog .cat.active .children {
-    display: block;
+.ActorsCatalog .module.active {
+    background-color: #bbd5e2
 }
 .CodeEditor .ActorsCatalog .actor-item {
     padding: 4px 10px;
+    cursor: default;
 }
 .CodeEditor .ActorsCatalog .actor-item:hover {
     background-color: #bbd5e2;

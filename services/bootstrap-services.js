@@ -1,3 +1,4 @@
+const configParams  = require ('../config');
 const fs            = require ('fs-extra');
 const path          = require ('path')
 const git           = require ('isomorphic-git')
@@ -15,13 +16,13 @@ const orgDAO        = require ('../model/organization');
 const orgSqlz       = orgDAO.handle;
 
 
-const clusterMRepo  = process.env.BASE_REPOSITORY || "https://github.com/theirish81/afthem-base.git";
+const clusterMRepo  = configParams.BASE_REPOSITORY;
 const clusterMPath  = "./default-cluster-data";
 
 
-const ADMIN_USERNAME        =  process.env.ADMIN_USERNAME || 'johndoe';
-const ADMIN_GIT_USERNAME    =  process.env.ADMIN_GIT_USERNAME || 'johndoe';
-const ADMIN_GIT_PASSWORD    =  process.env.ADMIN_GIT_PASSWORD || 'foobar';
+const ADMIN_USERNAME        = configParams.ADMIN_USERNAME;
+const ADMIN_GIT_USERNAME    = configParams.ADMIN_GIT_USERNAME;
+const ADMIN_GIT_PASSWORD    = configParams.ADMIN_GIT_PASSWORD;
 
 
 
@@ -29,15 +30,15 @@ const init_script = () => {
     return new Promise ((resolve, reject) => {
         sequelize.sync ({ alter: true }).then (() => {
             orgSqlz.build ({
-                name: process.env.ORG_NAME || 'My Organization',
-                description:  process.env.ORG_DESCRIPTION || 'My first organization, an amazing one.',
+                name: configParams.ORG_NAME || 'My Organization',
+                description: configParams.ORG_DESCRIPTION || 'My first organization, an amazing one.',
                 timezone: 'GMT'
             }).save ().then ((org) => {
                 userSqlz.build ({
-                    username:  ADMIN_USERNAME,
-                    password:  process.env.ADMIN_PASSWORD || 'foobar',
-                    firstName:  process.env.ADMIN_FIRST_NAME || 'John',
-                    lastName:  process.env.ADMIN_LAST_NAME || 'Doe',
+                    username: ADMIN_USERNAME,
+                    password: configParams.ADMIN_PASSWORD || 'foobar',
+                    firstName: configParams.ADMIN_FIRST_NAME || 'John',
+                    lastName: configParams.ADMIN_LAST_NAME || 'Doe',
                     level: 0,
                     enabled: true,
                     gitUsername: ADMIN_GIT_USERNAME,
@@ -73,6 +74,9 @@ const initDB = () => {
 }
 
 const fetchDefaultClusterData = (adminUser) => {
+    var gitUsername = adminUser.gitUsername,
+        gitPassword = adminUser.gitPassword;
+
     console.log ('clone repo from', clusterMRepo)
     const spinner = new Spinner ();
     spinner.setSpinnerTitle ('Base repository');
@@ -80,66 +84,67 @@ const fetchDefaultClusterData = (adminUser) => {
     
     return new Promise ((resolve, reject) => {
         var dir = path.join (process.cwd (), clusterMPath);
-
-        fs.exists (clusterMPath + '/.git', (exists) => {
-            if (exists) {
-                git.pull ({
-                    fs,
-                    http,
-                    dir: clusterMPath,
-                    ref: 'master',
-                    singleBranch: true,
-                    author: {
-                        name: ADMIN_USERNAME
-                    },
-                    onAuth: (url) => {
-                        return {
-                            username: ADMIN_GIT_USERNAME,
-                            password: ADMIN_GIT_PASSWORD
+        if (gitUsername && gitPassword) {
+            fs.exists (clusterMPath + '/.git', (exists) => {
+                if (exists) {
+                    git.pull ({
+                        fs,
+                        http,
+                        dir: clusterMPath,
+                        ref: 'master',
+                        singleBranch: true,
+                        author: {
+                            name: ADMIN_USERNAME
+                        },
+                        onAuth: (url) => {
+                            return {
+                                username: ADMIN_GIT_USERNAME,
+                                password: ADMIN_GIT_PASSWORD
+                            }
+                        },
+                        onAuthSuccess: () => { },
+                        onAuthFailure: () => { },
+                        onProgress: (event) => { },
+                        onMessage: (message) => {
+                            spinner.setSpinnerTitle ('Base repository: ' + message)
                         }
-                    },
-                    onAuthSuccess: () => { },
-                    onAuthFailure: () => { },
-                    onProgress: (event) => { },
-                    onMessage: (message) => {
-                        spinner.setSpinnerTitle ('Base repository: ' + message)
-                    }
-                }).then ((payload) => {
-                    spinner.stop ();
-                    console.log ('\n');
-                    resolve ({ success: true, message: 'Base repository successfully updated.' });
-                })
-                .catch ((error) => {
-                    spinner.stop ();
-                    reject ({ success: false, message: error.toString(), error: error })
-                })
-            } else {
-                git.clone ({
-                    fs, http, dir,
-                    url: clusterMRepo,
-                    onAuth: (url) => {
-                        return {
-                            username: ADMIN_GIT_USERNAME,
-                            password: ADMIN_GIT_PASSWORD
+                    }).then ((payload) => {
+                        spinner.stop ();
+                        console.log ('\n');
+                        resolve ({ success: true, message: 'Base repository successfully updated.' });
+                    })
+                    .catch ((error) => {
+                        spinner.stop ();
+                        reject ({ success: false, message: error.toString(), error: error })
+                    })
+                } else {
+                    git.clone ({
+                        fs, http, dir,
+                        url: clusterMRepo,
+                        onAuth: (url) => {
+                            return {
+                                username: gitUsername,
+                                password: gitPassword
+                            }
+                        },
+                        onAuthSuccess: () => { },
+                        onAuthFailure: () => { },
+                        onProgress: (event) => { },
+                        onMessage: (message) => {
+                            spinner.setSpinnerTitle ('Base repository: ' + message)
                         }
-                    },
-                    onAuthSuccess: () => { },
-                    onAuthFailure: () => { },
-                    onProgress: (event) => { },
-                    onMessage: (message) => {
-                        spinner.setSpinnerTitle ('Base repository: ' + message)
-                    }
-                }).then ((payload) => {
-                    spinner.stop ();
-                    console.log ('\n');
-                    resolve ({ success: true, message: 'Base repository successfully cloned.' })
-                })
-                .catch ((error) => {
-                    spinner.stop ();
-                    reject ({ success: false, message: error.toString(), error: error })
-                })
-            }
-        })
+                    }).then ((payload) => {
+                        spinner.stop ();
+                        console.log ('\n');
+                        resolve ({ success: true, message: 'Base repository successfully cloned.' })
+                    }).catch ((error) => {
+                        spinner.stop ();
+                        reject ({ success: false, message: error.toString(), error: error })
+                    })
+                }
+            })
+        } else
+            reject ({ success: false, message: 'Admin credentials not set.' })
     })
 }
 
