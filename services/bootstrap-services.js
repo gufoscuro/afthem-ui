@@ -75,7 +75,13 @@ const initDB = () => {
                 }).then (usr => resolve (usr));
             }
         }).catch (() => {
-            init_script ().then (resolve).catch (reject)
+            init_script ().then (() => {
+                userSqlz.findOne ({
+                    where: {
+                        level: 0
+                    }
+                }).then (usr => resolve (usr))
+            }).catch (reject)
         })
     })
 }
