@@ -17,6 +17,7 @@ class Clusters extends Component {
     state = {
         clusters: [],
         createCluster: false,
+        singleClusterData: null,
         dialog: null
     }
     
@@ -65,18 +66,16 @@ class Clusters extends Component {
     }
 
     editCluster = (id) => {
-        let dialog = {
-            heading: 'Nope!',
-            text: 'Sorry, not done yet',
-            clickHandler: this.editClusterHandler,
-            data: {
-                id: id
-            }
-        }
-
-        this.setState ({
-            dialog: dialog
-        })
+        this.props.appBackground (true);
+        this.props.axiosInstance.post ('/api/clusters/get/' + id, {
+            oid: this.props.organization.id
+        }).then ((response) => {
+            this.props.appBackground (false);
+            this.setState ({
+                createCluster: true,
+                singleClusterData: response.data
+            })
+        }).catch (e => this.props.appBackground (false))
     }
 
     editClusterHandler = (bool) => {
@@ -140,7 +139,8 @@ class Clusters extends Component {
 
         else if (status.action === 'create-cluster') {
             this.setState ({
-                createCluster: true
+                createCluster: true,
+                singleClusterData: null
             })
         }
 
@@ -174,7 +174,7 @@ class Clusters extends Component {
 
         if (this.state.createCluster) {
             let m_props = {
-                data: null,
+                data: this.state.singleClusterData,
                 outcome: this.createClusterOutcome
             }
             modal_flow = (

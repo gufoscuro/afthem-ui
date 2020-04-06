@@ -98,7 +98,7 @@ function ConfigItem (props) {
                             type: cfg !== undefined ? cfg.type : null
                         };
 
-                    
+                    // console.log ('config', config_key, dat)
                     
                     if (cfg && cfg.type === 'list[ve]')
                         single_renderers.push (<ListVEConfig key={j} {...prp} />);

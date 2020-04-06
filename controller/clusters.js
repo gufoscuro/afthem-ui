@@ -54,26 +54,32 @@ module.exports.add = (req, res, opts) => {
         // console.log (JSON.stringify (config, null, '   '));
 
         if (opts.rid && config.name && config.gitUrl) {
-            orgSqlz.findByPk (opts.rid).then ((org) => {
-                var clstr = clusterSqlz.build (config);
+            if (req.body.id !== undefined) {
+                clusterSqlz.findByPk (req.body.id)
+                    .then (record => record.update (config))
+                        .then (clstr => resolve (clstr)).catch (err => reject (err))
+            } else {
+                orgSqlz.findByPk (opts.rid).then ((org) => {
+                    var clstr = clusterSqlz.build (config);
 
-                sequelize.transaction().then ((t) => {
-                    clstr.setOrganization (org, { save: false });
-                    clstr.save ({ transaction: t }).then ((clstr) => {
-                        org.addCluster (clstr, { save: false });
-                        org.save ({ transaction: t }).then (() => {
-                            userDAO.load (opts.user.id).then ((usr) => {
-                                fservice.createClusterFolder (org.id, clstr, usr)
-                                    .then (() => t.commit().then (() => resolve (clstr)))
-                                    .catch (error => {
-                                        fservice.removeClusterFolder (org.id, clstr.id);
-                                        t.rollback ().then (() => reject ({ code: 500, error: true, message: error.toString() }));
-                                    });
-                            }).catch (() => reject ({ code: 500, error: true, message: 'Invalid user' }));
+                    sequelize.transaction().then ((t) => {
+                        clstr.setOrganization (org, { save: false });
+                        clstr.save ({ transaction: t }).then ((clstr) => {
+                            org.addCluster (clstr, { save: false });
+                            org.save ({ transaction: t }).then (() => {
+                                userDAO.load (opts.user.id).then ((usr) => {
+                                    fservice.createClusterFolder (org.id, clstr, usr)
+                                        .then (() => t.commit().then (() => resolve (clstr)))
+                                        .catch (error => {
+                                            fservice.removeClusterFolder (org.id, clstr.id);
+                                            t.rollback ().then (() => reject ({ code: 500, error: true, message: error.toString() }));
+                                        });
+                                }).catch (() => reject ({ code: 500, error: true, message: 'Invalid user' }));
+                            }).catch (reject);
                         }).catch (reject);
-                    }).catch (reject);
+                    })
                 })
-            })
+            }
         } else {
             reject ({
                 code: 400,
