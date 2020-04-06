@@ -18,6 +18,7 @@ function AdminMaintenance (props) {
             axiosInstance.post ('/api/maintenance/pullBaseRepository').then (response => {
                 appBackground (false)
                 setPullBusy (false);
+                appConfirm ();
             })
         }
     }, [ axiosInstance, appBackground ]);
