@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import AdminSidebar from './AdminSidebar';
 import AdminUsers from './AdminUsers';
 import AdminOrganizations from './AdminOrganizations';
+import AdminMaintenance from './AdminMaintenance';
 import UnauthorizedMessage from '../../components/UnauthorizedMessage/UnauthorizedMessage';
 
 import './Admin.css';
@@ -22,6 +23,8 @@ function Admin (props) {
             subview_renderer = (<AdminUsers {...subview_props} />);
         else if (subview === 'organizations')
             subview_renderer = (<AdminOrganizations {...subview_props} />);
+        else if (subview === 'maintenance')
+            subview_renderer = (<AdminMaintenance {...subview_props} />);
 
         return (
             <>

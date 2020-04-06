@@ -94,7 +94,7 @@ app.use ('*', express.static (path.join (__dirname, 'build')));
 
 
 bootService.serverPreBootstrap ()
-    .catch (r =>  console.log ('\n', chalk.redBright (r.message), '\n'))
+    .catch (r => console.log ('\n', chalk.redBright (r.message), '\n'))
     .then (r => {
         if (r && r.message)
             console.log (chalk.greenBright (r.message));

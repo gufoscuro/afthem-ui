@@ -159,6 +159,16 @@ const fetchDefaultClusterData = (adminUser) => {
     })
 }
 
+module.exports.pullDefaultClusterData = () => {
+    return new Promise ((resolve, reject) => {
+        userSqlz.findOne ({
+            where: {
+                level: 0
+            }
+        }).catch (reject).then (adminUsr => fetchDefaultClusterData (adminUsr).then (resolve).catch (reject));
+    })
+}
+
 module.exports.serverPreBootstrap = () => {
     return new Promise ((resolve, reject) => {
         initDB().then (admin => fetchDefaultClusterData (admin).catch (reject).then (resolve))

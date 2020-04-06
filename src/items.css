@@ -167,6 +167,13 @@
     color: #fff;
 }
 
+.btn.btn-sm {
+    padding: .15rem .8rem
+}
+.btn .busy-icn, .thin-button .busy-icn {
+    margin-left: 10px;
+}
+
 
 
 .relative-holder {

@@ -34,10 +34,6 @@ const AdminSidebar = (props) => {
                                 exact 
                                 className="view-selector" 
                                 to={"/admin/organization/" + id + "/users"}>Associated Users</NavLink>
-                            {/* <NavLink 
-                                exact 
-                                className="view-selector" 
-                                to="/admin/organizations">Manage Organizations</NavLink> */}
                         </div>
                     </PerfectScrollbar>
                 </div>
@@ -67,6 +63,10 @@ const AdminSidebar = (props) => {
                                 exact 
                                 className="view-selector" 
                                 to="/admin/organizations">Manage Organizations</NavLink>
+                            <NavLink 
+                                exact 
+                                className="view-selector" 
+                                to="/admin/maintenance">Maintenance</NavLink>
                         </div>
                     </PerfectScrollbar>
                 </div>
