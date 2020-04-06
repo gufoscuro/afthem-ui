@@ -4,6 +4,7 @@ import CodeMirror from 'react-codemirror';
 import ListNVEConfig from './listNVEConfig';
 import ListVEConfig from './listVEConfig';
 import ListConfig from './listConfig';
+import MapConfig from './mapConfig';
 import SingleValConfig from './singleValConfig';
 import { STRING } from '../../../libs/js/utils';
 import yamlUtils from '../../../libs/js/yaml-json';
@@ -108,6 +109,8 @@ function ConfigItem (props) {
                         single_renderers.push (<SingleValConfig key={j} {...prp} />);
                     else if (cfg && (cfg.type === 'list[string]' || cfg.type === 'list[int]'))
                         single_renderers.push (<ListConfig key={j} {...prp} />);
+                    else if (cfg && (cfg.type === 'map' || cfg.type === 'map[int]'))
+                        single_renderers.push (<MapConfig key={j} {...prp} />);
                     else {
                         // console.log ('config', cfg, dat);
                         single_renderers.push (
