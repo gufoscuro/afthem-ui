@@ -58,7 +58,7 @@ function ImplementersEditor (props) {
 
     const addImplementer = useCallback ((item) => {
         let a = [...implementers]
-        a.push ({...item, ...{ $editing: true, $new: true }});
+        a.push ({...item, ...{ instances: 1, $editing: true, $new: true }});
         setImplementers (a);
         setAddFlow (false);
         setTimeout (() => { window.scrollTo (0, 10000) }, 20);

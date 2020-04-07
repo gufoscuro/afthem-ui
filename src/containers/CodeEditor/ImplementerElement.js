@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
+import { STRING } from '../../libs/js/utils';
 import _ from 'lodash/core';
 
 
@@ -10,22 +11,35 @@ function ImplementersElement (props) {
 
     // console.log ('implementer', editing)
 
-    let class_match     = 'com.apifortress.afthem.',
-        class_string    = props.data.class.indexOf (class_match) !== -1 ? 
-            props.data.class.substring (props.data.class.indexOf (class_match) + class_match.length) : props.data.class,
-        renderer;
+    let renderer;
 
 
     useEffect (() => {
         onMount ();
-    }, [])
+    }, []);
 
-    useEffect (() =>  {
-        if (editing === false && _.isEqual (data, model) === false) {
-            setModel (data);
-        }
-    }, [ model, data, editing ]);
+    // useEffect (() => {
+    //     setModel (prevM => {
+    //         return prevM.instances === undefined ? {
+    //             ...prevM,
+    //             instances: 1
+    //         } : prevM;
+    //     })
+    // }, [ data ]);
 
+    // useEffect (() =>  {
+    //     if (editing === false && _.isEqual (data, model) === false) {
+    //         setModel (data);
+    //     }
+    // }, [ model, data, editing ]);
+
+    const class_string = useMemo (() => {
+        let class_match = 'com.apifortress.afthem.',
+            final_clss  = data.class.indexOf (class_match) !== -1 ? 
+                data.class.substring (props.data.class.indexOf (class_match) + class_match.length) : data.class;
+
+        return STRING.tiny (final_clss, 70)
+    }, [ data.class ]);
     
     const onMount = useCallback (() => {
         if (data.$editing) {
@@ -52,8 +66,12 @@ function ImplementersElement (props) {
 
         setModel ((prevModel) => {
             let m = { ...prevModel };
-            if (n === 'thread_pool' && v === 'null') {
+            if (n === 'thread_pool' && v === 'null')
                 delete m.thread_pool;
+            else if (n === 'instances') {
+                let vv = v.replace(/\D/, '');
+                v = (vv !== '' ? parseInt (vv) : 1);
+                m[n] = v
             } else
                 m[n] = v;
 
@@ -88,6 +106,12 @@ function ImplementersElement (props) {
                     <div className="lbl">ID <i className="sep far fa-long-arrow-right"></i></div>
                     <div className="indent-1">
                         <input type="text" name="id" value={model.id} onChange={onValueChange}/>
+                    </div>
+                </div>
+                <div className="editor-component-field">
+                    <div className="lbl">instances <i className="sep far fa-long-arrow-right"></i></div>
+                    <div className="indent-1">
+                        <input type="text" name="instances" value={model.instances} onChange={onValueChange}/>
                     </div>
                 </div>
                 <div className="editor-component-field">
