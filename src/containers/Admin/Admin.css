@@ -51,3 +51,12 @@
 .search-item .txt {
     font-size: 12px;
 }
+
+.inline-error {
+    display: inline-block;
+    color: #ff7675;
+    font-weight: 600;
+    margin: 0 10px;
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+}

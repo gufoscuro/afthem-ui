@@ -171,7 +171,10 @@ module.exports.pullDefaultClusterData = () => {
             where: {
                 level: 0
             }
-        }).catch (reject).then (adminUsr => fetchDefaultClusterData (adminUsr).then (resolve).catch (reject));
+        }).catch (reject).then (adminUsr => {
+            console.log ('here')
+            fetchDefaultClusterData (adminUsr).then (resolve).catch (reject)
+        });
     })
 }
 
