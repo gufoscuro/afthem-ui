@@ -4,12 +4,14 @@ import FadeinFX from '../../hoc/FadeinFX';
 import ModalPanel from '../../components/ModalPanel/ModalPanel';
 import AddUser from './AddUser';
 import Dialog from '../../components/ModalPanel/Dialog';
+import GenericError from '../../components/ErrorOverlay/GenericError';
 
 
 function AdminUsers (props) {
-    const { appBackground, appConfirm, axiosInstance } = props;
+    const { appBackground, appConfirm, axiosInstance, user } = props;
     const [ users, setUsers ] = useState ([]);
     const [ modalFlow, setModalFlow ] = useState (null);
+    const [ error, setError ] = useState (null);
 
     
     useEffect (() => {
@@ -60,6 +62,13 @@ function AdminUsers (props) {
         }).then ((response) => {
             fetchUsers().then (() => appBackground (false));
             appConfirm ();
+        }).catch (e => {
+            appBackground (false);
+            setError ({
+                heading: 'User not removed', 
+                text: 'Sorry, this operation can\'t be completed.',
+                onClose: () => setError (null)
+            })
         })
     }, [ appBackground, appConfirm, fetchUsers, axiosInstance ]);
 
@@ -72,7 +81,15 @@ function AdminUsers (props) {
                 fetchUsers().then (() => appBackground (false));
                 setModalFlow (null);
                 appConfirm ();
-            }).catch (status.error)
+            }).catch (e => {
+                appBackground (false);
+                setModalFlow (null);
+                setError ({
+                    heading: 'User not created', 
+                    text: 'Sorry, this operation can\'t be completed.',
+                    onClose: () => setError (null)
+                })
+            })
         }
     }, [ appBackground, appConfirm, fetchUsers, axiosInstance ]);
     
@@ -84,6 +101,7 @@ function AdminUsers (props) {
             if (modalFlow.type === 'add-user') {
                 m_props = {
                     data: modalFlow.data,
+                    currentUser: user,
                     outcome: addUserOutcome
                 }
                 modal = (
@@ -113,7 +131,7 @@ function AdminUsers (props) {
             modal = (<ModalPanel active={false}></ModalPanel>);
 
         return modal;
-    }, [ modalFlow, removeUser, addUserOutcome ])
+    }, [ modalFlow, removeUser, addUserOutcome ]);
 
     const renderer = useMemo (() => {
         let users_list = (
@@ -133,7 +151,7 @@ function AdminUsers (props) {
                                 <div className="hover">
                                     <div className="ctrls">
                                         <div className="thin-button" onClick={e => { e.stopPropagation(); addUser (it.id); }}>Edit</div>
-                                        <div className="thin-button" onClick={e => { e.stopPropagation(); askRemoveUser (it.id); }}>Remove</div>
+                                        {user && user.id !== it.id && <div className="thin-button" onClick={e => { e.stopPropagation(); askRemoveUser (it.id); }}>Remove</div>}
                                     </div>
                                 </div>
                             </div>
@@ -149,9 +167,10 @@ function AdminUsers (props) {
                     {users_list}
                     {modal_memo}
                 </div>
+                {error && <GenericError {...error}/>}
             </>
         )
-    }, [ users, addUser, askRemoveUser, modal_memo ])
+    }, [ users, addUser, askRemoveUser, modal_memo, error ])
 
     return renderer;
 }

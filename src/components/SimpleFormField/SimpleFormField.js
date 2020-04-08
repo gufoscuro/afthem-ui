@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 
 
 function SimpleFormField (props) {
-    const { name, value, change, keypress, type, options } = props;
+    const { name, value, change, keypress, type, options, disabled = false } = props;
 
     const onValueChange = useCallback ((val, event) => {
         let v = val;
@@ -26,7 +26,7 @@ function SimpleFormField (props) {
         if (type === 'boolean') {
             inpt = (
                 <div className="custom-control custom-switch">
-                    <input type="checkbox" className="custom-control-input" checked={value} id="customSwitch1" onChange={hndl} />
+                    <input type="checkbox" className="custom-control-input" checked={value} id="customSwitch1" onChange={hndl} disabled={disabled} />
                     <label className="custom-control-label" htmlFor="customSwitch1"></label>
                 </div>
             )
@@ -34,7 +34,7 @@ function SimpleFormField (props) {
 
         else if (type === 'select' || type === 'select:int') {
             inpt = (
-                <select name={name} value={value} onChange={hndl}>
+                <select name={name} value={value} onChange={hndl} disabled={disabled}>
                     {options !== undefined ? options.map ((it, index) => {
                         return (<option key={it.value} value={it.value}>{it.text}</option>)
                     }) : (<option disabled>No options specified</option>)}
@@ -46,10 +46,10 @@ function SimpleFormField (props) {
             let t_type = (type === 'password' ? type : 'text');
             if (keypress !== undefined)
                 inpt = (<input className="textfield" type={t_type} name={name} value={value} 
-                    placeholder={name} onChange={hndl} onKeyPress={keypress} autoComplete="off" />);
+                    placeholder={name} onChange={hndl} onKeyPress={keypress} autoComplete="off" disabled={disabled} />);
             else
                 inpt = (<input className="textfield" type={t_type} name={name} value={value} 
-                    placeholder={name} onChange={hndl} autoComplete="off" />);
+                    placeholder={name} onChange={hndl} disabled={disabled} autoComplete="off" />);
         }
 
         return (
@@ -58,7 +58,7 @@ function SimpleFormField (props) {
                 <div className="text">{inpt}</div>
             </div>
         )
-    }, [ name, value, type, options, onValueChange, keypress ]);
+    }, [ name, value, type, options, onValueChange, keypress, disabled ]);
 
 
     return renderer;

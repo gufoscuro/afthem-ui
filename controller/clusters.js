@@ -1,3 +1,4 @@
+const configParams  = require ('../config');
 const fs            = require ('fs');
 const crypto        = require ('crypto');
 
@@ -9,15 +10,15 @@ const clusterSqlz   = clusterDAO.handle;
 const orgDAO        = require ('../model/organization');
 const orgSqlz       = orgDAO.handle;
 
-const userDAO   = require ('../model/user');
-const userSqlz  = userDAO.handle;
+const userDAO       = require ('../model/user');
+const userSqlz      = userDAO.handle;
 
 
 const actorsCtrl    = require ('./actors');
 const yamlUtils     = require ('../src/libs/js/yaml-json');
 const fservice      = require ('../services/fs-service');
 
-const c_base_path   = './clusters-data/';
+const c_base_path   = configParams.CLUSTERS_FOLDER;
 
 
 
@@ -258,7 +259,7 @@ module.exports.createFlow = (req, res, opts) => {
                     message: "This flow already exists."
                 })
             else {
-                read_file_routine ('./assets/defaultFiles/flow.yml').then ((result) => {
+                read_file_routine (configParams.DEFAULT_CLUSTER_FOLDER + '/flows/default.yml').then ((result) => {
                     write_file_routine (file_path, result.data).then (resolve).catch (reject);
                 })
             }

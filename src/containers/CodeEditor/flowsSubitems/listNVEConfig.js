@@ -34,7 +34,7 @@ function ListNVEConfig (props) {
                 all_completed = true;
 
             a.forEach ((it) => {
-                if (it.name === '' || it.value === '')
+                if (it.name === '')
                     all_completed = false;
             });
 

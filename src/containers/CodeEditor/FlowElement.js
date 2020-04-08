@@ -15,7 +15,7 @@ function FlowElement (props) {
     // const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
     
 
-    // console.log ('FlowElement', data)
+    console.log ('elementSchema', elementSchema)
     useEffect (() => {
         if (data.$editing) {
             let m = {...model};

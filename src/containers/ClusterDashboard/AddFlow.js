@@ -14,7 +14,7 @@ function AddFlow (props) {
 
 
     const fieldChange = useCallback ((name, value) => {
-        setName (value.toLowerCase())
+        setName (value.trim ())
     }, [ ]);
 
     const backend_error = useCallback ((error) => {

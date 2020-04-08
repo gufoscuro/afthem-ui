@@ -92,7 +92,7 @@ exports.add = (req, res, opts) => {
 
 exports.remove = (req, res, opts) => {
     return new Promise ((resolve, reject) => {
-        if (req.body.id) {
+        if (req.body.id && req.body.id !== opts.user.id) {
             userSqlz.destroy ({
                 where: {
                     id: req.body.id
