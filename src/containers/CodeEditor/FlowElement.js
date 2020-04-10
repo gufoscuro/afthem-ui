@@ -9,13 +9,14 @@ import _ from 'lodash/core';
 
 
 function FlowElement (props) {
-    const { $key, data, click, change, definedActors, elementSchema, editing, setEditing } = props;
+    const { $key, visualId, data, click, change, definedActors, elementSchema, editing, setEditing } = props;
     const [ model, setModel ] = useState (props.data)
     const [ brandNew, setBrandNew ] = useState (false);
     // const elementSchema = actorsSchema !== undefined ? actorsSchema[$key] : null;
-    
+    // if ($key === 'proxy/request')
+    //     console.log ($key, 'flow', model.sidecars, _.isEqual (data, model));
 
-    console.log ('elementSchema', elementSchema)
+    // console.log ('elementSchema', elementSchema)
     useEffect (() => {
         if (data.$editing) {
             let m = {...model};
@@ -58,6 +59,8 @@ function FlowElement (props) {
 
     useEffect (() =>  {
         if (editing === false && _.isEqual (data, model) === false) {
+            if ($key === 'proxy/request')
+                console.log ('useEffect', data)
             setModel (data);
         }
     }, [ model, data, editing ]);
@@ -115,11 +118,11 @@ function FlowElement (props) {
             
         Object.keys (model).forEach ((it, i) => {
             if (it === 'next')
-                fields.push (<NextElement key={i} value={model[it]} {...field_props} />);
+                fields.push (<NextElement key={visualId + i} value={model[it]} {...field_props} />);
             else if (it === 'sidecars')
-                fields.push (<SidecarElement key={i} name={it} value={model[it]} {...field_props} />);
+                fields.push (<SidecarElement key={visualId + i} name={it} value={model[it]} {...field_props} />);
             else if (it === 'config')
-                fields.push (<ConfigItem key={i} name={it} value={model[it]} {...field_props} />);
+                fields.push (<ConfigItem key={visualId + i} name={it} value={model[it]} {...field_props} />);
         });
         return (
             <>

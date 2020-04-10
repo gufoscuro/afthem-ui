@@ -9,7 +9,7 @@ import './VisualEditor.css';
 
 
 function FlowsEditor (props) {
-    const { update, refreshHook, axiosInstance, oid, cid } = props;
+    const { visualId, update, refreshHook, axiosInstance, oid, cid } = props;
     const [ model, setModel ] = useState (props.data);
     const [ addFlow, setAddFlow ] = useState (false);
     const [ implementersIds, setImplementersIds ] = useState (null);
@@ -117,7 +117,8 @@ function FlowsEditor (props) {
             click: click_element,
             change: edit_element,
             setEditing: setAsEditing,
-            definedActors: definedActors
+            definedActors: definedActors,
+            visualId: visualId
             // actorsSchema: actorsSchema
         }
         return model ? Object.keys(model).map ((key, i) => {

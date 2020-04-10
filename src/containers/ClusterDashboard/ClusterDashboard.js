@@ -169,7 +169,6 @@ class ClusterDashboard extends Component {
     fetchFileData = (id) => {
         this.props.appBackground (true);
         this.props.axiosInstance.post ('/api/clusters/fileData/' + id).then ((response) => {
-            // console.log (response.data);
             this.props.appBackground (false);
             this.setState ({
                 editingId: id,

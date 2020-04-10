@@ -15,7 +15,6 @@ function SidecarItem (props) {
         return { ...{ id: j }, ...{ value: it }}
     }));
 
-
     useEffect (() => {
         let a = [ ...model ]
         onUpdate ('sidecars', a.map (it => it.value))

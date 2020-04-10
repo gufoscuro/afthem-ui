@@ -39,7 +39,8 @@ class CodeEditor extends Component {
         visualViewActive: false,
         visualViewDisabled: false,
         visualMode: null,
-        visualCode: null
+        visualCode: null,
+        visualId: null
     }
     untouched = ''
     refreshV_handler
@@ -149,7 +150,7 @@ class CodeEditor extends Component {
     }
 
     open = (file) => {
-        // console.log ('open', file);
+        // console.log ('\nopen', file);
         let editor_mode     = 'yaml',
             veditor_guess   = this.guessEditorType (file.path),
             visual_editor   = veditor_guess.visual,
@@ -166,7 +167,6 @@ class CodeEditor extends Component {
 
         if (visual_editor) {
             visualCode = yamlUtils.toJSON (this.value ());
-            // console.log (visualCode)
         }
 
         if (this.state.visualMode !== veditor_guess.type) {
@@ -175,6 +175,7 @@ class CodeEditor extends Component {
         }
 
         let visual_e_state = {
+            visualId: file.path,
             visualViewDisabled: !visual_editor,
             codeViewActive: !visual_editor,
             visualViewActive: visual_editor,
@@ -243,6 +244,7 @@ class CodeEditor extends Component {
             axiosInstance: this.props.axiosInstance
         },
         editor_props = {
+            visualId: this.state.visualId,
             data: this.state.visualCode,
             update: this.visualToCode,
             addHook: this.addImplementerHook,
