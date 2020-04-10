@@ -59,8 +59,6 @@ function FlowElement (props) {
 
     useEffect (() =>  {
         if (editing === false && _.isEqual (data, model) === false) {
-            if ($key === 'proxy/request')
-                console.log ('useEffect', data)
             setModel (data);
         }
     }, [ model, data, editing ]);
