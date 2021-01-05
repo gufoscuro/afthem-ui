@@ -9,7 +9,7 @@
     "acorn": "^7.1.1",
     "acorn-jsx": "^5.1.0",
     "array-move": "^2.2.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "chalk": "^3.0.0",
     "cli-spinner": "^0.2.10",
