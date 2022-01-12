@@ -28,7 +28,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mariadb": "^2.1.5",
-    "markdown-it": "^10.0.0",
+    "markdown-it": "^12.3.2",
     "marked": "^0.8.0",
     "node-pre-gyp": "^0.14.0",
     "node-sass": "^4.13.1",
